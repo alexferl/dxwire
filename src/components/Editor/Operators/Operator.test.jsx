@@ -73,6 +73,7 @@ function createMockVoice(operatorOverrides = {}) {
       createMockOperator(5, operatorOverrides.op5),
       createMockOperator(6, operatorOverrides.op6),
     ],
+    settings: { value: { showADSR: true, showValueInputs: true } },
   }
 }
 

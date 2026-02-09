@@ -122,6 +122,8 @@ vi.mock("midiwire", () => {
 vi.mock("./storage.js", () => ({
   loadBanks: vi.fn(() => null),
   saveBanks: vi.fn(),
+  loadSettings: vi.fn(() => ({ showADSR: true })),
+  saveSettings: vi.fn(),
 }))
 
 describe("createVoice", () => {

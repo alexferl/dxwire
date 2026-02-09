@@ -30,7 +30,7 @@ export function LFO() {
           description="LFO Speed"
           min={0}
           max={99}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="lg"
           value={voice.lfo.speed.value}
           onChange={(v) => {
@@ -42,7 +42,7 @@ export function LFO() {
           description="LFO Delay"
           min={0}
           max={99}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="lg"
           value={voice.lfo.delay.value}
           onChange={(v) => {
@@ -57,7 +57,7 @@ export function LFO() {
           min={0}
           max={99}
           indicatorOffAtMin={true}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="md"
           value={voice.lfo.pmDepth.value}
           onChange={(v) => {
@@ -70,7 +70,7 @@ export function LFO() {
           min={0}
           max={99}
           indicatorOffAtMin={true}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="md"
           value={voice.lfo.amDepth.value}
           onChange={(v) => {
@@ -83,7 +83,7 @@ export function LFO() {
           min={0}
           max={7}
           indicatorOffAtMin={true}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="md"
           value={voice.lfo.pmSens.value}
           onChange={(v) => {

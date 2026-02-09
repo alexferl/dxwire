@@ -89,6 +89,23 @@
   background: #5a5a5a;
 }
 
+.settings-button {
+  padding: 6px;
+  background: #4a4a4a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-button:hover {
+  background: #5a5a5a;
+}
+
 .header-send-btn {
   padding: 6px;
   background: #4a4a4a;
@@ -256,4 +273,40 @@
   font-family: monospace;
   font-size: 12px;
   border: 1px solid #555;
+}
+
+/* Settings modal styles */
+.settings-section {
+  margin-bottom: 24px;
+}
+
+.settings-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: #00ffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.settings-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+}
+
+.settings-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #00ffff;
+}
+
+.settings-description {
+  margin: 12px 0 0 28px;
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
 }

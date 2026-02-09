@@ -1,6 +1,6 @@
 import { signal } from "@preact/signals"
 import { DX7Bank, DX7Voice, noteNameToNumber, noteNumberToName } from "midiwire"
-import { loadBanks, saveBanks } from "./storage.js"
+import { loadBanks, loadSettings, saveBanks, saveSettings } from "./storage.js"
 
 /** @type {string[]} */
 const CURVES = ["-LN", "-EX", "+EX", "+LN"]
@@ -88,6 +88,7 @@ export function createVoice() {
   const banks = signal(savedBanks || [{ name: "Init Bank", bank: new DX7Bank() }])
   const currentBank = signal(0)
   const currentVoiceIndex = signal(0)
+  const settings = signal(loadSettings())
 
   loadFromVoice(banks.value[0].bank.getVoice(0))
 
@@ -496,6 +497,17 @@ export function createVoice() {
     }
   }
 
+  /**
+   * Updates a setting and persists it to localStorage.
+   * @param {string} key - Setting key to update
+   * @param {unknown} value - New value for the setting
+   */
+  function updateSetting(key, value) {
+    const updated = { ...settings.value, [key]: value }
+    settings.value = updated
+    saveSettings({ [key]: value })
+  }
+
   return {
     /** @type {Array<Object>} Array of 6 operator signal objects */
     operators,
@@ -511,6 +523,8 @@ export function createVoice() {
     currentBank,
     /** @type {import("@preact/signals").Signal<number>} Current voice index signal */
     currentVoiceIndex,
+    /** @type {import("@preact/signals").Signal<Object>} User settings signal */
+    settings,
     toJSON,
     toSysEx,
     downloadSyx,
@@ -526,5 +540,6 @@ export function createVoice() {
     initVoice,
     copyVoice,
     renameVoice,
+    updateSetting,
   }
 }

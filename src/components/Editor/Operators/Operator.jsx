@@ -59,7 +59,7 @@ export function Operator({ number }) {
             description="Oscillator Detune"
             min={-7}
             max={7}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="md"
             value={op.detune.value - 7}
             onChange={(v) => {
@@ -71,7 +71,7 @@ export function Operator({ number }) {
             description="Oscillator Frequency Coarse"
             min={0}
             max={31}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="md"
             value={op.coarse.value}
             onChange={(v) => {
@@ -83,7 +83,7 @@ export function Operator({ number }) {
             description="Oscillator Frequency Fine"
             min={0}
             max={99}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="md"
             value={op.fine.value}
             onChange={(v) => {
@@ -97,6 +97,7 @@ export function Operator({ number }) {
           type="amplitude"
           levels={[op.egLevel1.value, op.egLevel2.value, op.egLevel3.value, op.egLevel4.value]}
           rates={[op.egRate1.value, op.egRate2.value, op.egRate3.value, op.egRate4.value]}
+          showADSR={voice.settings.value.showADSR}
         />
       </div>
       <div className="eg-section">
@@ -106,7 +107,7 @@ export function Operator({ number }) {
             description="EG Level 1"
             min={0}
             max={99}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.egLevel1.value}
             onChange={(v) => {
@@ -118,7 +119,7 @@ export function Operator({ number }) {
             description="EG Level 2"
             min={0}
             max={99}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.egLevel2.value}
             onChange={(v) => {
@@ -130,7 +131,7 @@ export function Operator({ number }) {
             description="EG Level 3"
             min={0}
             max={99}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.egLevel3.value}
             onChange={(v) => {
@@ -142,7 +143,7 @@ export function Operator({ number }) {
             description="EG Level 4"
             min={0}
             max={99}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.egLevel4.value}
             onChange={(v) => {
@@ -156,7 +157,7 @@ export function Operator({ number }) {
             description="EG Rate 1"
             min={0}
             max={99}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.egRate1.value}
             onChange={(v) => {
@@ -168,7 +169,7 @@ export function Operator({ number }) {
             description="EG Rate 2"
             min={0}
             max={99}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.egRate2.value}
             onChange={(v) => {
@@ -180,7 +181,7 @@ export function Operator({ number }) {
             description="EG Rate 3"
             min={0}
             max={99}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.egRate3.value}
             onChange={(v) => {
@@ -192,7 +193,7 @@ export function Operator({ number }) {
             description="EG Rate 4"
             min={0}
             max={99}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.egRate4.value}
             onChange={(v) => {
@@ -209,7 +210,7 @@ export function Operator({ number }) {
             min={0}
             max={99}
             indicatorOffAtMin={true}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.leftDepth.value}
             onChange={(v) => {
@@ -225,7 +226,7 @@ export function Operator({ number }) {
             description="Keyboard Level Scaling Break Point"
             min={0}
             max={99}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             formatValue={(v) => noteNumberToName(v + 9)}
             parseValue={(v) => {
@@ -242,7 +243,7 @@ export function Operator({ number }) {
             min={0}
             max={99}
             indicatorOffAtMin={true}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.rightDepth.value}
             onChange={(v) => {
@@ -266,7 +267,7 @@ export function Operator({ number }) {
             min={0}
             max={7}
             indicatorOffAtMin={true}
-            showValueInput={true}
+            showValueInput={voice.settings.value.showValueInputs}
             size="sm"
             value={op.rateScaling.value}
             onChange={(v) => {
@@ -294,7 +295,7 @@ export function Operator({ number }) {
               min={0}
               max={3}
               indicatorOffAtMin={true}
-              showValueInput={true}
+              showValueInput={voice.settings.value.showValueInputs}
               size="md"
               value={op.ampModSens.value}
               onChange={(v) => {
@@ -309,7 +310,7 @@ export function Operator({ number }) {
               min={0}
               max={99}
               indicatorOffAtMin={true}
-              showValueInput={true}
+              showValueInput={voice.settings.value.showValueInputs}
               size="lg"
               value={op.outputLevel.value}
               onChange={(v) => {
@@ -324,7 +325,7 @@ export function Operator({ number }) {
               min={0}
               max={7}
               indicatorOffAtMin={true}
-              showValueInput={true}
+              showValueInput={voice.settings.value.showValueInputs}
               size="md"
               value={op.keyVelocity.value}
               onChange={(v) => {

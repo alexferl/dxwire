@@ -11,6 +11,7 @@ function createMockVoice() {
       feedback: { value: 3 },
       transpose: { value: 24 },
     },
+    settings: { value: { showADSR: true, showValueInputs: true } },
   }
 }
 

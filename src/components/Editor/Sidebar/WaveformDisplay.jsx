@@ -25,6 +25,7 @@ export function WaveformDisplay() {
           voice.pitchEG.rate3.value,
           voice.pitchEG.rate4.value,
         ]}
+        showADSR={voice.settings.value.showADSR}
       />
     </div>
   )

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { clearBanks, loadBanks, saveBanks } from "./storage"
+import { clearBanks, clearSettings, loadBanks, loadSettings, saveBanks, saveSettings } from "./storage"
 
 // Mock localStorage
 const localStorageMock = {
@@ -144,6 +144,111 @@ describe("storage", () => {
       })
 
       clearBanks()
+
+      expect(console.error).toHaveBeenCalled()
+    })
+  })
+
+  describe("loadSettings", () => {
+    it("returns default settings when nothing stored", () => {
+      localStorageMock.getItem.mockReturnValue(null)
+
+      const result = loadSettings()
+
+      expect(result).toEqual({
+        showADSR: true,
+        showValueInputs: true,
+      })
+    })
+
+    it("returns merged settings from localStorage", () => {
+      localStorageMock.getItem.mockReturnValue(JSON.stringify({ showADSR: false }))
+
+      const result = loadSettings()
+
+      expect(result.showADSR).toBe(false)
+      expect(result.showValueInputs).toBe(true) // default preserved
+    })
+
+    it("returns defaults for invalid JSON", () => {
+      localStorageMock.getItem.mockReturnValue("invalid json")
+
+      const result = loadSettings()
+
+      expect(result).toEqual({
+        showADSR: true,
+        showValueInputs: true,
+      })
+      expect(console.error).toHaveBeenCalled()
+    })
+
+    it("handles localStorage errors gracefully", () => {
+      localStorageMock.getItem.mockImplementation(() => {
+        throw new Error("Storage error")
+      })
+
+      const result = loadSettings()
+
+      expect(result).toEqual({
+        showADSR: true,
+        showValueInputs: true,
+      })
+      expect(console.error).toHaveBeenCalled()
+    })
+  })
+
+  describe("saveSettings", () => {
+    it("saves settings to localStorage", () => {
+      localStorageMock.getItem.mockReturnValue(null)
+
+      saveSettings({ showADSR: false })
+
+      expect(localStorageMock.setItem).toHaveBeenCalledWith(
+        "dx7-settings",
+        JSON.stringify({ showADSR: false, showValueInputs: true }),
+      )
+    })
+
+    it("merges with existing settings", () => {
+      localStorageMock.getItem.mockReturnValue(JSON.stringify({ showValueInputs: false }))
+
+      saveSettings({ showADSR: false })
+
+      expect(localStorageMock.setItem).toHaveBeenCalledWith(
+        "dx7-settings",
+        JSON.stringify({ showADSR: false, showValueInputs: false }),
+      )
+    })
+
+    it("handles localStorage errors gracefully", () => {
+      localStorageMock.getItem.mockReturnValue(null)
+      localStorageMock.setItem.mockImplementation(() => {
+        throw new Error("Storage full")
+      })
+
+      const result = saveSettings({ showADSR: false })
+
+      expect(console.error).toHaveBeenCalled()
+      expect(result).toEqual({
+        showADSR: true,
+        showValueInputs: true,
+      })
+    })
+  })
+
+  describe("clearSettings", () => {
+    it("removes settings from localStorage", () => {
+      clearSettings()
+
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith("dx7-settings")
+    })
+
+    it("handles localStorage errors gracefully", () => {
+      localStorageMock.removeItem.mockImplementation(() => {
+        throw new Error("Storage error")
+      })
+
+      clearSettings()
 
       expect(console.error).toHaveBeenCalled()
     })

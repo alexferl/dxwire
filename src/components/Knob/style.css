@@ -186,8 +186,7 @@
 }
 
 .knob-input-spacer {
-  width: 44px;
-  height: 24px;
+  display: none;
 }
 
 .knob-label-popover {

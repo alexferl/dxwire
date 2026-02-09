@@ -16,6 +16,7 @@ function createMockVoice() {
       rate3: { value: 99 },
       rate4: { value: 99 },
     },
+    settings: { value: { showADSR: true } },
   }
 }
 

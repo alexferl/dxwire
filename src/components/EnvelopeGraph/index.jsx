@@ -19,11 +19,11 @@ export function EnvelopeGraph({ type = "amplitude", levels, rates, showADSR = tr
 
   // Use viewBox for scaling - aspect ratio varies based on showADSR
   const viewBoxWidth = 280
-  const viewBoxHeight = showADSR ? 185 : 160
+  const viewBoxHeight = showADSR ? 160 : 140
   const paddingLeft = viewBoxWidth * 0.12
   const paddingRight = viewBoxWidth * 0.04
-  const paddingTop = 8
-  const paddingBottom = showADSR ? 45 : 10
+  const paddingTop = viewBoxHeight * 0.18
+  const paddingBottom = showADSR ? viewBoxHeight * 0.2 : viewBoxHeight * 0.12
   const graphWidth = viewBoxWidth - paddingLeft - paddingRight
   const graphHeight = viewBoxHeight - paddingTop - paddingBottom
 
@@ -162,7 +162,7 @@ export function EnvelopeGraph({ type = "amplitude", levels, rates, showADSR = tr
             <g className="adsr-labels">
               <text
                 x={(x2 + x3) / 2}
-                y={paddingTop + graphHeight + 28}
+                y={paddingTop + graphHeight + 12}
                 textAnchor="middle"
                 className="adsr-label asdr-label-attack"
               >
@@ -170,7 +170,7 @@ export function EnvelopeGraph({ type = "amplitude", levels, rates, showADSR = tr
               </text>
               <text
                 x={(x3 + x4) / 2}
-                y={paddingTop + graphHeight + 28}
+                y={paddingTop + graphHeight + 12}
                 textAnchor="middle"
                 className="adsr-label asdr-label-decay"
               >
@@ -178,7 +178,7 @@ export function EnvelopeGraph({ type = "amplitude", levels, rates, showADSR = tr
               </text>
               <text
                 x={(x4 + x5) / 2}
-                y={paddingTop + graphHeight + 28}
+                y={paddingTop + graphHeight + 12}
                 textAnchor="middle"
                 className="adsr-label asdr-label-sustain"
               >
@@ -186,7 +186,7 @@ export function EnvelopeGraph({ type = "amplitude", levels, rates, showADSR = tr
               </text>
               <text
                 x={(x5 + x6) / 2}
-                y={paddingTop + graphHeight + 28}
+                y={paddingTop + graphHeight + 12}
                 textAnchor="middle"
                 className="adsr-label asdr-label-release"
               >
@@ -231,31 +231,15 @@ export function EnvelopeGraph({ type = "amplitude", levels, rates, showADSR = tr
         {/* Release segment (dashed) */}
         <path d={releasePath} className="envelope-path-release" fill="none" />
 
-        {/* Sustain bracket - inverted, pointing down */}
-        <path
-          d={`M ${x2} ${paddingTop + graphHeight + (showADSR ? 34 : 10)} L ${x2} ${paddingTop + graphHeight + (showADSR ? 40 : 16)} L ${x5} ${paddingTop + graphHeight + (showADSR ? 40 : 16)} L ${x5} ${paddingTop + graphHeight + (showADSR ? 34 : 10)}`}
-          className="sustain-bracket"
-        />
-
         {/* KEY ON marker */}
         <line x1={x2} y1={paddingTop} x2={x2} y2={paddingTop + graphHeight} className="key-marker key-on-marker" />
-        <text
-          x={x2 - 12}
-          y={paddingTop + graphHeight + (showADSR ? 54 : 28)}
-          textAnchor="middle"
-          className="key-marker-label key-on-label"
-        >
+        <text x={x2 - 12} y={paddingTop - 16} textAnchor="middle" className="key-marker-label key-on-label">
           KEY ON
         </text>
 
         {/* KEY OFF marker */}
         <line x1={x5} y1={paddingTop} x2={x5} y2={paddingTop + graphHeight} className="key-marker key-off-marker" />
-        <text
-          x={x5 - 14}
-          y={paddingTop + graphHeight + (showADSR ? 54 : 28)}
-          textAnchor="middle"
-          className="key-marker-label key-off-label"
-        >
+        <text x={x5 - 14} y={paddingTop - 16} textAnchor="middle" className="key-marker-label key-off-label">
           KEY OFF
         </text>
 
@@ -319,7 +303,7 @@ export function EnvelopeGraph({ type = "amplitude", levels, rates, showADSR = tr
         {/* X-axis label */}
         <text
           x={paddingLeft + graphWidth / 2}
-          y={paddingTop + graphHeight + 12}
+          y={paddingTop + graphHeight + (showADSR ? 26 : 16)}
           textAnchor="middle"
           className="axis-label x-axis-label"
         >

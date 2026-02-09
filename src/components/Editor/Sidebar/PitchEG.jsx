@@ -17,7 +17,7 @@ export function PitchEG() {
           description="Pitch EG Level 1"
           min={0}
           max={99}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="sm"
           value={voice.pitchEG.level1.value}
           onChange={(v) => {
@@ -29,7 +29,7 @@ export function PitchEG() {
           description="Pitch EG Level 2"
           min={0}
           max={99}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="sm"
           value={voice.pitchEG.level2.value}
           onChange={(v) => {
@@ -41,7 +41,7 @@ export function PitchEG() {
           description="Pitch EG Level 3"
           min={0}
           max={99}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="sm"
           value={voice.pitchEG.level3.value}
           onChange={(v) => {
@@ -53,7 +53,7 @@ export function PitchEG() {
           description="Pitch EG Level 4"
           min={0}
           max={99}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="sm"
           value={voice.pitchEG.level4.value}
           onChange={(v) => {
@@ -67,7 +67,7 @@ export function PitchEG() {
           description="Pitch EG Rate 1"
           min={0}
           max={99}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="sm"
           value={voice.pitchEG.rate1.value}
           onChange={(v) => {
@@ -79,7 +79,7 @@ export function PitchEG() {
           description="Pitch EG Rate 2"
           min={0}
           max={99}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="sm"
           value={voice.pitchEG.rate2.value}
           onChange={(v) => {
@@ -91,7 +91,7 @@ export function PitchEG() {
           description="Pitch EG Rate 3"
           min={0}
           max={99}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="sm"
           value={voice.pitchEG.rate3.value}
           onChange={(v) => {
@@ -103,7 +103,7 @@ export function PitchEG() {
           description="Pitch EG Rate 4"
           min={0}
           max={99}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="sm"
           value={voice.pitchEG.rate4.value}
           onChange={(v) => {

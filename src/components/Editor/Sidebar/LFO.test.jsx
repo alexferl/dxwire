@@ -18,6 +18,7 @@ function createMockVoice() {
     global: {
       oscSync: { value: 1 },
     },
+    settings: { value: { showADSR: true, showValueInputs: true } },
   }
 }
 

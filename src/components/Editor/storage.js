@@ -1,6 +1,7 @@
 import { DX7Bank } from "midiwire"
 
 const STORAGE_KEY = "dx7-banks"
+const SETTINGS_KEY = "dx7-settings"
 
 /**
  * Saves banks array to local storage.
@@ -51,5 +52,61 @@ export function clearBanks() {
     localStorage.removeItem(STORAGE_KEY)
   } catch (err) {
     console.error("Failed to clear banks from localStorage:", err)
+  }
+}
+
+/**
+ * @typedef {Object} Settings
+ * @property {boolean} showADSR - Show ADSR visualization in envelope graphs
+ */
+
+/** @type {Settings} */
+const DEFAULT_SETTINGS = {
+  showADSR: true,
+  showValueInputs: true,
+}
+
+/**
+ * Loads settings from local storage.
+ * @returns {Settings} Loaded settings or defaults if none stored
+ */
+export function loadSettings() {
+  try {
+    const stored = localStorage.getItem(SETTINGS_KEY)
+    if (!stored) return DEFAULT_SETTINGS
+
+    const parsed = JSON.parse(stored)
+    return { ...DEFAULT_SETTINGS, ...parsed }
+  } catch (err) {
+    console.error("Failed to load settings from localStorage:", err)
+    return DEFAULT_SETTINGS
+  }
+}
+
+/**
+ * Saves settings to local storage.
+ * @param {Partial<Settings>} settings - Settings to save
+ * @returns {Settings} Updated settings
+ */
+export function saveSettings(settings) {
+  try {
+    const current = loadSettings()
+    const updated = { ...current, ...settings }
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(updated))
+    return updated
+  } catch (err) {
+    console.error("Failed to save settings to localStorage:", err)
+    return loadSettings()
+  }
+}
+
+/**
+ * Clears saved settings from local storage.
+ */
+export function clearSettings() {
+  try {
+    localStorage.removeItem(SETTINGS_KEY)
+  } catch (err) {
+    console.error("Failed to clear settings from localStorage:", err)
   }
 }

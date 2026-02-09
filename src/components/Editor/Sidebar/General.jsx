@@ -17,7 +17,7 @@ export function General() {
           description="Alogrithm"
           min={1}
           max={32}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="lg"
           value={voice.global.algorithm.value}
           onChange={(v) => {
@@ -30,7 +30,7 @@ export function General() {
           min={0}
           max={7}
           indicatorOffAtMin={true}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="lg"
           value={voice.global.feedback.value}
           onChange={(v) => {
@@ -42,7 +42,7 @@ export function General() {
           description="Transpose"
           min={-24}
           max={24}
-          showValueInput={true}
+          showValueInput={voice.settings.value.showValueInputs}
           size="lg"
           value={voice.global.transpose.value - 24}
           onChange={(v) => {

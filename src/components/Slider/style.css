@@ -162,8 +162,7 @@
 }
 
 .slider-input-spacer {
-  width: 44px;
-  height: 24px; /* Matches input height */
+  display: none;
 }
 
 .slider-popover {

@@ -120,11 +120,5 @@ describe("EnvelopeGraph", () => {
       const svg = document.querySelector("svg")
       expect(svg).toBeInTheDocument()
     })
-
-    it("renders sustain bracket", () => {
-      render(<EnvelopeGraph type="amplitude" levels={defaultLevels} rates={defaultRates} />)
-      const sustainBracket = document.querySelector(".sustain-bracket")
-      expect(sustainBracket).toBeInTheDocument()
-    })
   })
 })
