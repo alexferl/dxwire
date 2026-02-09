@@ -1,0 +1,163 @@
+.slot-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.slot-dialog {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 20px;
+  min-width: 400px;
+}
+
+.slot-dialog h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  color: #fff;
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.slot-button {
+  padding: 10px;
+  background: #3a3a3a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.slot-button:hover {
+  background: #4a4a4a;
+}
+
+.slot-button.current {
+  background: #00ffff;
+  color: #000;
+}
+
+.slot-button.source {
+  border-color: #00ffff;
+  box-shadow: inset 0 0 0 2px #00ffff;
+}
+
+.slot-dialog-cancel {
+  width: 100%;
+  padding: 10px;
+  background: #4a4a4a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.slot-dialog-cancel:hover {
+  background: #5a5a5a;
+}
+
+.rename-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  background: #1a1a1a;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.rename-input:focus {
+  outline: none;
+  border-color: #00ffff;
+}
+
+.rename-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.rename-confirm,
+.rename-cancel {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.rename-confirm {
+  background: #00ffff;
+  color: #000;
+}
+
+.rename-confirm:hover {
+  background: #00cccc;
+}
+
+.rename-cancel {
+  background: #4a4a4a;
+  color: #fff;
+}
+
+.rename-cancel:hover {
+  background: #5a5a5a;
+}
+
+.copy-dialog-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.copy-confirm,
+.copy-cancel {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.copy-confirm {
+  background: #00ffff;
+  color: #000;
+}
+
+.copy-confirm:hover:not(:disabled) {
+  background: #00cccc;
+}
+
+.copy-confirm:disabled {
+  background: #3a3a3a;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.copy-cancel {
+  background: #4a4a4a;
+  color: #fff;
+}
+
+.copy-cancel:hover {
+  background: #5a5a5a;
+}

@@ -1,0 +1,13 @@
+# Ignore everything by default
+*
+
+# Include only what the Dockerfile needs for the build
+!package.json
+!package-lock.json
+!vite.config.js
+!index.html
+!jsconfig.json
+!biome.json
+!src/
+!public/
+!etc/caddy/Caddyfile

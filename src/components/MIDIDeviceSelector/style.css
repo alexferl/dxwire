@@ -1,0 +1,57 @@
+.midi-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.midi-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.midi-group label {
+  font-size: 11px;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 80px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.midi-group select {
+  padding: 2px 6px;
+  font-size: 11px;
+  background: #3a3a3a;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 3px;
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.midi-group select:focus {
+  outline: none;
+  border-color: #00ffff;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #666;
+}
+
+.status-dot.connected {
+  background: #4caf50;
+  box-shadow: 0 0 4px #4caf50;
+}
+
+.status-dot.disconnected {
+  background: #f44336;
+  box-shadow: 0 0 4px #f44336;
+}

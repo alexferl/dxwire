@@ -1,0 +1,248 @@
+.wave-select-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: inherit;
+  user-select: none;
+}
+
+.wave-select-title {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.wave-select-display {
+  min-width: 60px;
+  height: 28px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 2px;
+  color: #00ffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px 0 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.wave-select-value {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wave-select-value .waveform-icon {
+  width: 32px;
+  height: 16px;
+}
+
+.wave-select-arrow {
+  font-size: 8px;
+  color: #888;
+  margin-left: 4px;
+}
+
+.wave-select-display:hover {
+  border-color: #444;
+}
+
+.wave-select-display.open {
+  border-color: #00ffff;
+}
+
+.wave-select-display:focus {
+  outline: none;
+  border-color: #00ffff;
+  box-shadow: 0 0 0 1px rgba(0, 255, 255, 0.3);
+}
+
+.wave-select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 60px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 2px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  gap: 2px;
+}
+
+.wave-select-option {
+  width: 100%;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.1s ease;
+  color: #ccc;
+  padding: 0 8px;
+}
+
+.wave-select-option:hover {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.wave-select-option.selected {
+  background: #1a3a3a;
+  color: #00ffff;
+}
+
+.wave-select-option .waveform-icon {
+  width: 24px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.wave-select-option-name {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.wave-select-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 1001;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.2s ease;
+}
+
+.wave-select-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #333;
+}
+
+.wave-select-sm .wave-select-display {
+  min-width: 48px;
+  height: 22px;
+  padding: 0 4px 0 6px;
+}
+
+.wave-select-sm .wave-select-value .waveform-icon {
+  width: 24px;
+  height: 12px;
+}
+
+.wave-select-sm .wave-select-arrow {
+  font-size: 7px;
+  margin-left: 2px;
+}
+
+.wave-select-sm .wave-select-option {
+  height: 22px;
+  padding: 0 6px;
+  gap: 6px;
+}
+
+.wave-select-sm .wave-select-option .waveform-icon {
+  width: 20px;
+  height: 10px;
+}
+
+.wave-select-sm .wave-select-option-name {
+  font-size: 10px;
+}
+
+.wave-select-lg .wave-select-display {
+  min-width: 72px;
+  height: 32px;
+  padding: 0 8px 0 10px;
+}
+
+.wave-select-lg .wave-select-value .waveform-icon {
+  width: 40px;
+  height: 20px;
+}
+
+.wave-select-lg .wave-select-arrow {
+  font-size: 10px;
+  margin-left: 6px;
+}
+
+.wave-select-lg .wave-select-option {
+  height: 32px;
+  padding: 0 10px;
+  gap: 10px;
+}
+
+.wave-select-lg .wave-select-option .waveform-icon {
+  width: 32px;
+  height: 16px;
+}
+
+.wave-select-lg .wave-select-option-name {
+  font-size: 12px;
+}
+
+.wave-select-xl .wave-select-display {
+  min-width: 84px;
+  height: 36px;
+  padding: 0 10px 0 12px;
+}
+
+.wave-select-xl .wave-select-value .waveform-icon {
+  width: 48px;
+  height: 24px;
+}
+
+.wave-select-xl .wave-select-arrow {
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.wave-select-xl .wave-select-option {
+  height: 36px;
+  padding: 0 12px;
+  gap: 12px;
+}
+
+.wave-select-xl .wave-select-option .waveform-icon {
+  width: 40px;
+  height: 20px;
+}
+
+.wave-select-xl .wave-select-option-name {
+  font-size: 13px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

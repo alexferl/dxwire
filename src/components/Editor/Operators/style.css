@@ -1,0 +1,284 @@
+.operators-grid {
+  display: contents;
+}
+
+.operator {
+  display: contents;
+}
+
+.op1 .freq-controls {
+  grid-column: 2;
+  grid-row: 2;
+}
+.op1 .envelope-display {
+  grid-column: 3;
+  grid-row: 2;
+}
+.op1 .eg-section {
+  grid-column: 4;
+  grid-row: 2;
+}
+.op1 .level-section {
+  grid-column: 5;
+  grid-row: 2;
+}
+.op1 .mod-section {
+  grid-column: 6;
+  grid-row: 2;
+}
+
+.op2 .freq-controls {
+  grid-column: 2;
+  grid-row: 3;
+}
+.op2 .envelope-display {
+  grid-column: 3;
+  grid-row: 3;
+}
+.op2 .eg-section {
+  grid-column: 4;
+  grid-row: 3;
+}
+.op2 .level-section {
+  grid-column: 5;
+  grid-row: 3;
+}
+.op2 .mod-section {
+  grid-column: 6;
+  grid-row: 3;
+}
+
+.op3 .freq-controls {
+  grid-column: 2;
+  grid-row: 4;
+}
+.op3 .envelope-display {
+  grid-column: 3;
+  grid-row: 4;
+}
+.op3 .eg-section {
+  grid-column: 4;
+  grid-row: 4;
+}
+.op3 .level-section {
+  grid-column: 5;
+  grid-row: 4;
+}
+.op3 .mod-section {
+  grid-column: 6;
+  grid-row: 4;
+}
+
+.op4 .freq-controls {
+  grid-column: 2;
+  grid-row: 5;
+}
+.op4 .envelope-display {
+  grid-column: 3;
+  grid-row: 5;
+}
+.op4 .eg-section {
+  grid-column: 4;
+  grid-row: 5;
+}
+.op4 .level-section {
+  grid-column: 5;
+  grid-row: 5;
+}
+.op4 .mod-section {
+  grid-column: 6;
+  grid-row: 5;
+}
+
+.op5 .freq-controls {
+  grid-column: 2;
+  grid-row: 6;
+}
+.op5 .envelope-display {
+  grid-column: 3;
+  grid-row: 6;
+}
+.op5 .eg-section {
+  grid-column: 4;
+  grid-row: 6;
+}
+.op5 .level-section {
+  grid-column: 5;
+  grid-row: 6;
+}
+.op5 .mod-section {
+  grid-column: 6;
+  grid-row: 6;
+}
+
+.op6 .freq-controls {
+  grid-column: 2;
+  grid-row: 7;
+}
+.op6 .envelope-display {
+  grid-column: 3;
+  grid-row: 7;
+}
+.op6 .eg-section {
+  grid-column: 4;
+  grid-row: 7;
+}
+.op6 .level-section {
+  grid-column: 5;
+  grid-row: 7;
+}
+.op6 .mod-section {
+  grid-column: 6;
+  grid-row: 7;
+}
+
+.freq-controls,
+.envelope-display,
+.eg-section,
+.level-section,
+.mod-section {
+  background: #3a3a3a;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 14px;
+  color: #ccc;
+  gap: 10px;
+}
+
+.freq-controls {
+  justify-content: flex-start;
+  padding-top: 6px;
+  gap: 8px;
+}
+
+.envelope-display {
+  background: #1a1a1a;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid #3a3a3a;
+}
+
+.eg-section {
+  gap: 8px;
+  padding-top: 15px;
+}
+
+.level-section {
+  padding-top: 15px;
+}
+
+.level-knobs {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.level-knobs-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.mod-section {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.mod-knobs-triangle {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  justify-content: center;
+  padding-bottom: 4px;
+}
+
+.mod-knob-center {
+  margin-bottom: 60px;
+}
+
+.mod-knob-side {
+  margin-bottom: 0;
+}
+
+.freq-header-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 12px;
+}
+
+.freq-display {
+  margin-top: auto;
+}
+
+.freq-knobs {
+  margin-bottom: 4px;
+}
+
+.op-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.op-label {
+  font-size: 18px;
+  font-weight: bold;
+  color: #00ffff;
+  transition:
+    opacity 0.15s ease,
+    color 0.15s ease;
+}
+
+.op-label.off {
+  opacity: 0.4;
+  color: #666;
+}
+
+.freq-knobs,
+.mod-knobs {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.freq-display {
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  font-weight: bold;
+  color: #00ffff;
+  background: #1a1a1a;
+  padding: 4px 8px;
+  border-radius: 3px;
+  width: 110px;
+  text-align: center;
+  border: 1px solid #333;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.eg-knobs-level,
+.eg-knobs-rate {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.envelope-display {
+  background: #2a2a2a;
+}

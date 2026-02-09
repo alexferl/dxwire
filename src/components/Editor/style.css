@@ -1,0 +1,8 @@
+.editor {
+  display: grid;
+  grid-template-columns: 280px repeat(5, 1fr);
+  grid-template-rows: 60px repeat(6, 1fr);
+  height: 100vh;
+  background: #1a1a1a;
+  gap: 2px;
+}

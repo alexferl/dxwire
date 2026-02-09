@@ -1,0 +1,259 @@
+.header {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  background: #2a2a2a;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 280px repeat(5, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.header-left {
+  grid-column: 1 / 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.header-right {
+  grid-column: 5 / 7;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.header-midi {
+  display: flex;
+  align-items: center;
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.export-btn,
+.load-btn {
+  padding: 8px 16px;
+  background: #4a4a4a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.export-btn:hover,
+.load-btn:hover {
+  background: #5a5a5a;
+}
+
+.save-btn {
+  padding: 8px 16px;
+  background: #4a4a4a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.save-btn:hover {
+  background: #5a5a5a;
+}
+
+.help-button {
+  padding: 6px;
+  background: #4a4a4a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.help-button:hover {
+  background: #5a5a5a;
+}
+
+.header-send-btn {
+  padding: 6px;
+  background: #4a4a4a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-send-btn:hover:not(:disabled) {
+  background: #5a5a5a;
+  border-color: #00ffff;
+}
+
+.header-send-btn:focus {
+  outline: none;
+  border-color: #00ffff;
+}
+
+.header-send-btn:disabled {
+  background: #3a3a3a;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.header-send-btn .spinner {
+  animation: spin 1s linear infinite;
+}
+
+.header-separator {
+  width: 1px;
+  height: 28px;
+  background: #555;
+  margin: 0 8px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bank-select-header,
+.voice-select-header {
+  padding: 6px 12px;
+  font-size: 14px;
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.bank-select-header {
+  min-width: 120px;
+}
+
+.voice-select-header {
+  min-width: 120px;
+}
+
+.bank-select-header:focus,
+.voice-select-header:focus {
+  outline: none;
+  border-color: #00ffff;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 8px;
+  min-width: 400px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #444;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.modal-close:hover {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.modal-body {
+  padding: 20px;
+  color: #ccc;
+}
+
+.modal-body h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #00ffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-body ul {
+  margin: 0 0 20px 0;
+  padding-left: 20px;
+}
+
+.modal-body li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.modal-body p {
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.modal-body kbd {
+  background: #3a3a3a;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 12px;
+  border: 1px solid #555;
+}

@@ -1,0 +1,33 @@
+:80 {
+	root * /usr/share/caddy
+
+	@healthcheck path /healthz
+	respond @healthcheck "OK" 200
+
+	@spa {
+		not file
+		not path /healthz
+	}
+	rewrite @spa /index.html
+
+	file_server
+	encode zstd gzip
+
+	@hashed_js {
+		path_regexp hashed_js ^/assets/index-[a-zA-Z0-9]+\.js$
+	}
+	header @hashed_js Cache-Control "public, max-age=31536000, immutable"
+
+	header {
+		Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self' https:; form-action 'self'; base-uri 'none'; frame-ancestors 'none';"
+		Cross-Origin-Embedder-Policy "require-corp"
+		Cross-Origin-Opener-Policy "same-origin"
+		Cross-Origin-Resource-Policy "same-origin"
+		Permissions-Policy "accelerometer=(), autoplay=(), camera=(), cross-origin-isolated=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# uncomment if using TLS
+		# Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+	}
+}
