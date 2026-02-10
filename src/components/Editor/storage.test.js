@@ -32,6 +32,8 @@ describe("storage", () => {
 
   describe("saveBanks", () => {
     it("saves banks to localStorage", () => {
+      localStorageMock.getItem.mockReturnValue(null)
+
       const banks = [
         {
           name: "Test Bank",
@@ -45,12 +47,14 @@ describe("storage", () => {
       saveBanks(banks)
 
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        "dx7-banks",
-        JSON.stringify([{ name: "Test Bank", voices: [] }]),
+        "dxwire",
+        JSON.stringify({ banks: [{ name: "Test Bank", voices: [] }] }),
       )
     })
 
-    it("handles multiple banks", () => {
+    it("merges with existing data", () => {
+      localStorageMock.getItem.mockReturnValue(JSON.stringify({ settings: { showADSR: false } }))
+
       const banks = [
         {
           name: "Bank 1",
@@ -58,18 +62,18 @@ describe("storage", () => {
             toJSON: () => ({ name: "Bank 1", voices: [{ name: "Voice 1" }] }),
           },
         },
-        {
-          name: "Bank 2",
-          bank: {
-            toJSON: () => ({ name: "Bank 2", voices: [{ name: "Voice 2" }] }),
-          },
-        },
       ]
 
       // @ts-expect-error - mock bank type doesn't match DX7Bank
       saveBanks(banks)
 
-      expect(localStorageMock.setItem).toHaveBeenCalledTimes(1)
+      expect(localStorageMock.setItem).toHaveBeenCalledWith(
+        "dxwire",
+        JSON.stringify({
+          settings: { showADSR: false },
+          banks: [{ name: "Bank 1", voices: [{ name: "Voice 1" }] }],
+        }),
+      )
     })
 
     it("handles localStorage errors gracefully", () => {
@@ -102,6 +106,14 @@ describe("storage", () => {
       expect(result).toBeNull()
     })
 
+    it("returns null when data has no banks", () => {
+      localStorageMock.getItem.mockReturnValue(JSON.stringify({ settings: {} }))
+
+      const result = loadBanks()
+
+      expect(result).toBeNull()
+    })
+
     it("returns null for invalid JSON", () => {
       localStorageMock.getItem.mockReturnValue("invalid json")
 
@@ -111,8 +123,8 @@ describe("storage", () => {
       expect(console.error).toHaveBeenCalled()
     })
 
-    it("returns null for non-array data", () => {
-      localStorageMock.getItem.mockReturnValue(JSON.stringify({ notAnArray: true }))
+    it("returns null for non-array banks", () => {
+      localStorageMock.getItem.mockReturnValue(JSON.stringify({ banks: { notAnArray: true } }))
 
       const result = loadBanks()
 
@@ -132,14 +144,19 @@ describe("storage", () => {
   })
 
   describe("clearBanks", () => {
-    it("removes banks from localStorage", () => {
+    it("removes banks from localStorage while preserving other data", () => {
+      localStorageMock.getItem.mockReturnValue(
+        JSON.stringify({ banks: [{ name: "Test", voices: [] }], settings: { showADSR: true } }),
+      )
+
       clearBanks()
 
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith("dx7-banks")
+      expect(localStorageMock.setItem).toHaveBeenCalledWith("dxwire", JSON.stringify({ settings: { showADSR: true } }))
     })
 
     it("handles localStorage errors gracefully", () => {
-      localStorageMock.removeItem.mockImplementation(() => {
+      localStorageMock.getItem.mockReturnValue(null)
+      localStorageMock.setItem.mockImplementation(() => {
         throw new Error("Storage error")
       })
 
@@ -162,7 +179,7 @@ describe("storage", () => {
     })
 
     it("returns merged settings from localStorage", () => {
-      localStorageMock.getItem.mockReturnValue(JSON.stringify({ showADSR: false }))
+      localStorageMock.getItem.mockReturnValue(JSON.stringify({ settings: { showADSR: false } }))
 
       const result = loadSettings()
 
@@ -204,19 +221,24 @@ describe("storage", () => {
       saveSettings({ showADSR: false })
 
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        "dx7-settings",
-        JSON.stringify({ showADSR: false, showValueInputs: true }),
+        "dxwire",
+        JSON.stringify({ settings: { showADSR: false, showValueInputs: true } }),
       )
     })
 
-    it("merges with existing settings", () => {
-      localStorageMock.getItem.mockReturnValue(JSON.stringify({ showValueInputs: false }))
+    it("merges with existing settings and data", () => {
+      localStorageMock.getItem.mockReturnValue(
+        JSON.stringify({ banks: [{ name: "Test", voices: [] }], settings: { showValueInputs: false } }),
+      )
 
       saveSettings({ showADSR: false })
 
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        "dx7-settings",
-        JSON.stringify({ showADSR: false, showValueInputs: false }),
+        "dxwire",
+        JSON.stringify({
+          banks: [{ name: "Test", voices: [] }],
+          settings: { showADSR: false, showValueInputs: false },
+        }),
       )
     })
 
@@ -229,22 +251,31 @@ describe("storage", () => {
       const result = saveSettings({ showADSR: false })
 
       expect(console.error).toHaveBeenCalled()
+      // Returns the settings that were attempted to be saved
       expect(result).toEqual({
-        showADSR: true,
+        showADSR: false,
         showValueInputs: true,
       })
     })
   })
 
   describe("clearSettings", () => {
-    it("removes settings from localStorage", () => {
+    it("removes settings from localStorage while preserving other data", () => {
+      localStorageMock.getItem.mockReturnValue(
+        JSON.stringify({ banks: [{ name: "Test", voices: [] }], settings: { showADSR: false } }),
+      )
+
       clearSettings()
 
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith("dx7-settings")
+      expect(localStorageMock.setItem).toHaveBeenCalledWith(
+        "dxwire",
+        JSON.stringify({ banks: [{ name: "Test", voices: [] }] }),
+      )
     })
 
     it("handles localStorage errors gracefully", () => {
-      localStorageMock.removeItem.mockImplementation(() => {
+      localStorageMock.getItem.mockReturnValue(null)
+      localStorageMock.setItem.mockImplementation(() => {
         throw new Error("Storage error")
       })
 

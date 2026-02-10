@@ -14,10 +14,11 @@ describe("HelpModal", () => {
     const onClose = vi.fn()
     render(<HelpModal onClose={onClose} />)
 
-    expect(screen.getByText("Bank & Voice Management")).toBeInTheDocument()
-    expect(screen.getByText("MIDI")).toBeInTheDocument()
-    expect(screen.getByText("Import / Export")).toBeInTheDocument()
-    expect(screen.getByText("Keyboard Shortcuts")).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Bank & Voice Management" })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "MIDI" })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Import / Export" })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Settings" })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Keyboard Shortcuts" })).toBeInTheDocument()
   })
 
   it("has modal overlay with correct role", () => {
