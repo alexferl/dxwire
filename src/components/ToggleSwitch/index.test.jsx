@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
+import { fireEvent, render, screen } from "@solidjs/testing-library"
+import { createSignal } from "solid-js"
 import { describe, expect, it, vi } from "vitest"
 import { ToggleSwitch } from "./index"
 
@@ -33,11 +34,13 @@ describe("ToggleSwitch", () => {
     })
 
     it("shows side indicator based on state", () => {
-      const { rerender } = render(<ToggleSwitch value={false} onChange={() => {}} title="Test" />)
+      // SolidJS uses signals instead of rerender
+      const [value, setValue] = createSignal(false)
+      render(() => <ToggleSwitch value={value()} onChange={(v) => setValue(v)} title="Test" />)
       const indicator = document.querySelector(".toggle-side-indicator")
       expect(indicator).not.toHaveClass("on")
 
-      rerender(<ToggleSwitch value={true} onChange={() => {}} title="Test" />)
+      setValue(true)
       expect(indicator).toHaveClass("on")
     })
   })
@@ -56,13 +59,15 @@ describe("ToggleSwitch", () => {
     })
 
     it("shows indicators on correct sides based on value", () => {
-      const { rerender } = render(<ToggleSwitch value={false} onChange={() => {}} option1="A" option2="B" />)
+      // SolidJS uses signals instead of rerender
+      const [value, setValue] = createSignal(false)
+      render(() => <ToggleSwitch value={value()} onChange={(v) => setValue(v)} option1="A" option2="B" />)
       const indicators = document.querySelectorAll(".toggle-side-indicator")
       // When value is false, left indicator (option1) should be "on"
       expect(indicators[0]).toHaveClass("on")
       expect(indicators[1]).not.toHaveClass("on")
 
-      rerender(<ToggleSwitch value={true} onChange={() => {}} option1="A" option2="B" />)
+      setValue(true)
       // When value is true, right indicator (option2) should be "on"
       expect(indicators[0]).not.toHaveClass("on")
       expect(indicators[1]).toHaveClass("on")
@@ -136,16 +141,19 @@ describe("ToggleSwitch", () => {
 
   describe("size variants", () => {
     it("applies size classes correctly", () => {
-      const { rerender } = render(<ToggleSwitch value={false} onChange={() => {}} title="Test" size="sm" />)
+      // SolidJS uses signals instead of rerender
+      const [size, setSize] = createSignal("sm")
+      render(() => <ToggleSwitch value={false} onChange={() => {}} title="Test" size={size()} />)
+
       expect(screen.getByRole("switch")).toHaveClass("toggle-sm")
 
-      rerender(<ToggleSwitch value={false} onChange={() => {}} title="Test" size="md" />)
+      setSize("md")
       expect(screen.getByRole("switch")).toHaveClass("toggle-md")
 
-      rerender(<ToggleSwitch value={false} onChange={() => {}} title="Test" size="lg" />)
+      setSize("lg")
       expect(screen.getByRole("switch")).toHaveClass("toggle-lg")
 
-      rerender(<ToggleSwitch value={false} onChange={() => {}} title="Test" size="xl" />)
+      setSize("xl")
       expect(screen.getByRole("switch")).toHaveClass("toggle-xl")
     })
 

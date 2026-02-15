@@ -1,24 +1,33 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/preact"
+import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
 import { VoiceContext } from "../context/VoiceContext"
 import { LFO } from "./LFO"
 
-// Mock voice context
+// Mock voice context with SolidJS signal format [getter, setter]
+function createSignalMock(initialValue) {
+  let value = initialValue
+  const getter = () => value
+  const setter = (newValue) => {
+    value = newValue
+  }
+  return [getter, setter]
+}
+
 function createMockVoice() {
   return {
     lfo: {
-      wave: { value: 0 },
-      speed: { value: 35 },
-      delay: { value: 0 },
-      pmDepth: { value: 0 },
-      amDepth: { value: 0 },
-      pmSens: { value: 3 },
-      keySync: { value: 1 },
+      wave: createSignalMock(0),
+      speed: createSignalMock(35),
+      delay: createSignalMock(0),
+      pmDepth: createSignalMock(0),
+      amDepth: createSignalMock(0),
+      pmSens: createSignalMock(3),
+      keySync: createSignalMock(1),
     },
     global: {
-      oscSync: { value: 1 },
+      oscSync: createSignalMock(1),
     },
-    settings: { value: { showADSR: true, showValueInputs: true } },
+    settings: createSignalMock({ showADSR: true, showValueInputs: true }),
   }
 }
 
@@ -102,7 +111,7 @@ describe("LFO", () => {
     const options = document.querySelectorAll(".wave-select-option")
     fireEvent.click(options[2])
 
-    expect(mockVoice.lfo.wave.value).toBe(2)
+    expect(mockVoice.lfo.wave[0]()).toBe(2)
   })
 
   it("updates keySync value when toggle is clicked", () => {
@@ -117,7 +126,7 @@ describe("LFO", () => {
     const keySyncToggle = keySyncSection.querySelector("[role='switch']")
     fireEvent.click(keySyncToggle)
 
-    expect(mockVoice.lfo.keySync.value).toBe(0)
+    expect(mockVoice.lfo.keySync[0]()).toBe(0)
   })
 
   it("updates oscSync value when toggle is clicked", () => {
@@ -132,7 +141,7 @@ describe("LFO", () => {
     const oscSyncToggle = oscSyncSection.querySelector("[role='switch']")
     fireEvent.click(oscSyncToggle)
 
-    expect(mockVoice.global.oscSync.value).toBe(0)
+    expect(mockVoice.global.oscSync[0]()).toBe(0)
   })
 
   it("updates speed value when changed", async () => {
@@ -147,7 +156,7 @@ describe("LFO", () => {
     fireEvent.change(inputs[0], { target: { value: "60" } })
 
     await waitFor(() => {
-      expect(mockVoice.lfo.speed.value).toBe(60)
+      expect(mockVoice.lfo.speed[0]()).toBe(60)
     })
   })
 
@@ -163,7 +172,7 @@ describe("LFO", () => {
     fireEvent.change(inputs[1], { target: { value: "25" } })
 
     await waitFor(() => {
-      expect(mockVoice.lfo.delay.value).toBe(25)
+      expect(mockVoice.lfo.delay[0]()).toBe(25)
     })
   })
 
@@ -179,7 +188,7 @@ describe("LFO", () => {
     fireEvent.change(inputs[2], { target: { value: "50" } })
 
     await waitFor(() => {
-      expect(mockVoice.lfo.pmDepth.value).toBe(50)
+      expect(mockVoice.lfo.pmDepth[0]()).toBe(50)
     })
   })
 
@@ -195,7 +204,7 @@ describe("LFO", () => {
     fireEvent.change(inputs[3], { target: { value: "40" } })
 
     await waitFor(() => {
-      expect(mockVoice.lfo.amDepth.value).toBe(40)
+      expect(mockVoice.lfo.amDepth[0]()).toBe(40)
     })
   })
 
@@ -211,7 +220,7 @@ describe("LFO", () => {
     fireEvent.change(inputs[4], { target: { value: "5" } })
 
     await waitFor(() => {
-      expect(mockVoice.lfo.pmSens.value).toBe(5)
+      expect(mockVoice.lfo.pmSens[0]()).toBe(5)
     })
   })
 
@@ -229,7 +238,7 @@ describe("LFO", () => {
 
     await waitFor(() => {
       // Value should not change because 10 > max (7)
-      expect(mockVoice.lfo.pmSens.value).toBe(3)
+      expect(mockVoice.lfo.pmSens[0]()).toBe(3)
     })
   })
 })

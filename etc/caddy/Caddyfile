@@ -13,10 +13,11 @@
 	file_server
 	encode zstd gzip
 
-	@hashed_js {
-		path_regexp hashed_js ^/assets/index-[a-zA-Z0-9]+\.js$
+	# Cache all hashed assets (Vite generates these with content hashes)
+	@hashed_assets {
+		path_regexp hashed_assets ^/assets/.*-[a-zA-Z0-9]+\.(js|css|woff2?|ttf|eot|svg|png|jpg|jpeg|gif|webp|avif)$
 	}
-	header @hashed_js Cache-Control "public, max-age=31536000, immutable"
+	header @hashed_assets Cache-Control "public, max-age=31536000, immutable"
 
 	header {
 		Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self' https:; form-action 'self'; base-uri 'none'; frame-ancestors 'none';"

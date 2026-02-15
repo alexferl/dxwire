@@ -1,44 +1,44 @@
-import { useEffect, useRef, useState } from "preact/hooks"
+import { createSignal, For, onCleanup, onMount } from "solid-js"
 import "./style.css"
 
 const Waveforms = {
   triangle: () => (
-    <svg viewBox="0 0 24 12" className="waveform-icon" role="img" aria-label="Triangle wave">
+    <svg viewBox="0 0 24 12" class="waveform-icon" role="img" aria-label="Triangle wave">
       <title>Triangle wave</title>
-      <polyline fill="none" stroke="currentColor" strokeWidth="1.5" points="0,6 6,0 12,6 18,12 24,6" />
+      <polyline fill="none" stroke="currentColor" stroke-width="1.5" points="0,6 6,0 12,6 18,12 24,6" />
     </svg>
   ),
   sawDown: () => (
-    <svg viewBox="0 0 24 12" className="waveform-icon" role="img" aria-label="Saw down wave">
+    <svg viewBox="0 0 24 12" class="waveform-icon" role="img" aria-label="Saw down wave">
       <title>Saw down wave</title>
-      <polyline fill="none" stroke="currentColor" strokeWidth="1.5" points="0,0 24,12 24,0" />
+      <polyline fill="none" stroke="currentColor" stroke-width="1.5" points="0,0 24,12 24,0" />
     </svg>
   ),
   sawUp: () => (
-    <svg viewBox="0 0 24 12" className="waveform-icon" role="img" aria-label="Saw up wave">
+    <svg viewBox="0 0 24 12" class="waveform-icon" role="img" aria-label="Saw up wave">
       <title>Saw up wave</title>
-      <polyline fill="none" stroke="currentColor" strokeWidth="1.5" points="0,12 0,0 24,12" />
+      <polyline fill="none" stroke="currentColor" stroke-width="1.5" points="0,12 0,0 24,12" />
     </svg>
   ),
   square: () => (
-    <svg viewBox="0 0 24 12" className="waveform-icon" role="img" aria-label="Square wave">
+    <svg viewBox="0 0 24 12" class="waveform-icon" role="img" aria-label="Square wave">
       <title>Square wave</title>
-      <polyline fill="none" stroke="currentColor" strokeWidth="1.5" points="0,12 0,0 12,0 12,12 24,12 24,0" />
+      <polyline fill="none" stroke="currentColor" stroke-width="1.5" points="0,12 0,0 12,0 12,12 24,12 24,0" />
     </svg>
   ),
   sine: () => (
-    <svg viewBox="0 0 24 12" className="waveform-icon" role="img" aria-label="Sine wave">
+    <svg viewBox="0 0 24 12" class="waveform-icon" role="img" aria-label="Sine wave">
       <title>Sine wave</title>
-      <path fill="none" stroke="currentColor" strokeWidth="1.5" d="M0,6 Q6,0 12,6 T24,6" />
+      <path fill="none" stroke="currentColor" stroke-width="1.5" d="M0,6 Q6,0 12,6 T24,6" />
     </svg>
   ),
   sampleHold: () => (
-    <svg viewBox="0 0 24 12" className="waveform-icon" role="img" aria-label="Sample and hold wave">
+    <svg viewBox="0 0 24 12" class="waveform-icon" role="img" aria-label="Sample and hold wave">
       <title>Sample and hold wave</title>
       <polyline
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.5"
+        stroke-width="1.5"
         points="0,3 4,3 4,9 8,9 8,2 12,2 12,10 16,10 16,4 20,4 20,8 24,8"
       />
     </svg>
@@ -65,44 +65,43 @@ const WAVE_OPTIONS = [
  * @param {string} [props.description] - Tooltip description
  * @param {string} [props.size="md"] - Size: "sm" | "md" | "lg" | "xl"
  */
-export function WaveSelect({ title, value, onChange, description = "", size = "md" }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
-  const containerRef = useRef(null)
+export function WaveSelect(props) {
+  const { onChange, description = "" } = props
 
-  const sizeClass =
-    size === "sm"
-      ? "wave-select-sm"
-      : size === "lg"
-        ? "wave-select-lg"
-        : size === "xl"
-          ? "wave-select-xl"
-          : "wave-select-md"
+  const [isOpen, setIsOpen] = createSignal(false)
+  const [isHovered, setIsHovered] = createSignal(false)
+  let containerRef
 
-  const selectedOption = WAVE_OPTIONS[value] || WAVE_OPTIONS[0]
-  const SelectedIcon = selectedOption.icon
+  const sizeClass = () => {
+    if (props.size === "sm") return "wave-select-sm"
+    if (props.size === "lg") return "wave-select-lg"
+    if (props.size === "xl") return "wave-select-xl"
+    return "wave-select-md"
+  }
 
-  useEffect(() => {
-    const handleClickOutside = (/** @type {{ target: any; }} */ e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
+  const selectedOption = () => WAVE_OPTIONS[props.value] || WAVE_OPTIONS[0]
+
+  onMount(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef && !containerRef.contains(e.target)) {
         setIsOpen(false)
       }
     }
     document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    onCleanup(() => document.removeEventListener("mousedown", handleClickOutside))
+  })
 
   const handlePrev = () => {
-    const newValue = value > 0 ? value - 1 : WAVE_OPTIONS.length - 1
+    const newValue = props.value > 0 ? props.value - 1 : WAVE_OPTIONS.length - 1
     onChange(newValue)
   }
 
   const handleNext = () => {
-    const newValue = value < WAVE_OPTIONS.length - 1 ? value + 1 : 0
+    const newValue = props.value < WAVE_OPTIONS.length - 1 ? props.value + 1 : 0
     onChange(newValue)
   }
 
-  const handleSelect = (/** @type {number} */ index) => {
+  const handleSelect = (index) => {
     onChange(index)
     setIsOpen(false)
   }
@@ -110,21 +109,21 @@ export function WaveSelect({ title, value, onChange, description = "", size = "m
   return (
     <section
       ref={containerRef}
-      class={`wave-select-container ${sizeClass}`}
+      class={`wave-select-container ${sizeClass()}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      aria-label={title || "Wave"}
+      aria-label={props.title || "Wave"}
     >
-      {title && <div class="wave-select-title">{title}</div>}
+      {props.title && <div class="wave-select-title">{props.title}</div>}
 
       <button
         type="button"
-        class={`wave-select-display ${isOpen ? "open" : ""}`}
-        onClick={() => setIsOpen(!isOpen)}
+        class={`wave-select-display ${isOpen() ? "open" : ""}`}
+        onClick={() => setIsOpen(!isOpen())}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault()
-            setIsOpen(!isOpen)
+            setIsOpen(!isOpen())
           } else if (e.key === "ArrowUp") {
             e.preventDefault()
             handlePrev()
@@ -135,32 +134,36 @@ export function WaveSelect({ title, value, onChange, description = "", size = "m
         }}
       >
         <span class="wave-select-value">
-          <SelectedIcon />
+          {(() => {
+            const Icon = selectedOption().icon
+            return <Icon />
+          })()}
         </span>
         <span class="wave-select-arrow">▼</span>
       </button>
 
-      {isOpen && (
+      {isOpen() && (
         <div class="wave-select-dropdown">
-          {WAVE_OPTIONS.map((option, index) => {
-            const IconComponent = option.icon
-            return (
-              <button
-                type="button"
-                key={index}
-                class={`wave-select-option ${index === value ? "selected" : ""}`}
-                onClick={() => handleSelect(index)}
-                title={option.name}
-              >
-                <IconComponent />
-                <span class="wave-select-option-name">{option.name}</span>
-              </button>
-            )
-          })}
+          <For each={WAVE_OPTIONS}>
+            {(option, index) => {
+              const IconComponent = option.icon
+              return (
+                <button
+                  type="button"
+                  class={`wave-select-option ${index() === props.value ? "selected" : ""}`}
+                  onClick={() => handleSelect(index())}
+                  title={option.name}
+                >
+                  <IconComponent />
+                  <span class="wave-select-option-name">{option.name}</span>
+                </button>
+              )
+            }}
+          </For>
         </div>
       )}
 
-      {description && isHovered && !isOpen && <div class="wave-select-tooltip">{description}</div>}
+      {description && isHovered() && !isOpen() && <div class="wave-select-tooltip">{description}</div>}
     </section>
   )
 }

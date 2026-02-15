@@ -1,5 +1,5 @@
 import { noteNameToNumber, noteNumberToName } from "midiwire"
-import { useMemo } from "preact/hooks"
+import { createMemo } from "solid-js"
 import { CurveSelect } from "@/src/components/CurveSelect"
 import { EnvelopeGraph } from "@/src/components/EnvelopeGraph"
 import { Knob } from "@/src/components/Knob"
@@ -16,27 +16,27 @@ import "./style.css"
  * envelope generator, keyboard scaling, and modulation settings.
  * @param {Object} props
  * @param {number} props.number - Operator number (1-6)
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
-export function Operator({ number }) {
+export function Operator(props) {
+  const { number } = props
   const voice = useVoice()
   const op = voice.operators[number - 1]
 
-  const freqDisplay = useMemo(
-    () => calculateFrequency(op.mode.value, op.coarse.value, op.fine.value, op.detune.value - 7),
-    [op.mode.value, op.coarse.value, op.fine.value, op.detune.value],
+  const freqDisplay = createMemo(() =>
+    calculateFrequency(op.mode[0](), op.coarse[0](), op.fine[0](), op.detune[0]() - 7),
   )
 
   return (
     <div class={`operator op${number}`}>
       <div class="freq-controls">
         <div class="freq-header-row">
-          <div className="op-header">
-            <div className={`op-label ${op.enabled.value ? "on" : "off"}`}>{number}</div>
+          <div class="op-header">
+            <div class={`op-label ${op.enabled[0]() ? "on" : "off"}`}>{number}</div>
             <RidgedSwitch
-              value={op.enabled.value}
+              value={op.enabled[0]()}
               onChange={(v) => {
-                op.enabled.value = v
+                op.enabled[1](v)
               }}
               description="Operator On/Off"
             />
@@ -45,25 +45,25 @@ export function Operator({ number }) {
             option1="Ratio"
             option2="Fixed"
             description="Mode"
-            value={op.mode.value === 1}
+            value={op.mode[0]() === 1}
             onChange={(v) => {
-              op.mode.value = v ? 1 : 0
+              op.mode[1](v ? 1 : 0)
             }}
             size="sm"
           />
         </div>
-        <div class="freq-display">{freqDisplay}</div>
+        <div class="freq-display">{freqDisplay()}</div>
         <div class="freq-knobs">
           <Knob
             title="Detune"
             description="Oscillator Detune"
             min={-7}
             max={7}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="md"
-            value={op.detune.value - 7}
+            value={op.detune[0]() - 7}
             onChange={(v) => {
-              op.detune.value = v + 7
+              op.detune[1](v + 7)
             }}
           />
           <Knob
@@ -71,11 +71,11 @@ export function Operator({ number }) {
             description="Oscillator Frequency Coarse"
             min={0}
             max={31}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="md"
-            value={op.coarse.value}
+            value={op.coarse[0]()}
             onChange={(v) => {
-              op.coarse.value = v
+              op.coarse[1](v)
             }}
           />
           <Knob
@@ -83,11 +83,11 @@ export function Operator({ number }) {
             description="Oscillator Frequency Fine"
             min={0}
             max={99}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="md"
-            value={op.fine.value}
+            value={op.fine[0]()}
             onChange={(v) => {
-              op.fine.value = v
+              op.fine[1](v)
             }}
           />
         </div>
@@ -95,23 +95,23 @@ export function Operator({ number }) {
       <div class="envelope-display">
         <EnvelopeGraph
           type="amplitude"
-          levels={[op.egLevel1.value, op.egLevel2.value, op.egLevel3.value, op.egLevel4.value]}
-          rates={[op.egRate1.value, op.egRate2.value, op.egRate3.value, op.egRate4.value]}
-          showADSR={voice.settings.value.showADSR}
+          levels={[op.egLevel1[0](), op.egLevel2[0](), op.egLevel3[0](), op.egLevel4[0]()]}
+          rates={[op.egRate1[0](), op.egRate2[0](), op.egRate3[0](), op.egRate4[0]()]}
+          showADSR={voice.settings[0]().showADSR}
         />
       </div>
-      <div className="eg-section">
-        <div className="eg-knobs-level">
+      <div class="eg-section">
+        <div class="eg-knobs-level">
           <Knob
             title="L1"
             description="EG Level 1"
             min={0}
             max={99}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.egLevel1.value}
+            value={op.egLevel1[0]()}
             onChange={(v) => {
-              op.egLevel1.value = v
+              op.egLevel1[1](v)
             }}
           />
           <Knob
@@ -119,11 +119,11 @@ export function Operator({ number }) {
             description="EG Level 2"
             min={0}
             max={99}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.egLevel2.value}
+            value={op.egLevel2[0]()}
             onChange={(v) => {
-              op.egLevel2.value = v
+              op.egLevel2[1](v)
             }}
           />
           <Knob
@@ -131,11 +131,11 @@ export function Operator({ number }) {
             description="EG Level 3"
             min={0}
             max={99}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.egLevel3.value}
+            value={op.egLevel3[0]()}
             onChange={(v) => {
-              op.egLevel3.value = v
+              op.egLevel3[1](v)
             }}
           />
           <Knob
@@ -143,25 +143,25 @@ export function Operator({ number }) {
             description="EG Level 4"
             min={0}
             max={99}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.egLevel4.value}
+            value={op.egLevel4[0]()}
             onChange={(v) => {
-              op.egLevel4.value = v
+              op.egLevel4[1](v)
             }}
           />
         </div>
-        <div className="eg-knobs-rate">
+        <div class="eg-knobs-rate">
           <Knob
             title="R1"
             description="EG Rate 1"
             min={0}
             max={99}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.egRate1.value}
+            value={op.egRate1[0]()}
             onChange={(v) => {
-              op.egRate1.value = v
+              op.egRate1[1](v)
             }}
           />
           <Knob
@@ -169,11 +169,11 @@ export function Operator({ number }) {
             description="EG Rate 2"
             min={0}
             max={99}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.egRate2.value}
+            value={op.egRate2[0]()}
             onChange={(v) => {
-              op.egRate2.value = v
+              op.egRate2[1](v)
             }}
           />
           <Knob
@@ -181,11 +181,11 @@ export function Operator({ number }) {
             description="EG Rate 3"
             min={0}
             max={99}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.egRate3.value}
+            value={op.egRate3[0]()}
             onChange={(v) => {
-              op.egRate3.value = v
+              op.egRate3[1](v)
             }}
           />
           <Knob
@@ -193,11 +193,11 @@ export function Operator({ number }) {
             description="EG Rate 4"
             min={0}
             max={99}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.egRate4.value}
+            value={op.egRate4[0]()}
             onChange={(v) => {
-              op.egRate4.value = v
+              op.egRate4[1](v)
             }}
           />
         </div>
@@ -210,23 +210,23 @@ export function Operator({ number }) {
             min={0}
             max={99}
             indicatorOffAtMin={true}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.leftDepth.value}
+            value={op.leftDepth[0]()}
             onChange={(v) => {
-              op.leftDepth.value = v
+              op.leftDepth[1](v)
             }}
           />
           <Slider
             title="Breakpoint"
-            value={op.breakPoint.value}
+            value={op.breakPoint[0]()}
             onChange={(v) => {
-              op.breakPoint.value = v
+              op.breakPoint[1](v)
             }}
             description="Keyboard Level Scaling Break Point"
             min={0}
             max={99}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
             formatValue={(v) => noteNumberToName(v + 9)}
             parseValue={(v) => {
@@ -243,11 +243,11 @@ export function Operator({ number }) {
             min={0}
             max={99}
             indicatorOffAtMin={true}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.rightDepth.value}
+            value={op.rightDepth[0]()}
             onChange={(v) => {
-              op.rightDepth.value = v
+              op.rightDepth[1](v)
             }}
           />
         </div>
@@ -255,9 +255,9 @@ export function Operator({ number }) {
           <CurveSelect
             title="L Curve"
             description="Keyboard Level Scaling Left Curve"
-            value={op.leftCurve.value}
+            value={op.leftCurve[0]()}
             onChange={(v) => {
-              op.leftCurve.value = v
+              op.leftCurve[1](v)
             }}
             size="md"
           />
@@ -267,19 +267,19 @@ export function Operator({ number }) {
             min={0}
             max={7}
             indicatorOffAtMin={true}
-            showValueInput={voice.settings.value.showValueInputs}
+            showValueInput={voice.settings[0]().showValueInputs}
             size="sm"
-            value={op.rateScaling.value}
+            value={op.rateScaling[0]()}
             onChange={(v) => {
-              op.rateScaling.value = v
+              op.rateScaling[1](v)
             }}
           />
           <CurveSelect
             title="R Curve"
             description="Keyboard Level Scaling Right Curve"
-            value={op.rightCurve.value}
+            value={op.rightCurve[0]()}
             onChange={(v) => {
-              op.rightCurve.value = v
+              op.rightCurve[1](v)
             }}
             size="md"
             side="right"
@@ -295,11 +295,11 @@ export function Operator({ number }) {
               min={0}
               max={3}
               indicatorOffAtMin={true}
-              showValueInput={voice.settings.value.showValueInputs}
+              showValueInput={voice.settings[0]().showValueInputs}
               size="md"
-              value={op.ampModSens.value}
+              value={op.ampModSens[0]()}
               onChange={(v) => {
-                op.ampModSens.value = v
+                op.ampModSens[1](v)
               }}
             />
           </div>
@@ -310,11 +310,11 @@ export function Operator({ number }) {
               min={0}
               max={99}
               indicatorOffAtMin={true}
-              showValueInput={voice.settings.value.showValueInputs}
+              showValueInput={voice.settings[0]().showValueInputs}
               size="lg"
-              value={op.outputLevel.value}
+              value={op.outputLevel[0]()}
               onChange={(v) => {
-                op.outputLevel.value = v
+                op.outputLevel[1](v)
               }}
             />
           </div>
@@ -325,11 +325,11 @@ export function Operator({ number }) {
               min={0}
               max={7}
               indicatorOffAtMin={true}
-              showValueInput={voice.settings.value.showValueInputs}
+              showValueInput={voice.settings[0]().showValueInputs}
               size="md"
-              value={op.keyVelocity.value}
+              value={op.keyVelocity[0]()}
               onChange={(v) => {
-                op.keyVelocity.value = v
+                op.keyVelocity[1](v)
               }}
             />
           </div>

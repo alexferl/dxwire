@@ -1,22 +1,31 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/preact"
+import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
 import { VoiceContext } from "../context/VoiceContext"
 import { PitchEG } from "./PitchEG"
 
-// Mock voice context
+// Mock voice context with SolidJS signal format [getter, setter]
+function createSignalMock(initialValue) {
+  let value = initialValue
+  const getter = () => value
+  const setter = (newValue) => {
+    value = newValue
+  }
+  return [getter, setter]
+}
+
 function createMockVoice() {
   return {
     pitchEG: {
-      level1: { value: 50 },
-      level2: { value: 50 },
-      level3: { value: 50 },
-      level4: { value: 50 },
-      rate1: { value: 99 },
-      rate2: { value: 99 },
-      rate3: { value: 99 },
-      rate4: { value: 99 },
+      level1: createSignalMock(50),
+      level2: createSignalMock(50),
+      level3: createSignalMock(50),
+      level4: createSignalMock(50),
+      rate1: createSignalMock(99),
+      rate2: createSignalMock(99),
+      rate3: createSignalMock(99),
+      rate4: createSignalMock(99),
     },
-    settings: { value: { showADSR: true, showValueInputs: true } },
+    settings: createSignalMock({ showADSR: true, showValueInputs: true }),
   }
 }
 
@@ -86,7 +95,7 @@ describe("PitchEG", () => {
     fireEvent.change(inputs[0], { target: { value: "75" } })
 
     await waitFor(() => {
-      expect(mockVoice.pitchEG.level1.value).toBe(75)
+      expect(mockVoice.pitchEG.level1[0]()).toBe(75)
     })
   })
 
@@ -102,7 +111,7 @@ describe("PitchEG", () => {
     fireEvent.change(inputs[1], { target: { value: "60" } })
 
     await waitFor(() => {
-      expect(mockVoice.pitchEG.level2.value).toBe(60)
+      expect(mockVoice.pitchEG.level2[0]()).toBe(60)
     })
   })
 
@@ -118,7 +127,7 @@ describe("PitchEG", () => {
     fireEvent.change(inputs[2], { target: { value: "45" } })
 
     await waitFor(() => {
-      expect(mockVoice.pitchEG.level3.value).toBe(45)
+      expect(mockVoice.pitchEG.level3[0]()).toBe(45)
     })
   })
 
@@ -134,7 +143,7 @@ describe("PitchEG", () => {
     fireEvent.change(inputs[3], { target: { value: "30" } })
 
     await waitFor(() => {
-      expect(mockVoice.pitchEG.level4.value).toBe(30)
+      expect(mockVoice.pitchEG.level4[0]()).toBe(30)
     })
   })
 
@@ -150,7 +159,7 @@ describe("PitchEG", () => {
     fireEvent.change(inputs[4], { target: { value: "80" } })
 
     await waitFor(() => {
-      expect(mockVoice.pitchEG.rate1.value).toBe(80)
+      expect(mockVoice.pitchEG.rate1[0]()).toBe(80)
     })
   })
 
@@ -166,7 +175,7 @@ describe("PitchEG", () => {
     fireEvent.change(inputs[5], { target: { value: "70" } })
 
     await waitFor(() => {
-      expect(mockVoice.pitchEG.rate2.value).toBe(70)
+      expect(mockVoice.pitchEG.rate2[0]()).toBe(70)
     })
   })
 
@@ -182,7 +191,7 @@ describe("PitchEG", () => {
     fireEvent.change(inputs[6], { target: { value: "60" } })
 
     await waitFor(() => {
-      expect(mockVoice.pitchEG.rate3.value).toBe(60)
+      expect(mockVoice.pitchEG.rate3[0]()).toBe(60)
     })
   })
 
@@ -198,7 +207,7 @@ describe("PitchEG", () => {
     fireEvent.change(inputs[7], { target: { value: "50" } })
 
     await waitFor(() => {
-      expect(mockVoice.pitchEG.rate4.value).toBe(50)
+      expect(mockVoice.pitchEG.rate4[0]()).toBe(50)
     })
   })
 })

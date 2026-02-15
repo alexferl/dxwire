@@ -9,21 +9,26 @@ import "./style.css"
  * @param {function} props.onChange - Callback when toggled
  * @param {string} [props.description] - Accessibility description
  * @param {string} [props.size="md"] - Size of the switch: "sm" | "md" | "lg" | "xl"
+ * @returns {import("solid-js").JSX.Element}
  */
-export function RidgedSwitch({ value, onChange, description = "", size = "md" }) {
-  const sizeClass =
-    size === "sm" ? "ridged-sm" : size === "lg" ? "ridged-lg" : size === "xl" ? "ridged-xl" : "ridged-md"
+export function RidgedSwitch(props) {
+  const sizeClass = () => {
+    if (props.size === "sm") return "ridged-sm"
+    if (props.size === "lg") return "ridged-lg"
+    if (props.size === "xl") return "ridged-xl"
+    return "ridged-md"
+  }
   const handleClick = () => {
-    onChange(!value)
+    props.onChange(!props.value)
   }
 
   return (
     <div
-      class={`ridged-switch ${sizeClass} ${value ? "on" : "off"}`}
+      class={`ridged-switch ${sizeClass()} ${props.value ? "on" : "off"}`}
       onClick={handleClick}
       role="switch"
-      aria-checked={value}
-      aria-label={description}
+      aria-checked={props.value}
+      aria-label={props.description}
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " " || e.key === "ArrowLeft" || e.key === "ArrowRight") {

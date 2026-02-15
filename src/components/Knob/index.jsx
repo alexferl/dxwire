@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks"
+import { createEffect, createSignal, onCleanup } from "solid-js"
 import "./style.css"
 
 /**
@@ -21,7 +21,7 @@ import "./style.css"
  * @param {function} [props.formatValue] - Optional function to format value for display: (value) => string
  * @param {function} [props.parseValue] - Optional function to parse input value: (string) => number | null
  *
- * @returns {import("preact").JSX.Element} The rendered knob component
+ * @returns {import("solid-js").JSX.Element} The rendered knob component
  *
  * @example
  * // Basic usage (required params only)
@@ -45,50 +45,49 @@ import "./style.css"
  *   sensitivity={0.5}
  * />
  */
-export function Knob({
-  title,
-  value,
-  onChange,
-  description = "",
-  min = 0,
-  max = 99,
-  size = "md",
-  rotationDegrees = 270,
-  showValueInput = false,
-  indicatorOffAtMin = false,
-  sensitivity = 1.0,
-  invert = false,
-  formatValue = null,
-  parseValue = null,
-}) {
-  const [isDragging, setIsDragging] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
-  const [isLabelHovered, setIsLabelHovered] = useState(false)
-  const [dragStartY, setDragStartY] = useState(0)
-  const [startValue, setStartValue] = useState(0)
-  const [inputValue, setInputValue] = useState(value)
-  const knobRef = useRef(null)
-  const keyRepeatRef = useRef(null)
-  const keyDirectionRef = useRef(0)
-  const valueRef = useRef(value)
+export function Knob(props) {
+  const onChange = () => props.onChange
+  const description = () => props.description ?? ""
+  const min = () => props.min ?? 0
+  const max = () => props.max ?? 99
+  const size = () => props.size ?? "md"
+  const rotationDegrees = () => props.rotationDegrees ?? 270
+  const showValueInput = () => props.showValueInput ?? false
+  const indicatorOffAtMin = () => props.indicatorOffAtMin ?? false
+  const sensitivity = () => props.sensitivity ?? 1.0
+  const invert = () => props.invert ?? false
+  const formatValue = () => props.formatValue ?? null
+  const parseValue = () => props.parseValue ?? null
 
-  useEffect(() => {
-    valueRef.current = value
-  }, [value])
+  const [isDragging, setIsDragging] = createSignal(false)
+  const [isHovered, setIsHovered] = createSignal(false)
+  const [isLabelHovered, setIsLabelHovered] = createSignal(false)
+  const [dragStartY, setDragStartY] = createSignal(0)
+  const [startValue, setStartValue] = createSignal(0)
+  const [inputValue, setInputValue] = createSignal(null)
+  let knobRef
+  let keyRepeatRef
+  let keyDirectionRef = 0
 
-  const percentage = ((value - min) / (max - min)) * 100
-  const rotation = (percentage / 100) * rotationDegrees - rotationDegrees / 2
+  createEffect(() => {
+    props.value
+    setInputValue(null)
+  })
 
-  const displayValue = formatValue ? formatValue(value) : value
+  const percentage = () => ((props.value - min()) / (max() - min())) * 100
+  const rotation = () => (percentage() / 100) * rotationDegrees() - rotationDegrees() / 2
+
+  const displayValue = () => (formatValue() ? formatValue()(props.value) : props.value)
 
   const handleInputChange = (e) => {
     const rawValue = e.target.value
     setInputValue(rawValue)
 
-    const newValue = parseValue ? parseValue(rawValue) : parseInt(rawValue, 10)
+    const parser = parseValue()
+    const newValue = parser ? parser(rawValue) : parseInt(rawValue, 10)
 
-    if (newValue !== null && !Number.isNaN(newValue) && newValue >= min && newValue <= max) {
-      onChange(newValue)
+    if (newValue !== null && !Number.isNaN(newValue) && newValue >= min() && newValue <= max()) {
+      onChange()?.(newValue)
     }
   }
 
@@ -96,34 +95,28 @@ export function Knob({
     setInputValue(null)
   }
 
-  useEffect(() => {
-    setInputValue(null)
-  }, [value])
-
-  const handleMouseDown = (
-    /** @type {{ preventDefault: () => void; clientY: import("preact/hooks").StateUpdater<number>; }} */ e,
-  ) => {
+  const handleMouseDown = (e) => {
     e.preventDefault()
-    knobRef.current?.focus()
+    knobRef?.focus()
     setIsDragging(true)
     setDragStartY(e.clientY)
-    setStartValue(value)
+    setStartValue(props.value)
   }
 
-  const handleMouseMove = (/** @type {{ clientY: number; }} */ e) => {
-    if (!isDragging) return
+  const handleMouseMove = (e) => {
+    if (!isDragging()) return
 
-    let deltaY = e.clientY - dragStartY
-    if (!invert) deltaY = dragStartY - e.clientY
+    let deltaY = e.clientY - dragStartY()
+    if (!invert()) deltaY = dragStartY() - e.clientY
 
-    const baseSensitivity = (max - min) / 200
-    const adjustedSensitivity = baseSensitivity * sensitivity
-    const newValue = Math.round(startValue + deltaY * adjustedSensitivity)
+    const baseSensitivity = (max() - min()) / 200
+    const adjustedSensitivity = baseSensitivity * sensitivity()
+    const newValue = Math.round(startValue() + deltaY * adjustedSensitivity)
 
-    const clampedValue = Math.max(min, Math.min(max, newValue))
+    const clampedValue = Math.max(min(), Math.min(max(), newValue))
 
-    if (clampedValue !== value && onChange) {
-      onChange(clampedValue)
+    if (clampedValue !== props.value && onChange()) {
+      onChange()(clampedValue)
     }
   }
 
@@ -131,42 +124,33 @@ export function Knob({
     setIsDragging(false)
   }
 
-  useEffect(() => {
-    if (isDragging) {
+  createEffect(() => {
+    if (isDragging()) {
       window.addEventListener("mousemove", handleMouseMove)
       window.addEventListener("mouseup", handleMouseUp)
-      return () => {
+      onCleanup(() => {
         window.removeEventListener("mousemove", handleMouseMove)
         window.removeEventListener("mouseup", handleMouseUp)
-      }
+      })
     }
-  }, [isDragging, dragStartY, startValue, value, invert, sensitivity])
-
-  const handleMouseEnter = () => {
-    setIsHovered(true)
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-  }
+  })
 
   const clearKeyRepeat = () => {
-    if (keyRepeatRef.current) {
-      clearTimeout(keyRepeatRef.current)
-      keyRepeatRef.current = null
+    if (keyRepeatRef) {
+      clearTimeout(keyRepeatRef)
+      keyRepeatRef = null
     }
-    keyDirectionRef.current = 0
+    keyDirectionRef = 0
   }
 
   const scheduleKeyRepeat = () => {
-    keyRepeatRef.current = setTimeout(() => {
-      const direction = keyDirectionRef.current
+    keyRepeatRef = setTimeout(() => {
+      const direction = keyDirectionRef
       if (direction === 0) return
 
-      const currentValue = valueRef.current
-      const newValue = direction > 0 ? Math.min(max, currentValue + 1) : Math.max(min, currentValue - 1)
-      if (newValue !== currentValue && onChange) {
-        onChange(newValue)
+      const newValue = direction > 0 ? Math.min(max(), props.value + 1) : Math.max(min(), props.value - 1)
+      if (newValue !== props.value && onChange()) {
+        onChange()(newValue)
       }
 
       scheduleKeyRepeat()
@@ -176,23 +160,23 @@ export function Knob({
   const handleKeyDown = (e) => {
     if (e.key === "ArrowUp" || e.key === "ArrowRight") {
       e.preventDefault()
-      if (keyDirectionRef.current !== 1) {
+      if (keyDirectionRef !== 1) {
         clearKeyRepeat()
-        keyDirectionRef.current = 1
-        const newValue = Math.min(max, value + 1)
-        if (newValue !== value && onChange) {
-          onChange(newValue)
+        keyDirectionRef = 1
+        const newValue = Math.min(max(), props.value + 1)
+        if (newValue !== props.value && onChange()) {
+          onChange()(newValue)
         }
         scheduleKeyRepeat()
       }
     } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
       e.preventDefault()
-      if (keyDirectionRef.current !== -1) {
+      if (keyDirectionRef !== -1) {
         clearKeyRepeat()
-        keyDirectionRef.current = -1
-        const newValue = Math.max(min, value - 1)
-        if (newValue !== value && onChange) {
-          onChange(newValue)
+        keyDirectionRef = -1
+        const newValue = Math.max(min(), props.value - 1)
+        if (newValue !== props.value && onChange()) {
+          onChange()(newValue)
         }
         scheduleKeyRepeat()
       }
@@ -205,66 +189,69 @@ export function Knob({
     }
   }
 
-  useEffect(() => {
-    return () => {
-      if (keyRepeatRef.current) {
-        clearTimeout(keyRepeatRef.current)
-      }
+  onCleanup(() => {
+    if (keyRepeatRef) {
+      clearTimeout(keyRepeatRef)
     }
-  }, [])
+  })
 
-  const sizeClass = size === "sm" ? "knob-sm" : size === "lg" ? "knob-lg" : size === "xl" ? "knob-xl" : "knob-md"
+  const sizeClass = () => {
+    if (size() === "sm") return "knob-sm"
+    if (size() === "lg") return "knob-lg"
+    if (size() === "xl") return "knob-xl"
+    return "knob-md"
+  }
 
   return (
-    <div className="knob-container">
-      {title && (
+    <div class="knob-container">
+      {props.title && (
         <section
-          className="knob-title"
+          class="knob-title"
           onMouseEnter={() => setIsLabelHovered(true)}
           onMouseLeave={() => setIsLabelHovered(false)}
-          aria-label={`${title} knob`}
+          aria-label={`${props.title} knob`}
         >
-          {title}
+          {props.title}
         </section>
       )}
       <div
         ref={knobRef}
-        className={`knob ${sizeClass} ${isDragging ? "dragging" : ""}`}
+        class={`knob ${sizeClass()} ${isDragging() ? "dragging" : ""}`}
         onMouseDown={handleMouseDown}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
         role="slider"
-        aria-valuemin={min}
-        aria-valuemax={max}
-        aria-valuenow={value}
+        aria-valuemin={min()}
+        aria-valuemax={max()}
+        aria-valuenow={props.value}
         tabIndex={0}
       >
-        <div className="knob-outer">
-          <div className="knob-inner" style={{ transform: `rotate(${rotation}deg)` }}>
-            <div className={`knob-indicator ${indicatorOffAtMin && value === min ? "off" : ""}`}></div>
+        <div class="knob-outer">
+          <div class="knob-inner" style={{ transform: `rotate(${rotation()}deg)` }}>
+            <div class={`knob-indicator ${indicatorOffAtMin() && props.value === min() ? "off" : ""}`}></div>
           </div>
-          <div className="knob-track"></div>
+          <div class="knob-track"></div>
         </div>
       </div>
-      {showValueInput ? (
+      {showValueInput() ? (
         <input
-          type={formatValue ? "text" : "number"}
-          className={`knob-input ${indicatorOffAtMin && value === min ? "off" : ""}`}
-          value={inputValue ?? displayValue}
-          min={min}
-          max={max}
+          type={formatValue() ? "text" : "number"}
+          class={`knob-input ${indicatorOffAtMin() && props.value === min() ? "off" : ""}`}
+          value={inputValue() ?? displayValue()}
+          min={min()}
+          max={max()}
           onChange={handleInputChange}
           onBlur={handleInputBlur}
         />
       ) : (
-        <div className="knob-input-spacer" />
+        <div class="knob-input-spacer" />
       )}
-      {!showValueInput && (isHovered || isDragging) && (
-        <div className="knob-popover">{formatValue ? formatValue(value) : value}</div>
+      {!showValueInput() && (isHovered() || isDragging()) && (
+        <div class="knob-popover">{formatValue() ? formatValue()(props.value) : props.value}</div>
       )}
-      {description && isLabelHovered && <div className="knob-label-popover">{description}</div>}
+      {description() && isLabelHovered() && <div class="knob-label-popover">{description()}</div>}
     </div>
   )
 }

@@ -1,8 +1,7 @@
-import { createContext } from "preact"
-import { useContext } from "preact/hooks"
+import { createContext, useContext } from "solid-js"
 import { createVoice } from "../Voice.js"
 
-/** @type {import("preact").Context<ReturnType<typeof createVoice>|null>} */
+/** @type {import("solid-js").Context<ReturnType<typeof createVoice>|null>} */
 export const VoiceContext = createContext(null)
 
 /** @type {ReturnType<typeof createVoice>} */

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks"
+import { createEffect, createSignal, onCleanup } from "solid-js"
 import "./style.css"
 
 /**
@@ -21,7 +21,7 @@ import "./style.css"
  * @param {function} [props.formatValue] - Optional function to format value for display: (value) => string
  * @param {function} [props.parseValue] - Optional function to parse input value: (string) => number | null
  *
- * @returns {import("preact").JSX.Element} The rendered slider component
+ * @returns {import("solid-js").JSX.Element} The rendered slider component
  *
  * @example
  * // Basic usage (required params only)
@@ -45,48 +45,47 @@ import "./style.css"
  *   sensitivity={0.5}
  * />
  */
-export function Slider({
-  title,
-  value,
-  onChange,
-  description = "",
-  min = 0,
-  max = 99,
-  size = "md",
-  showValueInput = false,
-  indicatorOffAtMin = false,
-  sensitivity = 1.0,
-  invert = false,
-  formatValue = null,
-  parseValue = null,
-}) {
-  const [isDragging, setIsDragging] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
-  const [isLabelHovered, setIsLabelHovered] = useState(false)
-  const [dragStartX, setDragStartX] = useState(0)
-  const [startValue, setStartValue] = useState(0)
-  const [inputValue, setInputValue] = useState(value)
-  const sliderRef = useRef(null)
-  const keyRepeatRef = useRef(null)
-  const keyDirectionRef = useRef(0)
-  const valueRef = useRef(value)
+export function Slider(props) {
+  const onChange = () => props.onChange
+  const description = () => props.description ?? ""
+  const min = () => props.min ?? 0
+  const max = () => props.max ?? 99
+  const size = () => props.size ?? "md"
+  const showValueInput = () => props.showValueInput ?? false
+  const indicatorOffAtMin = () => props.indicatorOffAtMin ?? false
+  const sensitivity = () => props.sensitivity ?? 1.0
+  const invert = () => props.invert ?? false
+  const formatValue = () => props.formatValue ?? null
+  const parseValue = () => props.parseValue ?? null
 
-  useEffect(() => {
-    valueRef.current = value
-  }, [value])
+  const [isDragging, setIsDragging] = createSignal(false)
+  const [isHovered, setIsHovered] = createSignal(false)
+  const [isLabelHovered, setIsLabelHovered] = createSignal(false)
+  const [dragStartX, setDragStartX] = createSignal(0)
+  const [startValue, setStartValue] = createSignal(0)
+  const [inputValue, setInputValue] = createSignal(null)
+  let sliderRef
+  let keyRepeatRef
+  let keyDirectionRef = 0
 
-  const percentage = ((value - min) / (max - min)) * 100
+  createEffect(() => {
+    props.value
+    setInputValue(null)
+  })
 
-  const displayValue = formatValue ? formatValue(value) : value
+  const percentage = () => ((props.value - min()) / (max() - min())) * 100
+
+  const displayValue = () => (formatValue() ? formatValue()(props.value) : props.value)
 
   const handleInputChange = (e) => {
     const rawValue = e.target.value
     setInputValue(rawValue)
 
-    const newValue = parseValue ? parseValue(rawValue) : parseInt(rawValue, 10)
+    const parser = parseValue()
+    const newValue = parser ? parser(rawValue) : parseInt(rawValue, 10)
 
-    if (newValue !== null && !Number.isNaN(newValue) && newValue >= min && newValue <= max) {
-      onChange(newValue)
+    if (newValue !== null && !Number.isNaN(newValue) && newValue >= min() && newValue <= max()) {
+      onChange()?.(newValue)
     }
   }
 
@@ -94,34 +93,28 @@ export function Slider({
     setInputValue(null)
   }
 
-  useEffect(() => {
-    setInputValue(null)
-  }, [value])
-
-  const handleMouseDown = (
-    /** @type {{ preventDefault: () => void; clientX: import("preact/hooks").StateUpdater<number>; }} */ e,
-  ) => {
+  const handleMouseDown = (e) => {
     e.preventDefault()
-    sliderRef.current?.focus()
+    sliderRef?.focus()
     setIsDragging(true)
     setDragStartX(e.clientX)
-    setStartValue(value)
+    setStartValue(props.value)
   }
 
-  const handleMouseMove = (/** @type {{ clientX: number; }} */ e) => {
-    if (!isDragging) return
+  const handleMouseMove = (e) => {
+    if (!isDragging()) return
 
-    let deltaX = e.clientX - dragStartX
-    if (invert) deltaX = dragStartX - e.clientX
+    let deltaX = e.clientX - dragStartX()
+    if (invert()) deltaX = dragStartX() - e.clientX
 
-    const baseSensitivity = (max - min) / 200
-    const adjustedSensitivity = baseSensitivity * sensitivity
-    const newValue = Math.round(startValue + deltaX * adjustedSensitivity)
+    const baseSensitivity = (max() - min()) / 200
+    const adjustedSensitivity = baseSensitivity * sensitivity()
+    const newValue = Math.round(startValue() + deltaX * adjustedSensitivity)
 
-    const clampedValue = Math.max(min, Math.min(max, newValue))
+    const clampedValue = Math.max(min(), Math.min(max(), newValue))
 
-    if (clampedValue !== value && onChange) {
-      onChange(clampedValue)
+    if (clampedValue !== props.value && onChange()) {
+      onChange()(clampedValue)
     }
   }
 
@@ -129,145 +122,138 @@ export function Slider({
     setIsDragging(false)
   }
 
-  useEffect(() => {
-    if (isDragging) {
+  createEffect(() => {
+    if (isDragging()) {
       window.addEventListener("mousemove", handleMouseMove)
       window.addEventListener("mouseup", handleMouseUp)
-      return () => {
+      onCleanup(() => {
         window.removeEventListener("mousemove", handleMouseMove)
         window.removeEventListener("mouseup", handleMouseUp)
-      }
+      })
     }
-  }, [isDragging, dragStartX, startValue, value, invert, sensitivity])
-
-  const handleMouseEnter = () => {
-    setIsHovered(true)
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-  }
+  })
 
   const clearKeyRepeat = () => {
-    if (keyRepeatRef.current) {
-      clearTimeout(keyRepeatRef.current)
-      keyRepeatRef.current = null
+    if (keyRepeatRef) {
+      clearTimeout(keyRepeatRef)
+      keyRepeatRef = null
     }
-    keyDirectionRef.current = 0
+    keyDirectionRef = 0
   }
 
   const scheduleKeyRepeat = () => {
-    keyRepeatRef.current = setTimeout(() => {
-      const direction = keyDirectionRef.current
+    keyRepeatRef = setTimeout(() => {
+      const direction = keyDirectionRef
       if (direction === 0) return
 
-      const currentValue = valueRef.current
-      const newValue = direction > 0 ? Math.min(max, currentValue + 1) : Math.max(min, currentValue - 1)
-      if (newValue !== currentValue && onChange) {
-        onChange(newValue)
+      const newValue = direction > 0 ? Math.min(max(), props.value + 1) : Math.max(min(), props.value - 1)
+      if (newValue !== props.value && onChange()) {
+        onChange()(newValue)
       }
 
       scheduleKeyRepeat()
     }, 100)
   }
 
-  const handleKeyDown = (/** @type {{ key: string; preventDefault: () => void; }} */ e) => {
+  const handleKeyDown = (e) => {
     if (e.key === "ArrowLeft") {
       e.preventDefault()
-      if (keyDirectionRef.current !== -1) {
+      if (keyDirectionRef !== -1) {
         clearKeyRepeat()
-        keyDirectionRef.current = -1
-        const newValue = Math.max(min, value - 1)
-        if (newValue !== value && onChange) {
-          onChange(newValue)
+        keyDirectionRef = -1
+        const newValue = Math.max(min(), props.value - 1)
+        if (newValue !== props.value && onChange()) {
+          onChange()(newValue)
         }
         scheduleKeyRepeat()
       }
     } else if (e.key === "ArrowRight") {
       e.preventDefault()
-      if (keyDirectionRef.current !== 1) {
+      if (keyDirectionRef !== 1) {
         clearKeyRepeat()
-        keyDirectionRef.current = 1
-        const newValue = Math.min(max, value + 1)
-        if (newValue !== value && onChange) {
-          onChange(newValue)
+        keyDirectionRef = 1
+        const newValue = Math.min(max(), props.value + 1)
+        if (newValue !== props.value && onChange()) {
+          onChange()(newValue)
         }
         scheduleKeyRepeat()
       }
     }
   }
 
-  const handleKeyUp = (/** @type {{ key: string; }} */ e) => {
+  const handleKeyUp = (e) => {
     if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
       clearKeyRepeat()
     }
   }
 
-  useEffect(() => {
-    return () => {
-      if (keyRepeatRef.current) {
-        clearTimeout(keyRepeatRef.current)
-      }
+  onCleanup(() => {
+    if (keyRepeatRef) {
+      clearTimeout(keyRepeatRef)
     }
-  }, [])
+  })
 
-  const sizeClass =
-    size === "sm" ? "slider-sm" : size === "lg" ? "slider-lg" : size === "xl" ? "slider-xl" : "slider-md"
+  const sizeClass = () => {
+    if (size() === "sm") return "slider-sm"
+    if (size() === "lg") return "slider-lg"
+    if (size() === "xl") return "slider-xl"
+    return "slider-md"
+  }
 
   return (
-    <div className="slider-container">
-      {title && (
+    <div class="slider-container">
+      {props.title && (
         <section
-          className="slider-title"
+          class="slider-title"
           onMouseEnter={() => setIsLabelHovered(true)}
           onMouseLeave={() => setIsLabelHovered(false)}
-          aria-label={`${title} slider`}
+          aria-label={`${props.title} slider`}
         >
-          {title}
+          {props.title}
         </section>
       )}
       <div
         ref={sliderRef}
-        className={`slider ${sizeClass} ${isDragging ? "dragging" : ""}`}
+        class={`slider ${sizeClass()} ${isDragging() ? "dragging" : ""}`}
         onMouseDown={handleMouseDown}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
         role="slider"
-        aria-valuemin={min}
-        aria-valuemax={max}
-        aria-valuenow={value}
+        aria-valuemin={min()}
+        aria-valuemax={max()}
+        aria-valuenow={props.value}
         tabIndex={0}
       >
-        <div className="slider-track">
+        <div class="slider-track">
           <div
-            className={`slider-fill ${indicatorOffAtMin && value === min ? "off" : ""}`}
-            style={{ width: `${percentage}%` }}
+            class={`slider-fill ${indicatorOffAtMin() && props.value === min() ? "off" : ""}`}
+            style={{ width: `${percentage()}%` }}
           ></div>
         </div>
         <div
-          className={`slider-thumb ${indicatorOffAtMin && value === min ? "off" : ""}`}
-          style={{ left: `${10 + percentage * 0.8}%` }}
+          class={`slider-thumb ${indicatorOffAtMin() && props.value === min() ? "off" : ""}`}
+          style={{ left: `${10 + percentage() * 0.8}%` }}
         ></div>
       </div>
-      {showValueInput ? (
+      {showValueInput() ? (
         <input
-          type={formatValue ? "text" : "number"}
-          className={`slider-input ${indicatorOffAtMin && value === min ? "off" : ""}`}
-          value={inputValue ?? displayValue}
-          min={min}
-          max={max}
+          type={formatValue() ? "text" : "number"}
+          class={`slider-input ${indicatorOffAtMin() && props.value === min() ? "off" : ""}`}
+          value={inputValue() ?? displayValue()}
+          min={min()}
+          max={max()}
           onChange={handleInputChange}
           onBlur={handleInputBlur}
         />
       ) : (
-        <div className="slider-input-spacer" />
+        <div class="slider-input-spacer" />
       )}
-      {!showValueInput && (isHovered || isDragging) && (
-        <div className="slider-popover">{formatValue ? formatValue(value) : value}</div>
+      {!showValueInput() && (isHovered() || isDragging()) && (
+        <div class="slider-popover">{formatValue() ? formatValue()(props.value) : props.value}</div>
       )}
-      {description && isLabelHovered && <div className="slider-label-popover">{description}</div>}
+      {description() && isLabelHovered() && <div class="slider-label-popover">{description()}</div>}
     </div>
   )
 }

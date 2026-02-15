@@ -1,6 +1,5 @@
 import { createMIDIDeviceManager } from "midiwire"
-import { createContext } from "preact"
-import { useContext, useEffect, useState } from "preact/hooks"
+import { createContext, createEffect, createSignal, useContext } from "solid-js"
 
 const MIDIContext = createContext(null)
 
@@ -8,15 +7,15 @@ const MIDIContext = createContext(null)
  * Provider component for MIDI context.
  * Initializes MIDI device manager and provides MIDI state to children.
  * @param {Object} props
- * @param {import("preact").ComponentChildren} props.children - Child components
- * @returns {import("preact").VNode}
+ * @param {import("solid-js").JSX.Element} props.children - Child components
+ * @returns {import("solid-js").JSX.Element}
  */
-export function MIDIContextProvider({ children }) {
-  const [midi, setMidi] = useState(null)
-  const [outputStatus, setOutputStatus] = useState("")
-  const [inputStatus, setInputStatus] = useState("")
+export function MIDIContextProvider(props) {
+  const [midi, setMidi] = createSignal(null)
+  const [outputStatus, setOutputStatus] = createSignal("")
+  const [inputStatus, setInputStatus] = createSignal("")
 
-  useEffect(() => {
+  createEffect(() => {
     let isMounted = true
 
     async function initMIDI() {
@@ -89,20 +88,24 @@ export function MIDIContextProvider({ children }) {
     return () => {
       isMounted = false
     }
-  }, [])
+  })
 
-  const hasOutputDevice = outputStatus === "connected"
-  const hasInputDevice = inputStatus === "connected"
+  const hasOutputDevice = () => outputStatus() === "connected"
+  const hasInputDevice = () => inputStatus() === "connected"
 
   const value = {
     midi,
-    outputStatus,
-    inputStatus,
+    get outputStatus() {
+      return outputStatus()
+    },
+    get inputStatus() {
+      return inputStatus()
+    },
     hasOutputDevice,
     hasInputDevice,
   }
 
-  return <MIDIContext.Provider value={value}>{children}</MIDIContext.Provider>
+  return <MIDIContext.Provider value={value}>{props.children}</MIDIContext.Provider>
 }
 
 /**

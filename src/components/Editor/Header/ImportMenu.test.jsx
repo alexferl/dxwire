@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
+import { fireEvent, render, screen } from "@solidjs/testing-library"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock VoiceContext before importing components that use it

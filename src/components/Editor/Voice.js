@@ -1,5 +1,5 @@
-import { signal } from "@preact/signals"
 import { DX7Bank, DX7Voice, noteNameToNumber, noteNumberToName } from "midiwire"
+import { createSignal } from "solid-js"
 import { loadBanks, loadSettings, saveBanks, saveSettings } from "./storage.js"
 
 /** @type {string[]} */
@@ -16,81 +16,81 @@ const WAVE_MAP = { TRIANGLE: 0, "SAW DOWN": 1, "SAW UP": 2, SQUARE: 3, SINE: 4, 
 
 /**
  * Creates a voice state manager for the DX7 editor.
- * Manages operators, pitch EG, LFO, global settings, and bank data using Preact signals.
+ * Manages operators, pitch EG, LFO, global settings, and bank data using Solid signals.
  * @returns {Object} Voice state manager with signals and methods
  */
 export function createVoice() {
   const operators = Array(6)
     .fill(null)
     .map(() => ({
-      egRate1: signal(99),
-      egRate2: signal(99),
-      egRate3: signal(99),
-      egRate4: signal(99),
-      egLevel1: signal(99),
-      egLevel2: signal(99),
-      egLevel3: signal(99),
-      egLevel4: signal(0),
+      egRate1: createSignal(99),
+      egRate2: createSignal(99),
+      egRate3: createSignal(99),
+      egRate4: createSignal(99),
+      egLevel1: createSignal(99),
+      egLevel2: createSignal(99),
+      egLevel3: createSignal(99),
+      egLevel4: createSignal(0),
 
-      breakPoint: signal(0),
-      leftDepth: signal(0),
-      rightDepth: signal(0),
-      leftCurve: signal(0),
-      rightCurve: signal(0),
-      rateScaling: signal(0),
+      breakPoint: createSignal(0),
+      leftDepth: createSignal(0),
+      rightDepth: createSignal(0),
+      leftCurve: createSignal(0),
+      rightCurve: createSignal(0),
+      rateScaling: createSignal(0),
 
-      ampModSens: signal(0),
-      keyVelocity: signal(0),
-      outputLevel: signal(99),
+      ampModSens: createSignal(0),
+      keyVelocity: createSignal(0),
+      outputLevel: createSignal(99),
 
-      mode: signal(0), // 0=ratio, 1=fixed
-      coarse: signal(1),
-      fine: signal(0),
-      detune: signal(7), // 0-14, center at 7
-      oscDetune: signal(0),
+      mode: createSignal(0), // 0=ratio, 1=fixed
+      coarse: createSignal(1),
+      fine: createSignal(0),
+      detune: createSignal(7), // 0-14, center at 7
+      oscDetune: createSignal(0),
 
       // UI-only
-      enabled: signal(true),
+      enabled: createSignal(true),
     }))
 
   const pitchEG = {
-    rate1: signal(99),
-    rate2: signal(99),
-    rate3: signal(99),
-    rate4: signal(99),
-    level1: signal(50),
-    level2: signal(50),
-    level3: signal(50),
-    level4: signal(50),
+    rate1: createSignal(99),
+    rate2: createSignal(99),
+    rate3: createSignal(99),
+    rate4: createSignal(99),
+    level1: createSignal(50),
+    level2: createSignal(50),
+    level3: createSignal(50),
+    level4: createSignal(50),
   }
 
   const lfo = {
-    speed: signal(35),
-    delay: signal(0),
-    pmDepth: signal(0),
-    amDepth: signal(0),
-    keySync: signal(1),
-    wave: signal(0),
-    pmSens: signal(3),
+    speed: createSignal(35),
+    delay: createSignal(0),
+    pmDepth: createSignal(0),
+    amDepth: createSignal(0),
+    keySync: createSignal(1),
+    wave: createSignal(0),
+    pmSens: createSignal(3),
   }
 
   const global = {
-    algorithm: signal(1), // 1-32
-    feedback: signal(0), // 0-7
-    oscSync: signal(1),
-    transpose: signal(24), // 0-48 (-24 to +24)
-    ampModSens: signal(0),
-    egBiasSens: signal(0),
-    name: signal("Init Voice"),
+    algorithm: createSignal(1), // 1-32
+    feedback: createSignal(0), // 0-7
+    oscSync: createSignal(1),
+    transpose: createSignal(24), // 0-48 (-24 to +24)
+    ampModSens: createSignal(0),
+    egBiasSens: createSignal(0),
+    name: createSignal("Init Voice"),
   }
 
   const savedBanks = loadBanks()
-  const banks = signal(savedBanks || [{ name: "Init Bank", bank: new DX7Bank() }])
-  const currentBank = signal(0)
-  const currentVoiceIndex = signal(0)
-  const settings = signal(loadSettings())
+  const [banks, setBanks] = createSignal(savedBanks || [{ name: "Init Bank", bank: new DX7Bank() }])
+  const [currentBank, setCurrentBank] = createSignal(0)
+  const [currentVoiceIndex, setCurrentVoiceIndex] = createSignal(0)
+  const [settings, setSettings] = createSignal(loadSettings())
 
-  loadFromVoice(banks.value[0].bank.getVoice(0))
+  loadFromVoice(banks()[0].bank.getVoice(0))
 
   /**
    * Converts the current voice state to JSON format.
@@ -98,61 +98,61 @@ export function createVoice() {
    */
   function toJSON() {
     return {
-      name: global.name.value,
+      name: global.name[0](),
       operators: operators.map((op, i) => ({
         id: i + 1,
         osc: {
-          detune: op.oscDetune.value,
+          detune: op.oscDetune[0](),
           freq: {
-            coarse: op.coarse.value,
-            fine: op.fine.value,
-            mode: op.mode.value === 1 ? "FIXED" : "RATIO",
+            coarse: op.coarse[0](),
+            fine: op.fine[0](),
+            mode: op.mode[0]() === 1 ? "FIXED" : "RATIO",
           },
         },
         eg: {
-          rates: [op.egRate1.value, op.egRate2.value, op.egRate3.value, op.egRate4.value],
-          levels: [op.egLevel1.value, op.egLevel2.value, op.egLevel3.value, op.egLevel4.value],
+          rates: [op.egRate1[0](), op.egRate2[0](), op.egRate3[0](), op.egRate4[0]()],
+          levels: [op.egLevel1[0](), op.egLevel2[0](), op.egLevel3[0](), op.egLevel4[0]()],
         },
         key: {
-          velocity: op.keyVelocity.value,
-          scaling: op.rateScaling.value,
-          breakPoint: noteNumberToName(op.breakPoint.value + 9),
+          velocity: op.keyVelocity[0](),
+          scaling: op.rateScaling[0](),
+          breakPoint: noteNumberToName(op.breakPoint[0]() + 9),
         },
         output: {
-          level: op.outputLevel.value,
-          ampModSens: op.ampModSens.value,
+          level: op.outputLevel[0](),
+          ampModSens: op.ampModSens[0](),
         },
         scale: {
           left: {
-            depth: op.leftDepth.value,
-            curve: CURVES[op.leftCurve.value] || "-LN",
+            depth: op.leftDepth[0](),
+            curve: CURVES[op.leftCurve[0]()] || "-LN",
           },
           right: {
-            depth: op.rightDepth.value,
-            curve: CURVES[op.rightCurve.value] || "-LN",
+            depth: op.rightDepth[0](),
+            curve: CURVES[op.rightCurve[0]()] || "-LN",
           },
         },
       })),
       pitchEG: {
-        rates: [pitchEG.rate1.value, pitchEG.rate2.value, pitchEG.rate3.value, pitchEG.rate4.value],
-        levels: [pitchEG.level1.value, pitchEG.level2.value, pitchEG.level3.value, pitchEG.level4.value],
+        rates: [pitchEG.rate1[0](), pitchEG.rate2[0](), pitchEG.rate3[0](), pitchEG.rate4[0]()],
+        levels: [pitchEG.level1[0](), pitchEG.level2[0](), pitchEG.level3[0](), pitchEG.level4[0]()],
       },
       lfo: {
-        speed: lfo.speed.value,
-        delay: lfo.delay.value,
-        pmDepth: lfo.pmDepth.value,
-        amDepth: lfo.amDepth.value,
-        keySync: lfo.keySync.value === 1,
-        wave: WAVES[lfo.wave.value] || "TRIANGLE",
+        speed: lfo.speed[0](),
+        delay: lfo.delay[0](),
+        pmDepth: lfo.pmDepth[0](),
+        amDepth: lfo.amDepth[0](),
+        keySync: lfo.keySync[0]() === 1,
+        wave: WAVES[lfo.wave[0]()] || "TRIANGLE",
       },
       global: {
-        algorithm: global.algorithm.value,
-        feedback: global.feedback.value,
-        oscKeySync: global.oscSync.value === 1,
-        pitchModSens: lfo.pmSens.value,
-        transpose: global.transpose.value - 24,
-        ampModSens: global.ampModSens.value,
-        egBiasSens: global.egBiasSens.value,
+        algorithm: global.algorithm[0](),
+        feedback: global.feedback[0](),
+        oscKeySync: global.oscSync[0]() === 1,
+        pitchModSens: lfo.pmSens[0](),
+        transpose: global.transpose[0]() - 24,
+        ampModSens: global.ampModSens[0](),
+        egBiasSens: global.egBiasSens[0](),
       },
     }
   }
@@ -177,7 +177,7 @@ export function createVoice() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = filename || `${global.name.value.replace(/\s+/g, "_")}.syx`
+    a.download = filename || `${global.name[0]().replace(/\s+/g, "_")}.syx`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -195,34 +195,34 @@ export function createVoice() {
     }
 
     if (json.global) {
-      global.name.value = json.name || "Loaded Voice"
-      global.algorithm.value = json.global.algorithm || 1
-      global.feedback.value = json.global.feedback || 0
-      global.oscSync.value = json.global.oscKeySync ? 1 : 0
-      global.transpose.value = (json.global.transpose || 0) + 24
-      global.ampModSens.value = json.global.ampModSens || 0
-      global.egBiasSens.value = json.global.egBiasSens || 0
+      global.name[1](json.name || "Loaded Voice")
+      global.algorithm[1](json.global.algorithm || 1)
+      global.feedback[1](json.global.feedback || 0)
+      global.oscSync[1](json.global.oscKeySync ? 1 : 0)
+      global.transpose[1]((json.global.transpose || 0) + 24)
+      global.ampModSens[1](json.global.ampModSens || 0)
+      global.egBiasSens[1](json.global.egBiasSens || 0)
     }
 
     if (json.lfo) {
-      lfo.speed.value = json.lfo.speed || 35
-      lfo.delay.value = json.lfo.delay || 0
-      lfo.pmDepth.value = json.lfo.pmDepth || 0
-      lfo.amDepth.value = json.lfo.amDepth || 0
-      lfo.keySync.value = json.lfo.keySync ? 1 : 0
-      lfo.wave.value = WAVE_MAP[json.lfo.wave] || 0
-      lfo.pmSens.value = json.global?.pitchModSens || 3
+      lfo.speed[1](json.lfo.speed || 35)
+      lfo.delay[1](json.lfo.delay || 0)
+      lfo.pmDepth[1](json.lfo.pmDepth || 0)
+      lfo.amDepth[1](json.lfo.amDepth || 0)
+      lfo.keySync[1](json.lfo.keySync ? 1 : 0)
+      lfo.wave[1](WAVE_MAP[json.lfo.wave] || 0)
+      lfo.pmSens[1](json.global?.pitchModSens || 3)
     }
 
     if (json.pitchEG) {
-      pitchEG.rate1.value = json.pitchEG.rates?.[0] ?? 99
-      pitchEG.rate2.value = json.pitchEG.rates?.[1] ?? 99
-      pitchEG.rate3.value = json.pitchEG.rates?.[2] ?? 99
-      pitchEG.rate4.value = json.pitchEG.rates?.[3] ?? 99
-      pitchEG.level1.value = json.pitchEG.levels?.[0] ?? 50
-      pitchEG.level2.value = json.pitchEG.levels?.[1] ?? 50
-      pitchEG.level3.value = json.pitchEG.levels?.[2] ?? 50
-      pitchEG.level4.value = json.pitchEG.levels?.[3] ?? 50
+      pitchEG.rate1[1](json.pitchEG.rates?.[0] ?? 99)
+      pitchEG.rate2[1](json.pitchEG.rates?.[1] ?? 99)
+      pitchEG.rate3[1](json.pitchEG.rates?.[2] ?? 99)
+      pitchEG.rate4[1](json.pitchEG.rates?.[3] ?? 99)
+      pitchEG.level1[1](json.pitchEG.levels?.[0] ?? 50)
+      pitchEG.level2[1](json.pitchEG.levels?.[1] ?? 50)
+      pitchEG.level3[1](json.pitchEG.levels?.[2] ?? 50)
+      pitchEG.level4[1](json.pitchEG.levels?.[3] ?? 50)
     }
 
     if (json.operators && Array.isArray(json.operators)) {
@@ -230,37 +230,37 @@ export function createVoice() {
         if (i >= 6) return
         const op = operators[i]
 
-        op.egRate1.value = opData.eg?.rates?.[0] ?? 99
-        op.egRate2.value = opData.eg?.rates?.[1] ?? 99
-        op.egRate3.value = opData.eg?.rates?.[2] ?? 99
-        op.egRate4.value = opData.eg?.rates?.[3] ?? 99
-        op.egLevel1.value = opData.eg?.levels?.[0] ?? 99
-        op.egLevel2.value = opData.eg?.levels?.[1] ?? 99
-        op.egLevel3.value = opData.eg?.levels?.[2] ?? 99
-        op.egLevel4.value = opData.eg?.levels?.[3] ?? 0
+        op.egRate1[1](opData.eg?.rates?.[0] ?? 99)
+        op.egRate2[1](opData.eg?.rates?.[1] ?? 99)
+        op.egRate3[1](opData.eg?.rates?.[2] ?? 99)
+        op.egRate4[1](opData.eg?.rates?.[3] ?? 99)
+        op.egLevel1[1](opData.eg?.levels?.[0] ?? 99)
+        op.egLevel2[1](opData.eg?.levels?.[1] ?? 99)
+        op.egLevel3[1](opData.eg?.levels?.[2] ?? 99)
+        op.egLevel4[1](opData.eg?.levels?.[3] ?? 0)
 
-        op.mode.value = opData.osc?.freq?.mode === "FIXED" ? 1 : 0
-        op.coarse.value = opData.osc?.freq?.coarse ?? 1
-        op.fine.value = opData.osc?.freq?.fine ?? 0
-        op.detune.value = (opData.osc?.detune ?? 0) + 7
-        op.oscDetune.value = opData.osc?.detune ?? 0
+        op.mode[1](opData.osc?.freq?.mode === "FIXED" ? 1 : 0)
+        op.coarse[1](opData.osc?.freq?.coarse ?? 1)
+        op.fine[1](opData.osc?.freq?.fine ?? 0)
+        op.detune[1]((opData.osc?.detune ?? 0) + 7)
+        op.oscDetune[1](opData.osc?.detune ?? 0)
 
         const bpName = opData.key?.breakPoint || "A-1"
         try {
-          op.breakPoint.value = noteNameToNumber(bpName) - 9
+          op.breakPoint[1](noteNameToNumber(bpName) - 9)
         } catch {
-          op.breakPoint.value = 0
+          op.breakPoint[1](0)
         }
-        op.rateScaling.value = opData.key?.scaling ?? 0
-        op.keyVelocity.value = opData.key?.velocity ?? 0
+        op.rateScaling[1](opData.key?.scaling ?? 0)
+        op.keyVelocity[1](opData.key?.velocity ?? 0)
 
-        op.leftDepth.value = opData.scale?.left?.depth ?? 0
-        op.rightDepth.value = opData.scale?.right?.depth ?? 0
-        op.leftCurve.value = CURVE_MAP[opData.scale?.left?.curve] ?? 0
-        op.rightCurve.value = CURVE_MAP[opData.scale?.right?.curve] ?? 0
+        op.leftDepth[1](opData.scale?.left?.depth ?? 0)
+        op.rightDepth[1](opData.scale?.right?.depth ?? 0)
+        op.leftCurve[1](CURVE_MAP[opData.scale?.left?.curve] ?? 0)
+        op.rightCurve[1](CURVE_MAP[opData.scale?.right?.curve] ?? 0)
 
-        op.outputLevel.value = opData.output?.level ?? 99
-        op.ampModSens.value = opData.output?.ampModSens ?? 0
+        op.outputLevel[1](opData.output?.level ?? 99)
+        op.ampModSens[1](opData.output?.ampModSens ?? 0)
       })
     }
   }
@@ -280,13 +280,13 @@ export function createVoice() {
    * @throws {Error} If index is out of range
    */
   function loadFromVoiceIndex(index) {
-    const bankEntry = banks.value[currentBank.value]
+    const bankEntry = banks()[currentBank()]
     if (!bankEntry || !bankEntry.bank) return
     const bank = bankEntry.bank
     if (index < 0 || index >= bank.voices.length) {
       throw new Error(`Invalid voice index: ${index}`)
     }
-    currentVoiceIndex.value = index
+    setCurrentVoiceIndex(index)
     loadFromVoice(bank.voices[index])
   }
 
@@ -296,13 +296,13 @@ export function createVoice() {
    * @throws {Error} If bankIndex is out of range
    */
   function switchBank(bankIndex) {
-    if (bankIndex < 0 || bankIndex >= banks.value.length) {
+    if (bankIndex < 0 || bankIndex >= banks().length) {
       throw new Error(`Invalid bank index: ${bankIndex}`)
     }
-    currentBank.value = bankIndex
-    const bank = banks.value[bankIndex].bank
+    setCurrentBank(bankIndex)
+    const bank = banks()[bankIndex].bank
     if (bank && bank.voices.length > 0) {
-      currentVoiceIndex.value = 0
+      setCurrentVoiceIndex(0)
       loadFromVoice(bank.voices[0])
     }
   }
@@ -312,7 +312,7 @@ export function createVoice() {
    * @returns {string[]} Array of voice names
    */
   function getBankVoiceNames() {
-    const bankEntry = banks.value[currentBank.value]
+    const bankEntry = banks()[currentBank()]
     if (!bankEntry || !bankEntry.bank) return []
     const bank = bankEntry.bank
     if (typeof bank.getVoiceNames === "function") {
@@ -326,7 +326,7 @@ export function createVoice() {
    * @returns {string[]} Array of bank names
    */
   function getBankNames() {
-    return banks.value.map((entry, i) => entry.name || `Bank ${i + 1}`)
+    return banks().map((entry, i) => entry.name || `Bank ${i + 1}`)
   }
 
   /**
@@ -335,14 +335,14 @@ export function createVoice() {
    * @throws {Error} If no bank is loaded
    */
   function replaceVoiceInBank(index) {
-    const bankEntry = banks.value[currentBank.value]
+    const bankEntry = banks()[currentBank()]
     if (!bankEntry || !bankEntry.bank) {
       throw new Error("No bank loaded")
     }
     const json = toJSON()
     const voice = DX7Voice.fromJSON(json)
     bankEntry.bank.replaceVoice(index, voice)
-    saveBanks(banks.value)
+    saveBanks(banks())
   }
 
   /**
@@ -363,11 +363,12 @@ export function createVoice() {
         const name = json.name || bankName
         const bank = DX7Bank.fromJSON(json)
         const bankWrapper = { name, bank }
-        banks.value = [...banks.value, bankWrapper]
-        currentBank.value = banks.value.length - 1
-        currentVoiceIndex.value = 0
+        const newBanks = [...banks(), bankWrapper]
+        setBanks(newBanks)
+        setCurrentBank(newBanks.length - 1)
+        setCurrentVoiceIndex(0)
         loadFromJSON(json.voices[0])
-        saveBanks(banks.value)
+        saveBanks(newBanks)
         return { isBank: true, voiceCount: json.voices.length, fileType: "json" }
       } else {
         loadFromJSON(json)
@@ -375,11 +376,12 @@ export function createVoice() {
       }
     } else if (ext === "syx") {
       const bank = await DX7Bank.fromFile(file)
-      banks.value = [...banks.value, { name: bankName, bank }]
-      currentBank.value = banks.value.length - 1
-      currentVoiceIndex.value = 0
+      const newBanks = [...banks(), { name: bankName, bank }]
+      setBanks(newBanks)
+      setCurrentBank(newBanks.length - 1)
+      setCurrentVoiceIndex(0)
       loadFromVoice(bank.voices[0])
-      saveBanks(banks.value)
+      saveBanks(newBanks)
       return { isBank: true, voiceCount: bank.voices.length, fileType: "syx" }
     } else {
       throw new Error(`Unsupported file type: .${ext}. Use .syx or .json`)
@@ -392,16 +394,16 @@ export function createVoice() {
    * @throws {Error} If trying to delete the last bank
    */
   function deleteBank(bankIndex) {
-    if (banks.value.length <= 1) {
+    if (banks().length <= 1) {
       throw new Error("Cannot delete the last bank")
     }
-    const newBanks = banks.value.filter((_, i) => i !== bankIndex)
-    banks.value = newBanks
-    if (currentBank.value >= newBanks.length) {
-      currentBank.value = newBanks.length - 1
+    const newBanks = banks().filter((_, i) => i !== bankIndex)
+    setBanks(newBanks)
+    if (currentBank() >= newBanks.length) {
+      setCurrentBank(newBanks.length - 1)
     }
-    saveBanks(banks.value)
-    loadFromVoice(banks.value[currentBank.value].bank.getVoice(0))
+    saveBanks(newBanks)
+    loadFromVoice(newBanks[currentBank()].bank.getVoice(0))
   }
 
   /**
@@ -410,20 +412,22 @@ export function createVoice() {
    * @param {string} newName - New name for the bank
    */
   function renameBank(bankIndex, newName) {
-    if (bankIndex < 0 || bankIndex >= banks.value.length) return
-    banks.value = banks.value.map((entry, i) => (i === bankIndex ? { ...entry, name: newName } : entry))
-    saveBanks(banks.value)
+    if (bankIndex < 0 || bankIndex >= banks().length) return
+    const updatedBanks = banks().map((entry, i) => (i === bankIndex ? { ...entry, name: newName } : entry))
+    setBanks(updatedBanks)
+    saveBanks(updatedBanks)
   }
 
   /**
    * Resets to initial state with just the default bank.
    */
   function resetBanks() {
-    banks.value = [{ name: "Init Bank", bank: new DX7Bank() }]
-    currentBank.value = 0
-    currentVoiceIndex.value = 0
-    loadFromVoice(banks.value[0].bank.getVoice(0))
-    saveBanks(banks.value)
+    const initBanks = [{ name: "Init Bank", bank: new DX7Bank() }]
+    setBanks(initBanks)
+    setCurrentBank(0)
+    setCurrentVoiceIndex(0)
+    loadFromVoice(initBanks[0].bank.getVoice(0))
+    saveBanks(initBanks)
   }
 
   /**
@@ -432,17 +436,17 @@ export function createVoice() {
    * @throws {Error} If no bank is loaded
    */
   function initVoice(index) {
-    const bankEntry = banks.value[currentBank.value]
+    const bankEntry = banks()[currentBank()]
     if (!bankEntry || !bankEntry.bank) {
       throw new Error("No bank loaded")
     }
     const defaultVoice = DX7Voice.createDefault(index)
     bankEntry.bank.replaceVoice(index, defaultVoice)
     // Trigger reactivity by creating new array reference
-    banks.value = [...banks.value]
-    saveBanks(banks.value)
+    setBanks([...banks()])
+    saveBanks(banks())
     // Reload current voice if we initialized the currently selected one
-    if (index === currentVoiceIndex.value) {
+    if (index === currentVoiceIndex()) {
       loadFromVoice(bankEntry.bank.getVoice(index))
     }
   }
@@ -454,7 +458,7 @@ export function createVoice() {
    * @throws {Error} If no bank is loaded
    */
   function copyVoice(fromIndex, toIndex) {
-    const bankEntry = banks.value[currentBank.value]
+    const bankEntry = banks()[currentBank()]
     if (!bankEntry || !bankEntry.bank) {
       throw new Error("No bank loaded")
     }
@@ -462,10 +466,10 @@ export function createVoice() {
     const voiceCopy = DX7Voice.fromJSON(sourceVoice.toJSON())
     bankEntry.bank.replaceVoice(toIndex, voiceCopy)
     // Trigger reactivity by creating new array reference
-    banks.value = [...banks.value]
-    saveBanks(banks.value)
+    setBanks([...banks()])
+    saveBanks(banks())
     // Reload current voice if we copied to the currently selected slot
-    if (toIndex === currentVoiceIndex.value) {
+    if (toIndex === currentVoiceIndex()) {
       loadFromVoice(bankEntry.bank.getVoice(toIndex))
     }
   }
@@ -477,7 +481,7 @@ export function createVoice() {
    * @throws {Error} If no bank is loaded
    */
   function renameVoice(index, newName) {
-    const bankEntry = banks.value[currentBank.value]
+    const bankEntry = banks()[currentBank()]
     if (!bankEntry || !bankEntry.bank) {
       throw new Error("No bank loaded")
     }
@@ -489,11 +493,11 @@ export function createVoice() {
     updatedBank.voices[index].name = newName
     const newBank = DX7Bank.fromJSON(updatedBank)
     // Create new banks array with the updated bank
-    banks.value = banks.value.map((entry, i) => (i === currentBank.value ? { ...entry, bank: newBank } : entry))
-    saveBanks(banks.value)
+    setBanks(banks().map((entry, i) => (i === currentBank() ? { ...entry, bank: newBank } : entry)))
+    saveBanks(banks())
     // Update current voice name if we renamed the currently selected voice
-    if (index === currentVoiceIndex.value) {
-      global.name.value = newName
+    if (index === currentVoiceIndex()) {
+      global.name[1](newName)
     }
   }
 
@@ -503,8 +507,8 @@ export function createVoice() {
    * @param {unknown} value - New value for the setting
    */
   function updateSetting(key, value) {
-    const updated = { ...settings.value, [key]: value }
-    settings.value = updated
+    const updated = { ...settings(), [key]: value }
+    setSettings(updated)
     saveSettings({ [key]: value })
   }
 
@@ -517,14 +521,14 @@ export function createVoice() {
     lfo,
     /** @type {Object} Global voice settings signals */
     global,
-    /** @type {import("@preact/signals").Signal<Array<Object>>} Loaded banks signal */
-    banks,
-    /** @type {import("@preact/signals").Signal<number>} Current bank index signal */
-    currentBank,
-    /** @type {import("@preact/signals").Signal<number>} Current voice index signal */
-    currentVoiceIndex,
-    /** @type {import("@preact/signals").Signal<Object>} User settings signal */
-    settings,
+    /** @type {[() => Array<Object>, (v: Array<Object>) => void]} Banks signal getter/setter tuple */
+    banks: [banks, setBanks],
+    /** @type {[() => number, (v: number) => void]} Current bank index signal getter/setter tuple */
+    currentBank: [currentBank, setCurrentBank],
+    /** @type {[() => number, (v: number) => void]} Current voice index signal getter/setter tuple */
+    currentVoiceIndex: [currentVoiceIndex, setCurrentVoiceIndex],
+    /** @type {[() => Object, (v: Object) => void]} Settings signal getter/setter tuple */
+    settings: [settings, setSettings],
     toJSON,
     toSysEx,
     downloadSyx,

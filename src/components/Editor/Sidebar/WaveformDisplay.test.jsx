@@ -1,22 +1,31 @@
-import { render, screen } from "@testing-library/preact"
+import { render, screen } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
 import { VoiceContext } from "../context/VoiceContext"
 import { WaveformDisplay } from "./WaveformDisplay"
 
-// Mock voice context
+// Mock voice context with SolidJS signal format [getter, setter]
+function createSignalMock(initialValue) {
+  let value = initialValue
+  const getter = () => value
+  const setter = (newValue) => {
+    value = newValue
+  }
+  return [getter, setter]
+}
+
 function createMockVoice() {
   return {
     pitchEG: {
-      level1: { value: 50 },
-      level2: { value: 50 },
-      level3: { value: 50 },
-      level4: { value: 50 },
-      rate1: { value: 99 },
-      rate2: { value: 99 },
-      rate3: { value: 99 },
-      rate4: { value: 99 },
+      level1: createSignalMock(50),
+      level2: createSignalMock(50),
+      level3: createSignalMock(50),
+      level4: createSignalMock(50),
+      rate1: createSignalMock(99),
+      rate2: createSignalMock(99),
+      rate3: createSignalMock(99),
+      rate4: createSignalMock(99),
     },
-    settings: { value: { showADSR: true } },
+    settings: createSignalMock({ showADSR: true }),
   }
 }
 

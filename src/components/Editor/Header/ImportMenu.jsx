@@ -4,7 +4,7 @@ import { useVoice } from "../index"
 /**
  * Import menu component.
  * Provides UI for importing banks from files.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function ImportMenu() {
   const voice = useVoice()

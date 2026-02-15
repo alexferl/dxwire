@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/preact"
+import { render, screen } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
 import { Operators } from "./index.jsx"
 

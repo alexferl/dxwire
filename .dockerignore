@@ -11,3 +11,9 @@
 !src/
 !public/
 !etc/caddy/Caddyfile
+
+# Exclude unwanted files inside allowed directories
+**/.DS_Store
+**/Thumbs.db
+**/*.log
+**/*~

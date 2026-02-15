@@ -1,3 +1,4 @@
+import { For } from "solid-js"
 import { VoiceContext, voiceInstance } from "./context/VoiceContext.jsx"
 import { Header } from "./Header/index.jsx"
 import { Operator, Operators } from "./Operators/index.jsx"
@@ -9,7 +10,7 @@ export { useVoice } from "./context/VoiceContext.jsx"
 /**
  * Main DX7 editor component.
  * Renders the complete editor interface with header, sidebar, and operators.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function Editor() {
   return (
@@ -18,9 +19,7 @@ export function Editor() {
         <Header />
         <Sidebar />
         <Operators>
-          {[1, 2, 3, 4, 5, 6].map((num) => (
-            <Operator key={num} number={num} />
-          ))}
+          <For each={[1, 2, 3, 4, 5, 6]}>{(num) => <Operator number={num} />}</For>
         </Operators>
       </div>
     </VoiceContext.Provider>

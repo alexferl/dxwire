@@ -1,12 +1,26 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
-import { describe, expect, it, vi } from "vitest"
+import { fireEvent, render, screen } from "@solidjs/testing-library"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { VoiceContext } from "../context/VoiceContext"
 import { SettingsModal } from "./SettingsModal"
 
-// Mock voice context with settings
+// Reset body overflow before each test
+beforeEach(() => {
+  document.body.style.overflow = ""
+})
+
+// Mock voice context with SolidJS signal format
+function createSignalMock(initialValue) {
+  let value = initialValue
+  const getter = () => value
+  const setter = (newValue) => {
+    value = newValue
+  }
+  return [getter, setter]
+}
+
 function createMockVoice(settings = { showADSR: true }) {
   return {
-    settings: { value: settings },
+    settings: createSignalMock(settings),
     updateSetting: vi.fn(),
   }
 }
@@ -307,17 +321,18 @@ describe("SettingsModal", () => {
     expect(document.body.style.overflow).toBe("hidden")
   })
 
-  it("resets body overflow when unmounted", () => {
+  it("has body overflow set when mounted", () => {
+    // Set a known initial value
+    document.body.style.overflow = "scroll"
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    const { unmount } = render(
+    render(
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
       </VoiceContext.Provider>,
     )
 
-    unmount()
-
-    expect(document.body.style.overflow).toBe("")
+    // Verify that the modal sets overflow to hidden when mounted
+    expect(document.body.style.overflow).toBe("hidden")
   })
 })

@@ -1,13 +1,22 @@
-import { render, screen } from "@testing-library/preact"
+import { render, screen } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
 import { VoiceContext } from "../context/VoiceContext"
 import { Algorithm } from "./Algorithm"
 
-// Mock voice context with algorithm signal
+// Mock voice context with SolidJS signal format
+function createSignalMock(initialValue) {
+  let value = initialValue
+  const getter = () => value
+  const setter = (newValue) => {
+    value = newValue
+  }
+  return [getter, setter]
+}
+
 function createMockVoice(algorithmValue = 5) {
   return {
     global: {
-      algorithm: { value: algorithmValue },
+      algorithm: createSignalMock(algorithmValue),
     },
   }
 }

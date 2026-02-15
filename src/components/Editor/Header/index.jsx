@@ -1,5 +1,5 @@
 import { DX7Bank } from "midiwire"
-import { useEffect, useState } from "preact/hooks"
+import { createEffect, createSignal, For } from "solid-js"
 import {
   GearIcon,
   HelpIcon,
@@ -24,20 +24,20 @@ import "./style.css"
 /**
  * Bank management menu component.
  * Provides options to rename, delete, and reset banks.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 function BankManageMenu() {
   const voice = useVoice()
-  const [showRename, setShowRename] = useState(false)
+  const [showRename, setShowRename] = createSignal(false)
 
-  const canDelete = voice.banks.value.length > 1
-  const currentBankName = voice.getBankNames()[voice.currentBank.value] || ""
+  const canDelete = () => voice.banks[0]().length > 1
+  const currentBankName = () => voice.getBankNames()[voice.currentBank[0]()] || ""
 
   const handleDelete = () => {
-    if (!canDelete) return
-    if (confirm(`Delete bank "${currentBankName}"?`)) {
+    if (!canDelete()) return
+    if (confirm(`Delete bank "${currentBankName()}"?`)) {
       try {
-        voice.deleteBank(voice.currentBank.value)
+        voice.deleteBank(voice.currentBank[0]())
       } catch (err) {
         alert(err.message)
       }
@@ -54,16 +54,16 @@ function BankManageMenu() {
     <>
       <MenuButton icon={<SettingsIcon size="lg" ariaLabel="Settings icon" />} title="Manage Bank">
         <MenuItem label="Rename Bank..." onClick={() => setShowRename(true)} />
-        <MenuItem label="Delete Bank" onClick={handleDelete} disabled={!canDelete} />
+        <MenuItem label="Delete Bank" onClick={handleDelete} disabled={!canDelete()} />
         <MenuItem label="Separator" separator />
         <MenuItem label="Reset All Banks" onClick={handleReset} />
       </MenuButton>
-      {showRename && (
+      {showRename() && (
         <RenameDialog
           title="Rename Bank"
-          currentName={currentBankName}
+          currentName={currentBankName()}
           onConfirm={(newName) => {
-            voice.renameBank(voice.currentBank.value, newName)
+            voice.renameBank(voice.currentBank[0](), newName)
             setShowRename(false)
           }}
           onCancel={() => setShowRename(false)}
@@ -76,21 +76,21 @@ function BankManageMenu() {
 /**
  * Voice management menu component.
  * Provides options to initialize, rename, and copy voices.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 function VoiceManageMenu() {
   const voice = useVoice()
-  const [showCopyDialog, setShowCopyDialog] = useState(false)
-  const [showRename, setShowRename] = useState(false)
+  const [showCopyDialog, setShowCopyDialog] = createSignal(false)
+  const [showRename, setShowRename] = createSignal(false)
 
-  const currentVoiceIdx = voice.currentVoiceIndex.value
-  const voiceNames = voice.getBankVoiceNames()
-  const currentVoiceName = voice.global.name.value
+  const currentVoiceIdx = () => voice.currentVoiceIndex[0]()
+  const voiceNames = () => voice.getBankVoiceNames()
+  const currentVoiceName = () => voice.global.name[0]()
 
   const handleInit = () => {
-    if (confirm(`Initialize "${currentVoiceName}" to default? This will overwrite the current voice.`)) {
+    if (confirm(`Initialize "${currentVoiceName()}" to default? This will overwrite the current voice.`)) {
       try {
-        voice.initVoice(currentVoiceIdx)
+        voice.initVoice(currentVoiceIdx())
       } catch (err) {
         alert(err.message)
       }
@@ -105,23 +105,23 @@ function VoiceManageMenu() {
         <MenuItem label="Separator" separator />
         <MenuItem label="Copy to Slot..." onClick={() => setShowCopyDialog(true)} />
       </MenuButton>
-      {showCopyDialog && (
+      {showCopyDialog() && (
         <CopyVoiceDialog
-          voiceNames={voiceNames}
-          currentIndex={currentVoiceIdx}
+          voiceNames={voiceNames()}
+          currentIndex={currentVoiceIdx()}
           onConfirm={(toIndex) => {
-            voice.copyVoice(currentVoiceIdx, toIndex)
+            voice.copyVoice(currentVoiceIdx(), toIndex)
             setShowCopyDialog(false)
           }}
           onCancel={() => setShowCopyDialog(false)}
         />
       )}
-      {showRename && (
+      {showRename() && (
         <RenameDialog
           title="Rename Voice"
-          currentName={currentVoiceName}
+          currentName={currentVoiceName()}
           onConfirm={(newName) => {
-            voice.renameVoice(currentVoiceIdx, newName)
+            voice.renameVoice(currentVoiceIdx(), newName)
             setShowRename(false)
           }}
           onCancel={() => setShowRename(false)}
@@ -134,20 +134,20 @@ function VoiceManageMenu() {
 /**
  * Internal header content component.
  * Displays the bank/voice selectors, MIDI controls, and action buttons.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 function HeaderContent() {
   const voice = useVoice()
-  const { midi, hasOutputDevice, hasInputDevice } = useMIDI()
-  const [showHelp, setShowHelp] = useState(false)
-  const [showSettings, setShowSettings] = useState(false)
-  const [sendingBank, setSendingBank] = useState(false)
-  const [sendingVoice, setSendingVoice] = useState(false)
-  const [requestingBank, setRequestingBank] = useState(false)
+  const { midi, hasOutputDevice } = useMIDI()
+  const [showHelp, setShowHelp] = createSignal(false)
+  const [showSettings, setShowSettings] = createSignal(false)
+  const [sendingBank, setSendingBank] = createSignal(false)
+  const [sendingVoice, setSendingVoice] = createSignal(false)
+  const [requestingBank, setRequestingBank] = createSignal(false)
 
   // Listen for incoming SysEx messages
-  useEffect(() => {
-    if (!midi?.connection) return
+  const setupSysExListener = () => {
+    if (!midi()?.connection) return
 
     const handleSysEx = (event) => {
       const { data } = event
@@ -160,9 +160,10 @@ function HeaderContent() {
           const bank = DX7Bank.fromSysEx(new Uint8Array(data))
           // Add as a new bank
           const bankName = `DX7 Bank ${new Date().toLocaleTimeString()}`
-          voice.banks.value = [...voice.banks.value, { name: bankName, bank }]
-          voice.currentBank.value = voice.banks.value.length - 1
-          voice.currentVoiceIndex.value = 0
+          const newBanks = [...voice.banks[0](), { name: bankName, bank }]
+          voice.banks[1](newBanks)
+          voice.currentBank[1](newBanks.length - 1)
+          voice.currentVoiceIndex[1](0)
           voice.loadFromVoice(bank.getVoice(0))
           alert(`Received bank "${bankName}" with 32 voices`)
         } catch (err) {
@@ -173,11 +174,18 @@ function HeaderContent() {
       }
     }
 
-    midi.connection.on("sysex", handleSysEx)
+    midi().connection.on("sysex", handleSysEx)
     return () => {
-      midi.connection.off("sysex", handleSysEx)
+      midi().connection.off("sysex", handleSysEx)
     }
-  }, [midi])
+  }
+
+  // Set up effect for SysEx listener
+  createEffect(() => {
+    if (midi()) {
+      return setupSysExListener()
+    }
+  })
 
   const handleBankChange = (e) => {
     const index = Number(e.target.value)
@@ -193,14 +201,14 @@ function HeaderContent() {
    * Sends the current voice via MIDI SysEx.
    */
   const handleSendVoiceViaMIDI = async () => {
-    if (!midi) {
+    if (!midi()) {
       alert("MIDI not connected")
       return
     }
     setSendingVoice(true)
     try {
       const sysex = voice.toSysEx()
-      midi.system.sendEx(sysex, false)
+      midi().system.sendEx(sysex, false)
       await new Promise((resolve) => setTimeout(resolve, 500))
     } catch (err) {
       console.error("Failed to send voice:", err)
@@ -213,20 +221,20 @@ function HeaderContent() {
    * Sends the current bank via MIDI SysEx to the connected DX7.
    */
   const handleSendBankViaMIDI = async () => {
-    if (!midi) {
+    if (!midi()) {
       alert("MIDI not connected")
       return
     }
     setSendingBank(true)
     try {
-      const bankEntry = voice.banks.value[voice.currentBank.value]
+      const bankEntry = voice.banks[0]()[voice.currentBank[0]()]
       if (!bankEntry?.bank) {
         alert("No bank loaded")
         setSendingBank(false)
         return
       }
       const sysex = bankEntry.bank.toSysEx()
-      midi.system.sendEx(sysex, false)
+      midi().system.sendEx(sysex, false)
       await new Promise((resolve) => setTimeout(resolve, 500))
     } catch (err) {
       console.error("Failed to send bank:", err)
@@ -239,7 +247,7 @@ function HeaderContent() {
    * Requests a bank dump from the connected DX7.
    */
   const handleRequestBankViaMIDI = async () => {
-    if (!midi) {
+    if (!midi()) {
       alert("MIDI not connected")
       return
     }
@@ -247,7 +255,7 @@ function HeaderContent() {
     try {
       // DX7 bank dump request: F0 43 2n 09 F7 (n = channel - 1, using channel 1 = 0x20)
       const request = [0xf0, 0x43, 0x20, 0x09, 0xf7]
-      midi.system.sendEx(request, true)
+      midi().system.sendEx(request, true)
       await new Promise((resolve) => setTimeout(resolve, 5000))
     } catch (err) {
       console.error("Failed to request bank:", err)
@@ -256,30 +264,33 @@ function HeaderContent() {
     }
   }
 
-  const currentBankIndex = voice.currentBank.value
-  const currentVoiceIdx = voice.currentVoiceIndex.value
+  const currentBankIndex = () => voice.currentBank[0]()
+  const currentVoiceIdx = () => voice.currentVoiceIndex[0]()
 
-  const bankNames = voice.getBankNames()
-  const voiceNames = voice.banks.value[currentBankIndex]?.bank ? voice.getBankVoiceNames() : []
-  const bankLoaded = !!voice.banks.value[currentBankIndex]?.bank
+  const bankNames = () => voice.getBankNames()
+  const voiceNames = () => {
+    const idx = currentBankIndex()
+    return voice.banks[0]()[idx]?.bank ? voice.getBankVoiceNames() : []
+  }
+  const bankLoaded = () => !!voice.banks[0]()[currentBankIndex()]?.bank
 
   return (
     <>
       <div class="header">
         <div class="header-left">
           <div class="header-logo">DX7</div>
-          <select class="bank-select-header" value={currentBankIndex} onChange={handleBankChange}>
-            {bankNames.map((name, i) => (
-              <option value={i}>{name || `Bank ${i + 1}`}</option>
-            ))}
+          <select class="bank-select-header" value={currentBankIndex()} onChange={handleBankChange}>
+            <For each={bankNames()}>{(name, i) => <option value={i()}>{name || `Bank ${i() + 1}`}</option>}</For>
           </select>
           <BankManageMenu />
-          <select class="voice-select-header" value={currentVoiceIdx} onChange={handleVoiceChange}>
-            {voiceNames.map((name, i) => (
-              <option value={i}>
-                {i + 1}. {name || "(Empty)"}
-              </option>
-            ))}
+          <select class="voice-select-header" value={currentVoiceIdx()} onChange={handleVoiceChange}>
+            <For each={voiceNames()}>
+              {(name, i) => (
+                <option value={i()}>
+                  {i() + 1}. {name || "(Empty)"}
+                </option>
+              )}
+            </For>
           </select>
           <VoiceManageMenu />
           <div class="header-separator" />
@@ -287,10 +298,10 @@ function HeaderContent() {
             type="button"
             class="header-send-btn"
             onClick={handleRequestBankViaMIDI}
-            disabled={!hasInputDevice || requestingBank}
+            disabled={!hasOutputDevice() || requestingBank()}
             title="Receive Bank from Device"
           >
-            {requestingBank ? (
+            {requestingBank() ? (
               <LoadingSpinner size="md" />
             ) : (
               <ReceiveBankIcon size="md" ariaLabel="Receive bank icon" />
@@ -300,19 +311,19 @@ function HeaderContent() {
             type="button"
             class="header-send-btn"
             onClick={handleSendBankViaMIDI}
-            disabled={!hasOutputDevice || !bankLoaded || sendingBank}
+            disabled={!hasOutputDevice() || !bankLoaded() || sendingBank()}
             title="Send Bank to Device"
           >
-            {sendingBank ? <LoadingSpinner size="md" /> : <SendBankIcon size="md" ariaLabel="Send bank icon" />}
+            {sendingBank() ? <LoadingSpinner size="md" /> : <SendBankIcon size="md" ariaLabel="Send bank icon" />}
           </button>
           <button
             type="button"
             class="header-send-btn"
             onClick={handleSendVoiceViaMIDI}
-            disabled={!hasOutputDevice || sendingVoice}
+            disabled={!hasOutputDevice() || sendingVoice()}
             title="Send Voice to Device"
           >
-            {sendingVoice ? <LoadingSpinner size="md" /> : <SendVoiceIcon size="md" ariaLabel="Send voice icon" />}
+            {sendingVoice() ? <LoadingSpinner size="md" /> : <SendVoiceIcon size="md" ariaLabel="Send voice icon" />}
           </button>
         </div>
         <div class="header-right">
@@ -331,8 +342,8 @@ function HeaderContent() {
           </button>
         </div>
       </div>
-      {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
-      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+      {showHelp() && <HelpModal onClose={() => setShowHelp(false)} />}
+      {showSettings() && <SettingsModal onClose={() => setShowSettings(false)} />}
     </>
   )
 }
@@ -340,7 +351,7 @@ function HeaderContent() {
 /**
  * Header subcomponent for Editor.
  * Wraps the header content with MIDI context provider.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function Header() {
   return (

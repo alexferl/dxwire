@@ -1,4 +1,4 @@
-import { useEffect } from "preact/hooks"
+import { onCleanup, onMount } from "solid-js"
 import { useVoice } from "../context/VoiceContext.jsx"
 import "./style.css"
 
@@ -6,16 +6,18 @@ import "./style.css"
  * @param {Object} props
  * @param {() => void} props.onClose
  */
-export function SettingsModal({ onClose }) {
+export function SettingsModal(props) {
+  const onClose = () => props.onClose()
   const voice = useVoice()
-  const settings = voice.settings.value
+  const settings = () => voice.settings[0]()
 
-  useEffect(() => {
+  onMount(() => {
+    const originalOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
-    return () => {
-      document.body.style.overflow = ""
-    }
-  }, [])
+    onCleanup(() => {
+      document.body.style.overflow = originalOverflow
+    })
+  })
 
   const handleShowADSRChange = (e) => {
     voice.updateSetting("showADSR", e.target.checked)
@@ -62,7 +64,7 @@ export function SettingsModal({ onClose }) {
           <div class="settings-section">
             <h3>Envelope Display</h3>
             <label class="settings-checkbox">
-              <input type="checkbox" checked={settings.showADSR} onChange={handleShowADSRChange} />
+              <input type="checkbox" checked={settings().showADSR} onChange={handleShowADSRChange} />
               <span>Show ADSR visualization (colored fills and labels)</span>
             </label>
             <p class="settings-description">
@@ -73,7 +75,7 @@ export function SettingsModal({ onClose }) {
           <div class="settings-section">
             <h3>Input Controls</h3>
             <label class="settings-checkbox">
-              <input type="checkbox" checked={settings.showValueInputs} onChange={handleShowValueInputsChange} />
+              <input type="checkbox" checked={settings().showValueInputs} onChange={handleShowValueInputsChange} />
               <span>Show value input fields on knobs and sliders</span>
             </label>
             <p class="settings-description">

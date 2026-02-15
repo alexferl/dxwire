@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/preact"
+import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock VoiceContext before importing components that use it
@@ -33,32 +33,41 @@ vi.mock("midiwire", () => ({
   },
 }))
 
-// Create mock operator signals
+// Create mock operator signals with SolidJS signal format [getter, setter]
+function createSignalMock(initialValue) {
+  let value = initialValue
+  const getter = () => value
+  const setter = (newValue) => {
+    value = newValue
+  }
+  return [getter, setter]
+}
+
 function createMockOperator(number, overrides = {}) {
   return {
     number,
-    enabled: { value: overrides.enabled ?? true },
-    mode: { value: overrides.mode ?? 0 },
-    coarse: { value: overrides.coarse ?? 1 },
-    fine: { value: overrides.fine ?? 0 },
-    detune: { value: overrides.detune ?? 7 },
-    egLevel1: { value: overrides.egLevel1 ?? 99 },
-    egLevel2: { value: overrides.egLevel2 ?? 99 },
-    egLevel3: { value: overrides.egLevel3 ?? 99 },
-    egLevel4: { value: overrides.egLevel4 ?? 0 },
-    egRate1: { value: overrides.egRate1 ?? 99 },
-    egRate2: { value: overrides.egRate2 ?? 99 },
-    egRate3: { value: overrides.egRate3 ?? 99 },
-    egRate4: { value: overrides.egRate4 ?? 99 },
-    leftDepth: { value: overrides.leftDepth ?? 0 },
-    rightDepth: { value: overrides.rightDepth ?? 0 },
-    leftCurve: { value: overrides.leftCurve ?? 0 },
-    rightCurve: { value: overrides.rightCurve ?? 0 },
-    breakPoint: { value: overrides.breakPoint ?? 0 },
-    rateScaling: { value: overrides.rateScaling ?? 0 },
-    ampModSens: { value: overrides.ampModSens ?? 0 },
-    keyVelocity: { value: overrides.keyVelocity ?? 0 },
-    outputLevel: { value: overrides.outputLevel ?? 99 },
+    enabled: createSignalMock(overrides.enabled ?? true),
+    mode: createSignalMock(overrides.mode ?? 0),
+    coarse: createSignalMock(overrides.coarse ?? 1),
+    fine: createSignalMock(overrides.fine ?? 0),
+    detune: createSignalMock(overrides.detune ?? 7),
+    egLevel1: createSignalMock(overrides.egLevel1 ?? 99),
+    egLevel2: createSignalMock(overrides.egLevel2 ?? 99),
+    egLevel3: createSignalMock(overrides.egLevel3 ?? 99),
+    egLevel4: createSignalMock(overrides.egLevel4 ?? 0),
+    egRate1: createSignalMock(overrides.egRate1 ?? 99),
+    egRate2: createSignalMock(overrides.egRate2 ?? 99),
+    egRate3: createSignalMock(overrides.egRate3 ?? 99),
+    egRate4: createSignalMock(overrides.egRate4 ?? 99),
+    leftDepth: createSignalMock(overrides.leftDepth ?? 0),
+    rightDepth: createSignalMock(overrides.rightDepth ?? 0),
+    leftCurve: createSignalMock(overrides.leftCurve ?? 0),
+    rightCurve: createSignalMock(overrides.rightCurve ?? 0),
+    breakPoint: createSignalMock(overrides.breakPoint ?? 0),
+    rateScaling: createSignalMock(overrides.rateScaling ?? 0),
+    ampModSens: createSignalMock(overrides.ampModSens ?? 0),
+    keyVelocity: createSignalMock(overrides.keyVelocity ?? 0),
+    outputLevel: createSignalMock(overrides.outputLevel ?? 99),
   }
 }
 
@@ -73,7 +82,7 @@ function createMockVoice(operatorOverrides = {}) {
       createMockOperator(5, operatorOverrides.op5),
       createMockOperator(6, operatorOverrides.op6),
     ],
-    settings: { value: { showADSR: true, showValueInputs: true } },
+    settings: createSignalMock({ showADSR: true, showValueInputs: true }),
   }
 }
 
@@ -216,12 +225,12 @@ describe("Operator", () => {
 
   it("renders different operator numbers correctly", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    const { rerender } = render(<Operator number={1} />)
-
+    // SolidJS uses signals instead of rerender - test each operator separately
+    render(<Operator number={1} />)
     expect(document.querySelector(".op1")).toBeInTheDocument()
 
-    rerender(<Operator number={6} />)
-
+    // Test operator 6 separately
+    render(<Operator number={6} />)
     expect(document.querySelector(".op6")).toBeInTheDocument()
   })
 
@@ -251,7 +260,7 @@ describe("Operator", () => {
       fireEvent.click(ridgedSwitch)
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].enabled.value).toBe(false)
+        expect(mockVoice.operators[0].enabled[0]()).toBe(false)
       })
     })
 
@@ -267,7 +276,7 @@ describe("Operator", () => {
       fireEvent.click(switchButton)
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].mode.value).toBe(1)
+        expect(mockVoice.operators[0].mode[0]()).toBe(1)
       })
     })
 
@@ -281,7 +290,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[1], { target: { value: "10" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].coarse.value).toBe(10)
+        expect(mockVoice.operators[0].coarse[0]()).toBe(10)
       })
     })
 
@@ -295,7 +304,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[2], { target: { value: "50" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].fine.value).toBe(50)
+        expect(mockVoice.operators[0].fine[0]()).toBe(50)
       })
     })
 
@@ -310,7 +319,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[0], { target: { value: "3" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].detune.value).toBe(10)
+        expect(mockVoice.operators[0].detune[0]()).toBe(10)
       })
     })
 
@@ -324,7 +333,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[3], { target: { value: "75" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].egLevel1.value).toBe(75)
+        expect(mockVoice.operators[0].egLevel1[0]()).toBe(75)
       })
     })
 
@@ -338,7 +347,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[7], { target: { value: "80" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].egRate1.value).toBe(80)
+        expect(mockVoice.operators[0].egRate1[0]()).toBe(80)
       })
     })
 
@@ -356,7 +365,7 @@ describe("Operator", () => {
       if (lDepthIndex >= 0) {
         fireEvent.change(inputs[lDepthIndex], { target: { value: "25" } })
         await waitFor(() => {
-          expect(mockVoice.operators[0].leftDepth.value).toBe(25)
+          expect(mockVoice.operators[0].leftDepth[0]()).toBe(25)
         })
       }
     })
@@ -374,7 +383,7 @@ describe("Operator", () => {
       const options = document.querySelectorAll(".curve-select-option")
       fireEvent.click(options[3])
 
-      expect(mockVoice.operators[0].leftCurve.value).toBe(3)
+      expect(mockVoice.operators[0].leftCurve[0]()).toBe(3)
     })
 
     it("updates rightDepth value when changed", async () => {
@@ -390,7 +399,7 @@ describe("Operator", () => {
       if (rDepthIndex >= 0) {
         fireEvent.change(inputs[rDepthIndex], { target: { value: "30" } })
         await waitFor(() => {
-          expect(mockVoice.operators[0].rightDepth.value).toBe(30)
+          expect(mockVoice.operators[0].rightDepth[0]()).toBe(30)
         })
       }
     })
@@ -406,7 +415,7 @@ describe("Operator", () => {
       const options = document.querySelectorAll(".curve-select-option")
       fireEvent.click(options[2])
 
-      expect(mockVoice.operators[0].rightCurve.value).toBe(2)
+      expect(mockVoice.operators[0].rightCurve[0]()).toBe(2)
     })
 
     it("updates rateScaling value when changed", async () => {
@@ -422,7 +431,7 @@ describe("Operator", () => {
       if (rateScalingIndex >= 0) {
         fireEvent.change(inputs[rateScalingIndex], { target: { value: "5" } })
         await waitFor(() => {
-          expect(mockVoice.operators[0].rateScaling.value).toBe(5)
+          expect(mockVoice.operators[0].rateScaling[0]()).toBe(5)
         })
       }
     })
@@ -440,7 +449,7 @@ describe("Operator", () => {
       if (modIndex >= 0) {
         fireEvent.change(inputs[modIndex], { target: { value: "2" } })
         await waitFor(() => {
-          expect(mockVoice.operators[0].ampModSens.value).toBe(2)
+          expect(mockVoice.operators[0].ampModSens[0]()).toBe(2)
         })
       }
     })
@@ -458,7 +467,7 @@ describe("Operator", () => {
       if (levelIndex >= 0) {
         fireEvent.change(inputs[levelIndex], { target: { value: "50" } })
         await waitFor(() => {
-          expect(mockVoice.operators[0].outputLevel.value).toBe(50)
+          expect(mockVoice.operators[0].outputLevel[0]()).toBe(50)
         })
       }
     })
@@ -476,7 +485,7 @@ describe("Operator", () => {
       if (keyIndex >= 0) {
         fireEvent.change(inputs[keyIndex], { target: { value: "4" } })
         await waitFor(() => {
-          expect(mockVoice.operators[0].keyVelocity.value).toBe(4)
+          expect(mockVoice.operators[0].keyVelocity[0]()).toBe(4)
         })
       }
     })
@@ -490,7 +499,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[4], { target: { value: "60" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].egLevel2.value).toBe(60)
+        expect(mockVoice.operators[0].egLevel2[0]()).toBe(60)
       })
     })
 
@@ -503,7 +512,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[5], { target: { value: "45" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].egLevel3.value).toBe(45)
+        expect(mockVoice.operators[0].egLevel3[0]()).toBe(45)
       })
     })
 
@@ -516,7 +525,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[6], { target: { value: "25" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].egLevel4.value).toBe(25)
+        expect(mockVoice.operators[0].egLevel4[0]()).toBe(25)
       })
     })
 
@@ -529,7 +538,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[8], { target: { value: "70" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].egRate2.value).toBe(70)
+        expect(mockVoice.operators[0].egRate2[0]()).toBe(70)
       })
     })
 
@@ -542,7 +551,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[9], { target: { value: "60" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].egRate3.value).toBe(60)
+        expect(mockVoice.operators[0].egRate3[0]()).toBe(60)
       })
     })
 
@@ -555,7 +564,7 @@ describe("Operator", () => {
       fireEvent.change(inputs[10], { target: { value: "50" } })
 
       await waitFor(() => {
-        expect(mockVoice.operators[0].egRate4.value).toBe(50)
+        expect(mockVoice.operators[0].egRate4[0]()).toBe(50)
       })
     })
 
@@ -571,7 +580,7 @@ describe("Operator", () => {
 
       await waitFor(() => {
         // C3 should be parsed to a note number minus 9
-        expect(mockVoice.operators[0].breakPoint.value).toBeGreaterThan(0)
+        expect(mockVoice.operators[0].breakPoint[0]()).toBeGreaterThan(0)
       })
     })
 
@@ -587,7 +596,7 @@ describe("Operator", () => {
 
       await waitFor(() => {
         // C3 should be parsed and converted to breakPoint value
-        expect(mockVoice.operators[0].breakPoint.value).toBeGreaterThan(0)
+        expect(mockVoice.operators[0].breakPoint[0]()).toBeGreaterThan(0)
       })
     })
 
@@ -603,7 +612,7 @@ describe("Operator", () => {
 
       await waitFor(() => {
         // Value should remain unchanged because parseValue returns null
-        expect(mockVoice.operators[0].breakPoint.value).toBe(50)
+        expect(mockVoice.operators[0].breakPoint[0]()).toBe(50)
       })
     })
   })

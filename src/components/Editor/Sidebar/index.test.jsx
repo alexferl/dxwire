@@ -1,32 +1,9 @@
-import { render, screen } from "@testing-library/preact"
+import { render, screen } from "@solidjs/testing-library"
 import { describe, expect, it, vi } from "vitest"
 
 // Mock VoiceContext before importing Sidebar
 vi.mock("../VoiceContext.jsx", () => ({
-  useVoice: () => ({
-    global: { algorithm: { value: 1 }, transpose: { value: 24 } },
-    pitchEG: {
-      level1: { value: 50 },
-      level2: { value: 50 },
-      level3: { value: 50 },
-      level4: { value: 50 },
-      rate1: { value: 99 },
-      rate2: { value: 99 },
-      rate3: { value: 99 },
-      rate4: { value: 99 },
-    },
-    lfo: {
-      wave: { value: 0 },
-      speed: { value: 35 },
-      delay: { value: 0 },
-      pmDepth: { value: 0 },
-      amDepth: { value: 0 },
-      pmSens: { value: 3 },
-      keySync: { value: 1 },
-    },
-    banks: { value: [] },
-    currentBank: { value: 0 },
-  }),
+  useVoice: vi.fn(),
 }))
 
 // Mock child components
