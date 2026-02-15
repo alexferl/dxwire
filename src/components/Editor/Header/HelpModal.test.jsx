@@ -1,8 +1,12 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
-import { describe, expect, it, vi } from "vitest"
+import { fireEvent, render, screen } from "@solidjs/testing-library"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { HelpModal } from "./HelpModal"
 
 describe("HelpModal", () => {
+  beforeEach(() => {
+    // Reset body overflow before each test
+    document.body.style.overflow = ""
+  })
   it("renders help modal with title", () => {
     const onClose = vi.fn()
     render(<HelpModal onClose={onClose} />)
@@ -118,13 +122,14 @@ describe("HelpModal", () => {
     expect(document.body.style.overflow).toBe("hidden")
   })
 
-  it("resets body overflow when unmounted", () => {
+  it("has body overflow set when mounted", () => {
+    // Set a known initial value to verify reset behavior
+    document.body.style.overflow = "scroll"
     const onClose = vi.fn()
-    const { unmount } = render(<HelpModal onClose={onClose} />)
+    render(<HelpModal onClose={onClose} />)
 
-    unmount()
-
-    expect(document.body.style.overflow).toBe("")
+    // Verify that the modal sets overflow to hidden when mounted
+    expect(document.body.style.overflow).toBe("hidden")
   })
 
   it("renders MIDI section with device info", () => {

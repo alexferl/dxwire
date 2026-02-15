@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "description": "",
   "type": "module",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=10.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alexferl/dxwire.git"
@@ -24,20 +28,20 @@
     "lint": "biome check --write"
   },
   "dependencies": {
-    "@preact/signals": "2.6.2",
-    "midiwire": "0.11.3",
-    "preact": "10.28.3",
-    "preact-iso": "2.11.1"
+    "@solidjs/router": "0.15.4",
+    "midiwire": "0.12.0",
+    "solid-js": "1.9.11"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.13",
-    "@preact/preset-vite": "2.10.3",
+    "@biomejs/biome": "2.3.15",
+    "@solidjs/testing-library": "0.8.10",
     "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/preact": "3.2.4",
     "@vitest/coverage-v8": "4.0.18",
     "@vitest/ui": "4.0.18",
-    "jsdom": "27.4.0",
+    "jsdom": "28.0.0",
+    "solid-devtools": "0.34.5",
     "vite": "7.3.1",
+    "vite-plugin-solid": "2.11.10",
     "vitest": "4.0.18"
   }
 }

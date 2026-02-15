@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
+import { fireEvent, render, screen } from "@solidjs/testing-library"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock VoiceContext before importing components that use it
@@ -19,31 +19,29 @@ global.URL.revokeObjectURL = vi.fn()
 // Track anchor element clicks
 let anchorClickSpy = null
 
-// Mock voice context with bank
+// Mock voice context with bank (SolidJS signal format: [getter, setter])
 function createMockVoiceWithBank() {
-  return {
-    banks: {
-      value: [
-        {
-          name: "Test Bank",
-          bank: {
-            toSysEx: () => new Uint8Array([0xf0, 0x43, 0x00, 0x09, 0xf7]),
-            toJSON: () => ({ name: "Test Bank", voices: [] }),
-          },
-        },
-      ],
+  const banks = [
+    {
+      name: "Test Bank",
+      bank: {
+        toSysEx: () => new Uint8Array([0xf0, 0x43, 0x00, 0x09, 0xf7]),
+        toJSON: () => ({ name: "Test Bank", voices: [] }),
+      },
     },
-    currentBank: { value: 0 },
+  ]
+  return {
+    banks: [() => banks, vi.fn()],
+    currentBank: [() => 0, vi.fn()],
   }
 }
 
 // Mock voice context without bank
 function createMockVoiceWithoutBank() {
+  const banks = [{ name: "Test Bank", bank: null }]
   return {
-    banks: {
-      value: [{ name: "Test Bank", bank: null }],
-    },
-    currentBank: { value: 0 },
+    banks: [() => banks, vi.fn()],
+    currentBank: [() => 0, vi.fn()],
   }
 }
 

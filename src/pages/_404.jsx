@@ -1,7 +1,7 @@
 /**
  * 404 Not Found page component.
  * Displays when a user navigates to a non-existent route.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function NotFound() {
   return (

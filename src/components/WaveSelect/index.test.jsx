@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
+import { fireEvent, render, screen } from "@solidjs/testing-library"
+import { createSignal } from "solid-js"
 import { describe, expect, it, vi } from "vitest"
 import { WaveSelect } from "./index"
 
@@ -125,16 +126,18 @@ describe("WaveSelect", () => {
 
   describe("size variants", () => {
     it("applies size classes correctly", () => {
-      const { rerender } = render(<WaveSelect title="LFO" value={0} onChange={() => {}} size="sm" />)
+      // SolidJS uses signals instead of rerender
+      const [size, setSize] = createSignal("sm")
+      render(() => <WaveSelect title="LFO" value={0} onChange={() => {}} size={size()} />)
       expect(document.querySelector(".wave-select-container")).toHaveClass("wave-select-sm")
 
-      rerender(<WaveSelect title="LFO" value={0} onChange={() => {}} size="md" />)
+      setSize("md")
       expect(document.querySelector(".wave-select-container")).toHaveClass("wave-select-md")
 
-      rerender(<WaveSelect title="LFO" value={0} onChange={() => {}} size="lg" />)
+      setSize("lg")
       expect(document.querySelector(".wave-select-container")).toHaveClass("wave-select-lg")
 
-      rerender(<WaveSelect title="LFO" value={0} onChange={() => {}} size="xl" />)
+      setSize("xl")
       expect(document.querySelector(".wave-select-container")).toHaveClass("wave-select-xl")
     })
 

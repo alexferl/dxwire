@@ -1,4 +1,4 @@
-import { useRef, useState } from "preact/hooks"
+import { createSignal } from "solid-js"
 import "./style.css"
 
 /**
@@ -17,7 +17,7 @@ import "./style.css"
  * @param {string} [props.description=""] - Extended description shown in popover
  * @param {string} [props.size="md"] - Size of the toggle: "sm" | "md" | "lg" | "xl"
  *
- * @returns {import("preact").JSX.Element} The rendered toggle switch component
+ * @returns {import("solid-js").JSX.Element} The rendered toggle switch component
  *
  * @example
  * // Single option mode (on/off with indicator)
@@ -38,102 +38,100 @@ import "./style.css"
  *   size="lg"
  * />
  */
-export function ToggleSwitch({
-  value,
-  onChange,
-  title = "",
-  option1 = "",
-  option2 = "",
-  description = "",
-  size = "md",
-}) {
-  const [isLabelHovered, setIsLabelHovered] = useState(false)
-  const dualToggleRef = useRef(null)
-  const singleToggleRef = useRef(null)
+export function ToggleSwitch(props) {
+  const { onChange } = props
+
+  const [isLabelHovered, setIsLabelHovered] = createSignal(false)
+  let dualToggleRef
+  let singleToggleRef
 
   const handleToggle = () => {
-    onChange(!value)
+    onChange(!props.value)
   }
 
-  const handleKeyDown = (/** @type {{ key: string; preventDefault: () => void; }} */ e) => {
+  const handleKeyDown = (e) => {
     if (e.key === " " || e.key === "Enter") {
       e.preventDefault()
       handleToggle()
     } else if (e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "ArrowRight" || e.key === "ArrowDown") {
       e.preventDefault()
       const newValue = e.key === "ArrowRight" || e.key === "ArrowDown"
-      if (newValue !== value) {
+      if (newValue !== props.value) {
         onChange(newValue)
       }
     }
   }
 
-  const sizeClass =
-    size === "sm" ? "toggle-sm" : size === "lg" ? "toggle-lg" : size === "xl" ? "toggle-xl" : "toggle-md"
+  const sizeClass = () => {
+    if (props.size === "sm") return "toggle-sm"
+    if (props.size === "lg") return "toggle-lg"
+    if (props.size === "xl") return "toggle-xl"
+    return "toggle-md"
+  }
 
-  const isDualMode = option1 && option2
+  const isDualMode = () => props.option1 && props.option2
 
   return (
-    <div className="toggle-container">
-      {isDualMode ? (
-        <div className="toggle-dual-container">
-          <div className="toggle-side-group">
-            <div className="toggle-dual-label">{option1}</div>
-            <div className={`toggle-side-indicator ${value ? "" : "on"}`} />
+    <div class="toggle-container">
+      {isDualMode() ? (
+        <div class="toggle-dual-container">
+          <div class="toggle-side-group">
+            <div class="toggle-dual-label">{props.option1}</div>
+            <div class={`toggle-side-indicator ${props.value ? "" : "on"}`} />
           </div>
           <div
             ref={dualToggleRef}
-            className={`toggle-switch ${sizeClass} ${value ? "on" : "off"}`}
+            class={`toggle-switch ${sizeClass()} ${props.value ? "on" : "off"}`}
             onClick={handleToggle}
-            onMouseDown={() => dualToggleRef.current?.focus()}
+            onMouseDown={() => dualToggleRef?.focus()}
             role="switch"
-            aria-checked={value}
+            aria-checked={props.value}
             tabIndex={0}
             onKeyDown={handleKeyDown}
           >
-            <div className="toggle-track">
-              <div className="toggle-3d-left" />
-              <div className="toggle-3d-right" />
+            <div class="toggle-track">
+              <div class="toggle-3d-left" />
+              <div class="toggle-3d-right" />
             </div>
           </div>
-          <div className="toggle-side-group">
-            <div className="toggle-dual-label">{option2}</div>
-            <div className={`toggle-side-indicator ${value ? "on" : ""}`} />
+          <div class="toggle-side-group">
+            <div class="toggle-dual-label">{props.option2}</div>
+            <div class={`toggle-side-indicator ${props.value ? "on" : ""}`} />
           </div>
         </div>
       ) : (
-        <div className="toggle-single-wrapper">
-          {title && (
+        <div class="toggle-single-wrapper">
+          {props.title && (
             <section
-              className="toggle-title"
+              class="toggle-title"
               onMouseEnter={() => setIsLabelHovered(true)}
               onMouseLeave={() => setIsLabelHovered(false)}
-              aria-label={`${title} toggle`}
+              aria-label={`${props.title} toggle`}
             >
-              {title}
+              {props.title}
             </section>
           )}
-          <div className="toggle-single-row">
+          <div class="toggle-single-row">
             <div
               ref={singleToggleRef}
-              className={`toggle-switch ${sizeClass} ${value ? "on" : "off"}`}
+              class={`toggle-switch ${sizeClass()} ${props.value ? "on" : "off"}`}
               onClick={handleToggle}
-              onMouseDown={() => singleToggleRef.current?.focus()}
+              onMouseDown={() => singleToggleRef?.focus()}
               role="switch"
-              aria-checked={value}
+              aria-checked={props.value}
               tabIndex={0}
               onKeyDown={handleKeyDown}
             >
-              <div className="toggle-track">
-                <div className="toggle-3d-left" />
-                <div className="toggle-3d-right" />
+              <div class="toggle-track">
+                <div class="toggle-3d-left" />
+                <div class="toggle-3d-right" />
               </div>
             </div>
-            <div className={`toggle-side-indicator ${value ? "on" : ""}`} />
+            <div class={`toggle-side-indicator ${props.value ? "on" : ""}`} />
           </div>
         </div>
       )}
-      {description && isLabelHovered && <div className="toggle-label-popover">{description}</div>}
+      {props.description && isLabelHovered() && <div class="toggle-label-popover">{props.description}</div>}
     </div>
   )
 }

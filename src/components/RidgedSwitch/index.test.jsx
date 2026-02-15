@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
+import { cleanup, fireEvent, render, screen } from "@solidjs/testing-library"
 import { describe, expect, it, vi } from "vitest"
 import { RidgedSwitch } from "./index"
 
@@ -79,16 +79,19 @@ describe("RidgedSwitch", () => {
   })
 
   it("applies size classes correctly", () => {
-    const { rerender } = render(<RidgedSwitch value={false} onChange={() => {}} size="sm" />)
+    const { unmount } = render(<RidgedSwitch value={false} onChange={() => {}} size="sm" />)
     expect(screen.getByRole("switch")).toHaveClass("ridged-sm")
+    unmount()
 
-    rerender(<RidgedSwitch value={false} onChange={() => {}} size="md" />)
+    render(<RidgedSwitch value={false} onChange={() => {}} size="md" />)
     expect(screen.getByRole("switch")).toHaveClass("ridged-md")
+    cleanup()
 
-    rerender(<RidgedSwitch value={false} onChange={() => {}} size="lg" />)
+    render(<RidgedSwitch value={false} onChange={() => {}} size="lg" />)
     expect(screen.getByRole("switch")).toHaveClass("ridged-lg")
+    cleanup()
 
-    rerender(<RidgedSwitch value={false} onChange={() => {}} size="xl" />)
+    render(<RidgedSwitch value={false} onChange={() => {}} size="xl" />)
     expect(screen.getByRole("switch")).toHaveClass("ridged-xl")
   })
 

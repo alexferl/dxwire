@@ -4,7 +4,7 @@ import { useVoice } from "../index"
 /**
  * Waveform display component.
  * Visualizes the pitch envelope generator as a waveform graph.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function WaveformDisplay() {
   const voice = useVoice()
@@ -14,18 +14,13 @@ export function WaveformDisplay() {
       <EnvelopeGraph
         type="pitch"
         levels={[
-          voice.pitchEG.level1.value,
-          voice.pitchEG.level2.value,
-          voice.pitchEG.level3.value,
-          voice.pitchEG.level4.value,
+          voice.pitchEG.level1[0](),
+          voice.pitchEG.level2[0](),
+          voice.pitchEG.level3[0](),
+          voice.pitchEG.level4[0](),
         ]}
-        rates={[
-          voice.pitchEG.rate1.value,
-          voice.pitchEG.rate2.value,
-          voice.pitchEG.rate3.value,
-          voice.pitchEG.rate4.value,
-        ]}
-        showADSR={voice.settings.value.showADSR}
+        rates={[voice.pitchEG.rate1[0](), voice.pitchEG.rate2[0](), voice.pitchEG.rate3[0](), voice.pitchEG.rate4[0]()]}
+        showADSR={voice.settings[0]().showADSR}
       />
     </div>
   )

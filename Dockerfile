@@ -1,13 +1,13 @@
 # Build stage
-FROM node:lts-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
-COPY package*.json .
-RUN npm install
+COPY package*.json ./
+RUN npm ci
 COPY . .
 RUN npm run build
 
 # Production stage with Caddy
-FROM caddy:2.10.2-alpine
+FROM caddy:2.10-alpine
 
 RUN addgroup -g 65532 -S caddy && \
     adduser -u 65532 -S caddy -G caddy

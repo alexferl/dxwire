@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks"
+import { createSignal } from "solid-js"
 import "./style.css"
 
 /**
@@ -8,10 +8,11 @@ import "./style.css"
  * @param {number} props.currentIndex - Current voice index
  * @param {(toIndex: number) => void} props.onConfirm - Callback when confirmed
  * @param {() => void} props.onCancel - Callback when cancelled
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
-export function CopyVoiceDialog({ voiceNames, currentIndex, onConfirm, onCancel }) {
-  const [selectedSlot, setSelectedSlot] = useState(currentIndex)
+export function CopyVoiceDialog(props) {
+  const { voiceNames, currentIndex, onConfirm, onCancel } = props
+  const [selectedSlot, setSelectedSlot] = createSignal(currentIndex)
 
   return (
     <section
@@ -45,8 +46,7 @@ export function CopyVoiceDialog({ voiceNames, currentIndex, onConfirm, onCancel 
           {Array.from({ length: 32 }, (_, i) => (
             <button
               type="button"
-              key={i}
-              class={`slot-button ${i === selectedSlot ? "current" : ""} ${i === currentIndex ? "source" : ""}`}
+              class={`slot-button ${i === selectedSlot() ? "current" : ""} ${i === currentIndex ? "source" : ""}`}
               onClick={() => setSelectedSlot(i)}
               title={voiceNames[i] || "Empty"}
             >
@@ -58,8 +58,8 @@ export function CopyVoiceDialog({ voiceNames, currentIndex, onConfirm, onCancel 
           <button
             type="button"
             class="copy-confirm"
-            onClick={() => onConfirm(selectedSlot)}
-            disabled={selectedSlot === currentIndex}
+            onClick={() => onConfirm(selectedSlot())}
+            disabled={selectedSlot() === currentIndex}
           >
             Copy
           </button>

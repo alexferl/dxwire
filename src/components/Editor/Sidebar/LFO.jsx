@@ -6,7 +6,7 @@ import { useVoice } from "../index"
 /**
  * Low Frequency Oscillator (LFO) editor component.
  * Controls for LFO speed, delay, modulation depth, and sync settings.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function LFO() {
   const voice = useVoice()
@@ -17,9 +17,9 @@ export function LFO() {
         <WaveSelect
           title="Wave"
           description="LFO Waveform"
-          value={voice.lfo.wave.value}
+          value={voice.lfo.wave[0]()}
           onChange={(v) => {
-            voice.lfo.wave.value = v
+            voice.lfo.wave[1](v)
           }}
           size="xl"
         />
@@ -30,11 +30,11 @@ export function LFO() {
           description="LFO Speed"
           min={0}
           max={99}
-          showValueInput={voice.settings.value.showValueInputs}
+          showValueInput={voice.settings[0]().showValueInputs}
           size="lg"
-          value={voice.lfo.speed.value}
+          value={voice.lfo.speed[0]()}
           onChange={(v) => {
-            voice.lfo.speed.value = v
+            voice.lfo.speed[1](v)
           }}
         />
         <Knob
@@ -42,11 +42,11 @@ export function LFO() {
           description="LFO Delay"
           min={0}
           max={99}
-          showValueInput={voice.settings.value.showValueInputs}
+          showValueInput={voice.settings[0]().showValueInputs}
           size="lg"
-          value={voice.lfo.delay.value}
+          value={voice.lfo.delay[0]()}
           onChange={(v) => {
-            voice.lfo.delay.value = v
+            voice.lfo.delay[1](v)
           }}
         />
       </div>
@@ -57,11 +57,11 @@ export function LFO() {
           min={0}
           max={99}
           indicatorOffAtMin={true}
-          showValueInput={voice.settings.value.showValueInputs}
+          showValueInput={voice.settings[0]().showValueInputs}
           size="md"
-          value={voice.lfo.pmDepth.value}
+          value={voice.lfo.pmDepth[0]()}
           onChange={(v) => {
-            voice.lfo.pmDepth.value = v
+            voice.lfo.pmDepth[1](v)
           }}
         />
         <Knob
@@ -70,11 +70,11 @@ export function LFO() {
           min={0}
           max={99}
           indicatorOffAtMin={true}
-          showValueInput={voice.settings.value.showValueInputs}
+          showValueInput={voice.settings[0]().showValueInputs}
           size="md"
-          value={voice.lfo.amDepth.value}
+          value={voice.lfo.amDepth[0]()}
           onChange={(v) => {
-            voice.lfo.amDepth.value = v
+            voice.lfo.amDepth[1](v)
           }}
         />
         <Knob
@@ -83,11 +83,11 @@ export function LFO() {
           min={0}
           max={7}
           indicatorOffAtMin={true}
-          showValueInput={voice.settings.value.showValueInputs}
+          showValueInput={voice.settings[0]().showValueInputs}
           size="md"
-          value={voice.lfo.pmSens.value}
+          value={voice.lfo.pmSens[0]()}
           onChange={(v) => {
-            voice.lfo.pmSens.value = v
+            voice.lfo.pmSens[1](v)
           }}
         />
       </div>
@@ -95,18 +95,18 @@ export function LFO() {
         <ToggleSwitch
           title="LFO Key Sync"
           description="LFO Key Sync"
-          value={voice.lfo.keySync.value === 1}
+          value={voice.lfo.keySync[0]() === 1}
           onChange={(v) => {
-            voice.lfo.keySync.value = v ? 1 : 0
+            voice.lfo.keySync[1](v ? 1 : 0)
           }}
           size="lg"
         />
         <ToggleSwitch
           title="OSC Key Sync"
           description="OSC Key Sync"
-          value={voice.global.oscSync.value === 1}
+          value={voice.global.oscSync[0]() === 1}
           onChange={(v) => {
-            voice.global.oscSync.value = v ? 1 : 0
+            voice.global.oscSync[1](v ? 1 : 0)
           }}
           size="lg"
         />

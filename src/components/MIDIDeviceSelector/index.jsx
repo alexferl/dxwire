@@ -4,32 +4,32 @@ import "./style.css"
 /**
  * MIDI device selector component.
  * Displays dropdowns for MIDI input/output device selection with connection status indicators.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function MIDIDeviceSelector() {
-  const { outputStatus, inputStatus } = useMIDI()
+  const midi = useMIDI()
 
   /**
    * Gets the status indicator dot for a device connection state.
    * Status classes: "" = gray (neutral), "connected" = green, "disconnected" = red
-   * @param {string} status - Connection status string
-   * @returns {import("preact").VNode} Status dot element
+   * @param {() => string} statusGetter - Getter function for connection status
+   * @returns {import("solid-js").JSX.Element} Status dot element
    */
-  function getStatusDot(status) {
-    return <span className={`status-dot ${status}`}></span>
+  function getStatusDot(statusGetter) {
+    return <span class={`status-dot ${statusGetter()}`}></span>
   }
 
   return (
-    <div className="midi-selector">
-      <div className="midi-group">
-        <label htmlFor="output-select">MIDI Output {getStatusDot(outputStatus)}</label>
+    <div class="midi-selector">
+      <div class="midi-group">
+        <label for="output-select">MIDI Output {getStatusDot(() => midi.outputStatus)}</label>
         <select id="output-select">
           <option value="">Select a device</option>
         </select>
       </div>
 
-      <div className="midi-group">
-        <label htmlFor="input-select">MIDI Input {getStatusDot(inputStatus)}</label>
+      <div class="midi-group">
+        <label for="input-select">MIDI Input {getStatusDot(() => midi.inputStatus)}</label>
         <select id="input-select">
           <option value="">Select a device</option>
         </select>

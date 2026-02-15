@@ -1,4 +1,4 @@
-import { useEffect } from "preact/hooks"
+import { onCleanup, onMount } from "solid-js"
 import {
   DownloadIcon,
   GearIcon,
@@ -14,13 +14,16 @@ import "../style.css"
  * @param {Object} props
  * @param {() => void} props.onClose
  */
-export function HelpModal({ onClose }) {
-  useEffect(() => {
+export function HelpModal(props) {
+  const onClose = () => props.onClose()
+
+  onMount(() => {
+    const originalOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
-    return () => {
-      document.body.style.overflow = ""
-    }
-  }, [])
+    onCleanup(() => {
+      document.body.style.overflow = originalOverflow
+    })
+  })
 
   return (
     <section

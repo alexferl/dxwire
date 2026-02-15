@@ -4,7 +4,7 @@ import "./style.css"
 /**
  * Home page component.
  * Renders the DX7 editor interface.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function Home() {
   return <Editor />

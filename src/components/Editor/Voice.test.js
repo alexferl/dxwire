@@ -168,11 +168,11 @@ describe("createVoice", () => {
     const voice = createVoice()
     const op = voice.operators[0]
 
-    expect(op.egRate1.value).toBe(99)
-    expect(op.egLevel1.value).toBe(99)
-    expect(op.enabled.value).toBe(true)
-    expect(op.mode.value).toBe(0)
-    expect(op.coarse.value).toBe(1)
+    expect(op.egRate1[0]()).toBe(99)
+    expect(op.egLevel1[0]()).toBe(99)
+    expect(op.enabled[0]()).toBe(true)
+    expect(op.mode[0]()).toBe(0)
+    expect(op.coarse[0]()).toBe(1)
   })
 
   it("creates pitchEG with required properties", () => {
@@ -191,8 +191,8 @@ describe("createVoice", () => {
   it("pitchEG has initial values", () => {
     const voice = createVoice()
 
-    expect(voice.pitchEG.rate1.value).toBe(99)
-    expect(voice.pitchEG.level1.value).toBe(50)
+    expect(voice.pitchEG.rate1[0]()).toBe(99)
+    expect(voice.pitchEG.level1[0]()).toBe(50)
   })
 
   it("creates lfo with required properties", () => {
@@ -210,10 +210,10 @@ describe("createVoice", () => {
   it("lfo has initial values", () => {
     const voice = createVoice()
 
-    expect(voice.lfo.speed.value).toBe(35)
-    expect(voice.lfo.delay.value).toBe(0)
-    expect(voice.lfo.wave.value).toBe(0)
-    expect(voice.lfo.keySync.value).toBe(1)
+    expect(voice.lfo.speed[0]()).toBe(35)
+    expect(voice.lfo.delay[0]()).toBe(0)
+    expect(voice.lfo.wave[0]()).toBe(0)
+    expect(voice.lfo.keySync[0]()).toBe(1)
   })
 
   it("creates global with required properties", () => {
@@ -231,30 +231,30 @@ describe("createVoice", () => {
   it("global has initial values", () => {
     const voice = createVoice()
 
-    expect(voice.global.algorithm.value).toBe(1)
-    expect(voice.global.feedback.value).toBe(0)
-    expect(voice.global.oscSync.value).toBe(1)
-    expect(voice.global.transpose.value).toBe(24)
-    expect(voice.global.name.value).toBe("Init Voice")
+    expect(voice.global.algorithm[0]()).toBe(1)
+    expect(voice.global.feedback[0]()).toBe(0)
+    expect(voice.global.oscSync[0]()).toBe(1)
+    expect(voice.global.transpose[0]()).toBe(24)
+    expect(voice.global.name[0]()).toBe("Init Voice")
   })
 
   it("creates banks signal", () => {
     const voice = createVoice()
 
-    expect(voice.banks.value).toBeInstanceOf(Array)
-    expect(voice.banks.value.length).toBeGreaterThan(0)
+    expect(voice.banks[0]()).toBeInstanceOf(Array)
+    expect(voice.banks[0]().length).toBeGreaterThan(0)
   })
 
   it("creates currentBank signal", () => {
     const voice = createVoice()
 
-    expect(voice.currentBank.value).toBe(0)
+    expect(voice.currentBank[0]()).toBe(0)
   })
 
   it("creates currentVoiceIndex signal", () => {
     const voice = createVoice()
 
-    expect(voice.currentVoiceIndex.value).toBe(0)
+    expect(voice.currentVoiceIndex[0]()).toBe(0)
   })
 
   describe("toJSON", () => {
@@ -383,7 +383,7 @@ describe("createVoice", () => {
 
       voice.switchBank(0)
 
-      expect(voice.currentBank.value).toBe(0)
+      expect(voice.currentBank[0]()).toBe(0)
     })
 
     it("throws error for invalid bank index", () => {
@@ -400,7 +400,7 @@ describe("createVoice", () => {
 
       voice.loadFromVoiceIndex(0)
 
-      expect(voice.currentVoiceIndex.value).toBe(0)
+      expect(voice.currentVoiceIndex[0]()).toBe(0)
     })
 
     it("throws error for invalid voice index", () => {
@@ -423,7 +423,7 @@ describe("createVoice", () => {
   describe("deleteBank", () => {
     it("throws error when deleting last bank", () => {
       const voice = createVoice()
-      voice.banks.value = [{ name: "Only Bank", bank: {} }]
+      voice.banks[1]([{ name: "Only Bank", bank: {} }])
 
       expect(() => voice.deleteBank(0)).toThrow("Cannot delete the last bank")
     })
@@ -439,40 +439,40 @@ describe("createVoice", () => {
 
       voice.renameBank(0, "New Name")
 
-      expect(voice.banks.value[0].name).toBe("New Name")
+      expect(voice.banks[0]()[0].name).toBe("New Name")
     })
 
     it("does nothing for invalid bank index", () => {
       const voice = createVoice()
-      voice.banks.value = [{ name: "Bank", bank: {} }]
+      voice.banks[1]([{ name: "Bank", bank: {} }])
 
       voice.renameBank(-1, "New Name")
 
-      expect(voice.banks.value[0].name).toBe("Bank")
+      expect(voice.banks[0]()[0].name).toBe("Bank")
     })
   })
 
   describe("resetBanks", () => {
     it("resets to default bank", () => {
       const voice = createVoice()
-      voice.banks.value = [
+      voice.banks[1]([
         { name: "Bank 1", bank: {} },
         { name: "Bank 2", bank: {} },
         { name: "Bank 3", bank: {} },
-      ]
+      ])
 
       voice.resetBanks()
 
-      expect(voice.banks.value.length).toBe(1)
-      expect(voice.currentBank.value).toBe(0)
-      expect(voice.currentVoiceIndex.value).toBe(0)
+      expect(voice.banks[0]().length).toBe(1)
+      expect(voice.currentBank[0]()).toBe(0)
+      expect(voice.currentVoiceIndex[0]()).toBe(0)
     })
   })
 
   describe("initVoice", () => {
     it("throws error when no bank loaded", () => {
       const voice = createVoice()
-      voice.banks.value = []
+      voice.banks[1]([])
 
       expect(() => voice.initVoice(0)).toThrow("No bank loaded")
     })
@@ -481,7 +481,7 @@ describe("createVoice", () => {
   describe("copyVoice", () => {
     it("throws error when no bank loaded", () => {
       const voice = createVoice()
-      voice.banks.value = []
+      voice.banks[1]([])
 
       expect(() => voice.copyVoice(0, 1)).toThrow("No bank loaded")
     })
@@ -490,7 +490,7 @@ describe("createVoice", () => {
   describe("renameVoice", () => {
     it("throws error when no bank loaded", () => {
       const voice = createVoice()
-      voice.banks.value = []
+      voice.banks[1]([])
 
       expect(() => voice.renameVoice(0, "New Name")).toThrow("No bank loaded")
     })
@@ -499,7 +499,7 @@ describe("createVoice", () => {
   describe("replaceVoiceInBank", () => {
     it("throws error when no bank loaded", () => {
       const voice = createVoice()
-      voice.banks.value = []
+      voice.banks[1]([])
 
       expect(() => voice.replaceVoiceInBank(0)).toThrow("No bank loaded")
     })

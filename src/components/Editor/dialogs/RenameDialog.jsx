@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks"
+import { createSignal, onMount } from "solid-js"
 import "./style.css"
 
 /**
@@ -8,23 +8,25 @@ import "./style.css"
  * @param {string} props.title - Dialog title
  * @param {(newName: string) => void} props.onConfirm - Callback when confirmed
  * @param {() => void} props.onCancel - Callback when cancelled
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
-export function RenameDialog({ currentName, title, onConfirm, onCancel }) {
-  const [name, setName] = useState(currentName)
-  const inputRef = useRef(null)
+export function RenameDialog(props) {
+  const { currentName, title, onConfirm, onCancel } = props
+  const [name, setName] = createSignal(currentName)
+  let inputRef
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus()
-      inputRef.current.select()
+  onMount(() => {
+    if (inputRef) {
+      inputRef.focus()
+      inputRef.select()
     }
-  }, [])
+  })
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (name.trim()) {
-      onConfirm(name.trim())
+    const trimmedName = name().trim()
+    if (trimmedName) {
+      onConfirm(trimmedName)
     }
   }
 
@@ -60,7 +62,7 @@ export function RenameDialog({ currentName, title, onConfirm, onCancel }) {
           <input
             ref={inputRef}
             type="text"
-            value={name}
+            value={name()}
             onInput={(e) => setName(e.currentTarget.value)}
             placeholder="Name"
             class="rename-input"

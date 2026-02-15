@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
+import { cleanup, fireEvent, render, screen } from "@solidjs/testing-library"
 import { describe, expect, it, vi } from "vitest"
 import { Knob } from "./index"
 
@@ -205,16 +205,19 @@ describe("Knob", () => {
 
   describe("size variants", () => {
     it("applies size classes correctly", () => {
-      const { rerender } = render(<Knob title="Volume" value={50} onChange={() => {}} size="sm" />)
+      const { unmount } = render(<Knob title="Volume" value={50} onChange={() => {}} size="sm" />)
       expect(screen.getByRole("slider")).toHaveClass("knob-sm")
+      unmount()
 
-      rerender(<Knob title="Volume" value={50} onChange={() => {}} size="md" />)
+      render(<Knob title="Volume" value={50} onChange={() => {}} size="md" />)
       expect(screen.getByRole("slider")).toHaveClass("knob-md")
+      cleanup()
 
-      rerender(<Knob title="Volume" value={50} onChange={() => {}} size="lg" />)
+      render(<Knob title="Volume" value={50} onChange={() => {}} size="lg" />)
       expect(screen.getByRole("slider")).toHaveClass("knob-lg")
+      cleanup()
 
-      rerender(<Knob title="Volume" value={50} onChange={() => {}} size="xl" />)
+      render(<Knob title="Volume" value={50} onChange={() => {}} size="xl" />)
       expect(screen.getByRole("slider")).toHaveClass("knob-xl")
     })
 

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
+import { cleanup, fireEvent, render, screen } from "@solidjs/testing-library"
 import { describe, expect, it, vi } from "vitest"
 import { Slider } from "./index"
 
@@ -189,16 +189,19 @@ describe("Slider", () => {
 
   describe("size variants", () => {
     it("applies size classes correctly", () => {
-      const { rerender } = render(<Slider title="Volume" value={50} onChange={() => {}} size="sm" />)
+      const { unmount } = render(<Slider title="Volume" value={50} onChange={() => {}} size="sm" />)
       expect(screen.getByRole("slider")).toHaveClass("slider-sm")
+      unmount()
 
-      rerender(<Slider title="Volume" value={50} onChange={() => {}} size="md" />)
+      render(<Slider title="Volume" value={50} onChange={() => {}} size="md" />)
       expect(screen.getByRole("slider")).toHaveClass("slider-md")
+      cleanup()
 
-      rerender(<Slider title="Volume" value={50} onChange={() => {}} size="lg" />)
+      render(<Slider title="Volume" value={50} onChange={() => {}} size="lg" />)
       expect(screen.getByRole("slider")).toHaveClass("slider-lg")
+      cleanup()
 
-      rerender(<Slider title="Volume" value={50} onChange={() => {}} size="xl" />)
+      render(<Slider title="Volume" value={50} onChange={() => {}} size="xl" />)
       expect(screen.getByRole("slider")).toHaveClass("slider-xl")
     })
 

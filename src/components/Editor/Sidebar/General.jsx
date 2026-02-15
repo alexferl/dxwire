@@ -4,7 +4,7 @@ import { useVoice } from "../index"
 /**
  * General section component.
  * Controls for algorithm selection, feedback amount, and transpose settings.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function General() {
   const voice = useVoice()
@@ -17,11 +17,11 @@ export function General() {
           description="Alogrithm"
           min={1}
           max={32}
-          showValueInput={voice.settings.value.showValueInputs}
+          showValueInput={voice.settings[0]().showValueInputs}
           size="lg"
-          value={voice.global.algorithm.value}
+          value={voice.global.algorithm[0]()}
           onChange={(v) => {
-            voice.global.algorithm.value = v
+            voice.global.algorithm[1](v)
           }}
         />
         <Knob
@@ -30,11 +30,11 @@ export function General() {
           min={0}
           max={7}
           indicatorOffAtMin={true}
-          showValueInput={voice.settings.value.showValueInputs}
+          showValueInput={voice.settings[0]().showValueInputs}
           size="lg"
-          value={voice.global.feedback.value}
+          value={voice.global.feedback[0]()}
           onChange={(v) => {
-            voice.global.feedback.value = v
+            voice.global.feedback[1](v)
           }}
         />
         <Knob
@@ -42,11 +42,11 @@ export function General() {
           description="Transpose"
           min={-24}
           max={24}
-          showValueInput={voice.settings.value.showValueInputs}
+          showValueInput={voice.settings[0]().showValueInputs}
           size="lg"
-          value={voice.global.transpose.value - 24}
+          value={voice.global.transpose[0]() - 24}
           onChange={(v) => {
-            voice.global.transpose.value = v + 24
+            voice.global.transpose[1](v + 24)
           }}
         />
       </div>

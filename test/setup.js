@@ -1,15 +1,10 @@
-import "@testing-library/jest-dom/vitest"
-import { cleanup } from "@testing-library/preact"
-import { afterEach, vi } from "vitest"
+import { cleanup } from "@solidjs/testing-library"
+import * as matchers from "@testing-library/jest-dom/matchers"
+import { afterEach, expect, vi } from "vitest"
 
-/**
- * Test setup file for Vitest.
- * Configures cleanup after each test case to prevent state leakage.
- */
+expect.extend(matchers)
 
-/**
- * Mock localStorage for tests
- */
+// Mock localStorage for tests
 const localStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
@@ -19,11 +14,8 @@ const localStorageMock = {
 
 vi.stubGlobal("localStorage", localStorageMock)
 
-/**
- * Cleanup function that runs after each test.
- * Unmounts any rendered Preact components.
- */
-afterEach(() => {
-  cleanup()
+// Cleanup after each test case
+afterEach(async () => {
+  await cleanup()
   vi.clearAllMocks()
 })

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
+import { fireEvent, render, screen } from "@solidjs/testing-library"
 import { describe, expect, it, vi } from "vitest"
 import { CopyVoiceDialog } from "./CopyVoiceDialog.jsx"
 

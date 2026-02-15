@@ -4,7 +4,7 @@ import { useVoice } from "../index"
 /**
  * Export menu component.
  * Provides UI for exporting banks to files.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function ExportMenu() {
   const voice = useVoice()
@@ -14,7 +14,7 @@ export function ExportMenu() {
    export { ExportMenu } from "./ExportMenu.jsx"
    */
   const handleExportBankSysEx = () => {
-    const bankEntry = voice.banks.value[voice.currentBank.value]
+    const bankEntry = voice.banks[0]()[voice.currentBank[0]()]
     if (!bankEntry?.bank) {
       alert("No bank loaded")
       return
@@ -35,7 +35,7 @@ export function ExportMenu() {
    * Exports the current bank as a .json file.
    */
   const handleExportBankJSON = () => {
-    const bankEntry = voice.banks.value[voice.currentBank.value]
+    const bankEntry = voice.banks[0]()[voice.currentBank[0]()]
     if (!bankEntry?.bank) {
       alert("No bank loaded")
       return
@@ -68,12 +68,12 @@ export function ExportMenu() {
     </svg>
   )
 
-  const bankLoaded = !!voice.banks.value[voice.currentBank.value]?.bank
+  const bankLoaded = () => !!voice.banks[0]()[voice.currentBank[0]()]?.bank
 
   return (
     <MenuButton icon={exportIcon}>
-      <MenuItem label="Export Bank (.syx)" onClick={handleExportBankSysEx} disabled={!bankLoaded} />
-      <MenuItem label="Export Bank (.json)" onClick={handleExportBankJSON} disabled={!bankLoaded} />
+      <MenuItem label="Export Bank (.syx)" onClick={handleExportBankSysEx} disabled={!bankLoaded()} />
+      <MenuItem label="Export Bank (.json)" onClick={handleExportBankJSON} disabled={!bankLoaded()} />
     </MenuButton>
   )
 }

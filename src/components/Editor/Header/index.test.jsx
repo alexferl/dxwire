@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/preact"
+import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock VoiceContext before importing components that use it
@@ -41,13 +41,22 @@ vi.mock("../../MIDIDeviceSelector", () => ({
   MIDIDeviceSelector: () => <div data-testid="midi-selector">MIDIDeviceSelector</div>,
 }))
 
-// Create mock voice context
+// Create mock voice context with SolidJS signal format [getter, setter]
+function createSignalMock(initialValue) {
+  let value = initialValue
+  const getter = () => value
+  const setter = (newValue) => {
+    value = newValue
+  }
+  return [getter, setter]
+}
+
 function createMockVoice(overrides = {}) {
   return {
-    banks: { value: overrides.banks ?? [{ name: "Init Bank", bank: { toSysEx: () => [] } }] },
-    currentBank: { value: overrides.currentBank ?? 0 },
-    currentVoiceIndex: { value: overrides.currentVoiceIndex ?? 0 },
-    global: { name: { value: overrides.voiceName ?? "Init Voice" } },
+    banks: createSignalMock(overrides.banks ?? [{ name: "Init Bank", bank: { toSysEx: () => [] } }]),
+    currentBank: createSignalMock(overrides.currentBank ?? 0),
+    currentVoiceIndex: createSignalMock(overrides.currentVoiceIndex ?? 0),
+    global: { name: createSignalMock(overrides.voiceName ?? "Init Voice") },
     getBankNames: vi.fn().mockReturnValue(overrides.bankNames ?? ["Init Bank"]),
     getBankVoiceNames: vi.fn().mockReturnValue(
       overrides.voiceNames ??
@@ -70,17 +79,18 @@ function createMockVoice(overrides = {}) {
 // Create mock MIDI context
 function createMockMIDI(overrides = {}) {
   return {
-    midi: overrides.midi ?? {
-      system: {
-        sendEx: vi.fn(),
+    midi: () =>
+      overrides.midi ?? {
+        system: {
+          sendEx: vi.fn(),
+        },
+        connection: {
+          on: vi.fn(),
+          off: vi.fn(),
+        },
       },
-      connection: {
-        on: vi.fn(),
-        off: vi.fn(),
-      },
-    },
-    hasOutputDevice: overrides.hasOutputDevice ?? false,
-    hasInputDevice: overrides.hasInputDevice ?? false,
+    hasOutputDevice: () => overrides.hasOutputDevice ?? false,
+    hasInputDevice: () => overrides.hasInputDevice ?? false,
   }
 }
 

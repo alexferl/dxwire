@@ -1,6 +1,6 @@
 # DXWire
 
-A web-based patch editor and manager for the Yamaha DX7 synthesizer. Built with Preact and modern web technologies.
+A web-based patch editor and manager for the Yamaha DX7 synthesizer. Built with SolidJS and modern web technologies.
 
 ## Overview
 
@@ -118,10 +118,9 @@ The built files will be in the `dist/` directory.
 
 ### Tech Stack
 
-- **[Preact](https://preactjs.com/)** - Fast 3kB alternative to React with hooks
-- **[Vite](https://vitejs.dev/)** - Next generation frontend tooling
 - **[midiwire](https://github.com/alexferl/midiwire)** - MIDI device management and DX7 SysEx handling
-- **[Preact Signals](https://github.com/preactjs/signals)** - Reactive state management
+- **[SolidJS](https://www.solidjs.com/)** - Simple and performant reactivity for building user interfaces
+- **[Vite](https://vitejs.dev/)** - Next generation frontend tooling
 - **[Biome](https://biomejs.dev/)** - Fast linter and formatter
 - **[Vitest](https://vitest.dev/)** - Unit testing framework
 

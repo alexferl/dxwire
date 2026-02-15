@@ -8,7 +8,7 @@ import "./style.css"
 /**
  * Sidebar component for the Editor.
  * Contains Algorithm, General, WaveformDisplay, PitchEG, and LFO sections.
- * @returns {import("preact").VNode}
+ * @returns {import("solid-js").JSX.Element}
  */
 export function Sidebar() {
   return (

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/preact"
+import { cleanup, fireEvent, render, screen } from "@solidjs/testing-library"
 import { describe, expect, it, vi } from "vitest"
 import { CurveSelect } from "./index.jsx"
 
@@ -144,16 +144,19 @@ describe("CurveSelect", () => {
 
   describe("size variants", () => {
     it("applies size classes correctly", () => {
-      const { rerender } = render(<CurveSelect title="Curve" value={0} onChange={() => {}} size="sm" />)
+      const { unmount } = render(<CurveSelect title="Curve" value={0} onChange={() => {}} size="sm" />)
       expect(document.querySelector(".curve-select-container")).toHaveClass("curve-select-sm")
+      unmount()
 
-      rerender(<CurveSelect title="Curve" value={0} onChange={() => {}} size="md" />)
+      render(<CurveSelect title="Curve" value={0} onChange={() => {}} size="md" />)
       expect(document.querySelector(".curve-select-container")).toHaveClass("curve-select-md")
+      cleanup()
 
-      rerender(<CurveSelect title="Curve" value={0} onChange={() => {}} size="lg" />)
+      render(<CurveSelect title="Curve" value={0} onChange={() => {}} size="lg" />)
       expect(document.querySelector(".curve-select-container")).toHaveClass("curve-select-lg")
+      cleanup()
 
-      rerender(<CurveSelect title="Curve" value={0} onChange={() => {}} size="xl" />)
+      render(<CurveSelect title="Curve" value={0} onChange={() => {}} size="xl" />)
       expect(document.querySelector(".curve-select-container")).toHaveClass("curve-select-xl")
     })
 

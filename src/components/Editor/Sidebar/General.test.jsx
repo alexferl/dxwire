@@ -1,17 +1,26 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/preact"
+import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
 import { VoiceContext } from "../context/VoiceContext"
 import { General } from "./General"
 
-// Mock voice context
+// Mock voice context with SolidJS signal format
+function createSignalMock(initialValue) {
+  let value = initialValue
+  const getter = () => value
+  const setter = (newValue) => {
+    value = newValue
+  }
+  return [getter, setter]
+}
+
 function createMockVoice() {
   return {
     global: {
-      algorithm: { value: 5 },
-      feedback: { value: 3 },
-      transpose: { value: 24 },
+      algorithm: createSignalMock(5),
+      feedback: createSignalMock(3),
+      transpose: createSignalMock(24),
     },
-    settings: { value: { showADSR: true, showValueInputs: true } },
+    settings: createSignalMock({ showADSR: true, showValueInputs: true }),
   }
 }
 
@@ -89,7 +98,7 @@ describe("General", () => {
     fireEvent.change(inputs[0], { target: { value: "15" } })
 
     await waitFor(() => {
-      expect(mockVoice.global.algorithm.value).toBe(15)
+      expect(mockVoice.global.algorithm[0]()).toBe(15)
     })
   })
 
@@ -105,7 +114,7 @@ describe("General", () => {
     fireEvent.change(inputs[1], { target: { value: "5" } })
 
     await waitFor(() => {
-      expect(mockVoice.global.feedback.value).toBe(5)
+      expect(mockVoice.global.feedback[0]()).toBe(5)
     })
   })
 
@@ -123,7 +132,7 @@ describe("General", () => {
 
     await waitFor(() => {
       // The onChange adds 24 to the value: -12 + 24 = 12
-      expect(mockVoice.global.transpose.value).toBe(12)
+      expect(mockVoice.global.transpose[0]()).toBe(12)
     })
   })
 
@@ -141,7 +150,7 @@ describe("General", () => {
 
     await waitFor(() => {
       // Value should not change because 50 > max (32)
-      expect(mockVoice.global.algorithm.value).toBe(5)
+      expect(mockVoice.global.algorithm[0]()).toBe(5)
     })
   })
 
@@ -159,7 +168,7 @@ describe("General", () => {
 
     await waitFor(() => {
       // Value should not change because 10 > max (7)
-      expect(mockVoice.global.feedback.value).toBe(3)
+      expect(mockVoice.global.feedback[0]()).toBe(3)
     })
   })
 })

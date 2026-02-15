@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/preact"
+import { render, screen, waitFor } from "@solidjs/testing-library"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { MIDIContextProvider, useMIDI } from "./MIDIContext.jsx"
 
@@ -33,9 +33,9 @@ function TestComponent() {
     <div>
       <div data-testid="output-status">{midi.outputStatus}</div>
       <div data-testid="input-status">{midi.inputStatus}</div>
-      <div data-testid="has-output">{midi.hasOutputDevice ? "yes" : "no"}</div>
-      <div data-testid="has-input">{midi.hasInputDevice ? "yes" : "no"}</div>
-      <div data-testid="midi-exists">{midi.midi ? "yes" : "no"}</div>
+      <div data-testid="has-output">{midi.hasOutputDevice() ? "yes" : "no"}</div>
+      <div data-testid="has-input">{midi.hasInputDevice() ? "yes" : "no"}</div>
+      <div data-testid="midi-exists">{midi.midi() ? "yes" : "no"}</div>
     </div>
   )
 }
@@ -50,17 +50,18 @@ describe("MIDIContext", () => {
   })
 
   it("throws error when useMIDI is used outside provider", () => {
-    function UnwrappedComponent() {
-      try {
-        useMIDI()
-        return <div>No error</div>
-      } catch (err) {
-        return <div data-testid="error">{err.message}</div>
-      }
+    // Test that useMIDI throws when called outside provider
+    // We need to call it outside of any component render to avoid SolidJS rendering issues
+    let thrownError = null
+    try {
+      // Call useMIDI directly - it should throw immediately
+      useMIDI()
+    } catch (err) {
+      thrownError = err
     }
 
-    render(<UnwrappedComponent />)
-    expect(screen.getByTestId("error")).toHaveTextContent("useMIDI must be used within MIDIContextProvider")
+    expect(thrownError).not.toBeNull()
+    expect(thrownError.message).toBe("useMIDI must be used within MIDIContextProvider")
   })
 
   it("provides initial MIDI state to children", async () => {
