@@ -9,6 +9,7 @@ import "./style.css"
  * @param {function} props.onChange - Callback when toggled
  * @param {string} [props.description] - Accessibility description
  * @param {string} [props.size="md"] - Size of the switch: "sm" | "md" | "lg" | "xl"
+ * @returns {import("solid-js").JSX.Element}
  */
 export function RidgedSwitch(props) {
   const sizeClass = () => {
