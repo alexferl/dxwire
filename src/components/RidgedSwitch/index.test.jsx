@@ -4,21 +4,21 @@ import { RidgedSwitch } from "./index"
 
 describe("RidgedSwitch", () => {
   it("renders with default props", () => {
-    render(<RidgedSwitch value={false} onChange={() => {}} />)
+    render(() => <RidgedSwitch value={false} onChange={() => {}} />)
     const switchEl = screen.getByRole("switch")
     expect(switchEl).toBeInTheDocument()
     expect(switchEl).toHaveAttribute("aria-checked", "false")
   })
 
   it("renders in 'on' state when value is true", () => {
-    render(<RidgedSwitch value={true} onChange={() => {}} />)
+    render(() => <RidgedSwitch value={true} onChange={() => {}} />)
     const switchEl = screen.getByRole("switch")
     expect(switchEl).toHaveAttribute("aria-checked", "true")
     expect(switchEl).toHaveClass("on")
   })
 
   it("renders in 'off' state when value is false", () => {
-    render(<RidgedSwitch value={false} onChange={() => {}} />)
+    render(() => <RidgedSwitch value={false} onChange={() => {}} />)
     const switchEl = screen.getByRole("switch")
     expect(switchEl).toHaveAttribute("aria-checked", "false")
     expect(switchEl).toHaveClass("off")
@@ -26,7 +26,7 @@ describe("RidgedSwitch", () => {
 
   it("calls onChange with toggled value when clicked", () => {
     const onChange = vi.fn()
-    render(<RidgedSwitch value={false} onChange={onChange} />)
+    render(() => <RidgedSwitch value={false} onChange={onChange} />)
     const switchEl = screen.getByRole("switch")
 
     fireEvent.click(switchEl)
@@ -35,7 +35,7 @@ describe("RidgedSwitch", () => {
 
   it("calls onChange with false when clicked while on", () => {
     const onChange = vi.fn()
-    render(<RidgedSwitch value={true} onChange={onChange} />)
+    render(() => <RidgedSwitch value={true} onChange={onChange} />)
     const switchEl = screen.getByRole("switch")
 
     fireEvent.click(switchEl)
@@ -44,7 +44,7 @@ describe("RidgedSwitch", () => {
 
   it("toggles on Enter key press", () => {
     const onChange = vi.fn()
-    render(<RidgedSwitch value={false} onChange={onChange} />)
+    render(() => <RidgedSwitch value={false} onChange={onChange} />)
     const switchEl = screen.getByRole("switch")
 
     fireEvent.keyDown(switchEl, { key: "Enter" })
@@ -53,7 +53,7 @@ describe("RidgedSwitch", () => {
 
   it("toggles on Space key press", () => {
     const onChange = vi.fn()
-    render(<RidgedSwitch value={false} onChange={onChange} />)
+    render(() => <RidgedSwitch value={false} onChange={onChange} />)
     const switchEl = screen.getByRole("switch")
 
     fireEvent.keyDown(switchEl, { key: " " })
@@ -62,7 +62,7 @@ describe("RidgedSwitch", () => {
 
   it("toggles on ArrowRight key press", () => {
     const onChange = vi.fn()
-    render(<RidgedSwitch value={false} onChange={onChange} />)
+    render(() => <RidgedSwitch value={false} onChange={onChange} />)
     const switchEl = screen.getByRole("switch")
 
     fireEvent.keyDown(switchEl, { key: "ArrowRight" })
@@ -71,7 +71,7 @@ describe("RidgedSwitch", () => {
 
   it("toggles on ArrowLeft key press", () => {
     const onChange = vi.fn()
-    render(<RidgedSwitch value={true} onChange={onChange} />)
+    render(() => <RidgedSwitch value={true} onChange={onChange} />)
     const switchEl = screen.getByRole("switch")
 
     fireEvent.keyDown(switchEl, { key: "ArrowLeft" })
@@ -79,34 +79,34 @@ describe("RidgedSwitch", () => {
   })
 
   it("applies size classes correctly", () => {
-    const { unmount } = render(<RidgedSwitch value={false} onChange={() => {}} size="sm" />)
+    const { unmount } = render(() => <RidgedSwitch value={false} onChange={() => {}} size="sm" />)
     expect(screen.getByRole("switch")).toHaveClass("ridged-sm")
     unmount()
 
-    render(<RidgedSwitch value={false} onChange={() => {}} size="md" />)
+    render(() => <RidgedSwitch value={false} onChange={() => {}} size="md" />)
     expect(screen.getByRole("switch")).toHaveClass("ridged-md")
     cleanup()
 
-    render(<RidgedSwitch value={false} onChange={() => {}} size="lg" />)
+    render(() => <RidgedSwitch value={false} onChange={() => {}} size="lg" />)
     expect(screen.getByRole("switch")).toHaveClass("ridged-lg")
     cleanup()
 
-    render(<RidgedSwitch value={false} onChange={() => {}} size="xl" />)
+    render(() => <RidgedSwitch value={false} onChange={() => {}} size="xl" />)
     expect(screen.getByRole("switch")).toHaveClass("ridged-xl")
   })
 
   it("uses default 'md' size when size prop is not provided", () => {
-    render(<RidgedSwitch value={false} onChange={() => {}} />)
+    render(() => <RidgedSwitch value={false} onChange={() => {}} />)
     expect(screen.getByRole("switch")).toHaveClass("ridged-md")
   })
 
   it("sets aria-label from description prop", () => {
-    render(<RidgedSwitch value={false} onChange={() => {}} description="Test switch description" />)
+    render(() => <RidgedSwitch value={false} onChange={() => {}} description="Test switch description" />)
     expect(screen.getByRole("switch")).toHaveAttribute("aria-label", "Test switch description")
   })
 
   it("is focusable via tabIndex", () => {
-    render(<RidgedSwitch value={false} onChange={() => {}} />)
+    render(() => <RidgedSwitch value={false} onChange={() => {}} />)
     expect(screen.getByRole("switch")).toHaveAttribute("tabIndex", "0")
   })
 })

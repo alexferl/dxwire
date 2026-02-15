@@ -27,11 +27,11 @@ function createMockVoice() {
 describe("General", () => {
   it("renders all knobs", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <General />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByLabelText("Algo knob")).toBeInTheDocument()
     expect(screen.getByLabelText("Feed knob")).toBeInTheDocument()
@@ -40,11 +40,11 @@ describe("General", () => {
 
   it("renders knob titles", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <General />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByText("Algo")).toBeInTheDocument()
     expect(screen.getByText("Feed")).toBeInTheDocument()
@@ -53,11 +53,11 @@ describe("General", () => {
 
   it("displays correct initial values", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <General />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByLabelText("Algo knob")).toBeInTheDocument()
     expect(screen.getByLabelText("Feed knob")).toBeInTheDocument()
@@ -66,33 +66,33 @@ describe("General", () => {
 
   it("has correct CSS class for container", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <General />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(document.querySelector(".feedback-section")).toBeInTheDocument()
   })
 
   it("has correct CSS class for knobs container", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <General />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(document.querySelector(".feedback-knobs")).toBeInTheDocument()
   })
 
   it("updates algorithm value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <General />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[0], { target: { value: "15" } })
@@ -104,11 +104,11 @@ describe("General", () => {
 
   it("updates feedback value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <General />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[1], { target: { value: "5" } })
@@ -120,11 +120,11 @@ describe("General", () => {
 
   it("updates transpose value with offset when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <General />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     // Transpose knob shows value - 24 (0 in UI means 24 in data)
@@ -138,11 +138,11 @@ describe("General", () => {
 
   it("respects algorithm min/max range", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <General />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     // Algorithm min is 1, max is 32
@@ -156,11 +156,11 @@ describe("General", () => {
 
   it("respects feedback min/max range", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <General />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     // Feedback min is 0, max is 7

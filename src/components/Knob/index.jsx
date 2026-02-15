@@ -65,8 +65,10 @@ export function Knob(props) {
   const [dragStartY, setDragStartY] = createSignal(0)
   const [startValue, setStartValue] = createSignal(0)
   const [inputValue, setInputValue] = createSignal(null)
+  /** @type {HTMLDivElement | undefined} */
   let knobRef
-  let keyRepeatRef
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let keyRepeatRef = null
   let keyDirectionRef = 0
 
   createEffect(() => {

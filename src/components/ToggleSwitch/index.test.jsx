@@ -6,19 +6,19 @@ import { ToggleSwitch } from "./index"
 describe("ToggleSwitch", () => {
   describe("single option mode", () => {
     it("renders with title in single option mode", () => {
-      render(<ToggleSwitch value={false} onChange={() => {}} title="Enable Feature" />)
+      render(() => <ToggleSwitch value={false} onChange={() => {}} title="Enable Feature" />)
       expect(screen.getByText("Enable Feature")).toBeInTheDocument()
     })
 
     it("renders in 'off' state by default", () => {
-      render(<ToggleSwitch value={false} onChange={() => {}} title="Test" />)
+      render(() => <ToggleSwitch value={false} onChange={() => {}} title="Test" />)
       const switchEl = screen.getByRole("switch")
       expect(switchEl).toHaveAttribute("aria-checked", "false")
       expect(switchEl).toHaveClass("off")
     })
 
     it("renders in 'on' state when value is true", () => {
-      render(<ToggleSwitch value={true} onChange={() => {}} title="Test" />)
+      render(() => <ToggleSwitch value={true} onChange={() => {}} title="Test" />)
       const switchEl = screen.getByRole("switch")
       expect(switchEl).toHaveAttribute("aria-checked", "true")
       expect(switchEl).toHaveClass("on")
@@ -26,7 +26,7 @@ describe("ToggleSwitch", () => {
 
     it("calls onChange with toggled value when clicked", () => {
       const onChange = vi.fn()
-      render(<ToggleSwitch value={false} onChange={onChange} title="Test" />)
+      render(() => <ToggleSwitch value={false} onChange={onChange} title="Test" />)
       const switchEl = screen.getByRole("switch")
 
       fireEvent.click(switchEl)
@@ -47,13 +47,13 @@ describe("ToggleSwitch", () => {
 
   describe("dual option mode", () => {
     it("renders both option labels in dual mode", () => {
-      render(<ToggleSwitch value={false} onChange={() => {}} option1="Option A" option2="Option B" />)
+      render(() => <ToggleSwitch value={false} onChange={() => {}} option1="Option A" option2="Option B" />)
       expect(screen.getByText("Option A")).toBeInTheDocument()
       expect(screen.getByText("Option B")).toBeInTheDocument()
     })
 
     it("does not render title in dual mode", () => {
-      render(<ToggleSwitch value={false} onChange={() => {}} title="Title" option1="A" option2="B" />)
+      render(() => <ToggleSwitch value={false} onChange={() => {}} title="Title" option1="A" option2="B" />)
       // Title should not appear when option1 and option2 are provided
       expect(screen.queryByText("Title")).not.toBeInTheDocument()
     })
@@ -77,7 +77,7 @@ describe("ToggleSwitch", () => {
   describe("keyboard interaction", () => {
     it("toggles on Space key press", () => {
       const onChange = vi.fn()
-      render(<ToggleSwitch value={false} onChange={onChange} title="Test" />)
+      render(() => <ToggleSwitch value={false} onChange={onChange} title="Test" />)
       const switchEl = screen.getByRole("switch")
 
       fireEvent.keyDown(switchEl, { key: " " })
@@ -86,7 +86,7 @@ describe("ToggleSwitch", () => {
 
     it("toggles on Enter key press", () => {
       const onChange = vi.fn()
-      render(<ToggleSwitch value={false} onChange={onChange} title="Test" />)
+      render(() => <ToggleSwitch value={false} onChange={onChange} title="Test" />)
       const switchEl = screen.getByRole("switch")
 
       fireEvent.keyDown(switchEl, { key: "Enter" })
@@ -95,7 +95,7 @@ describe("ToggleSwitch", () => {
 
     it("sets value to true on ArrowRight in single mode", () => {
       const onChange = vi.fn()
-      render(<ToggleSwitch value={false} onChange={onChange} title="Test" />)
+      render(() => <ToggleSwitch value={false} onChange={onChange} title="Test" />)
       const switchEl = screen.getByRole("switch")
 
       fireEvent.keyDown(switchEl, { key: "ArrowRight" })
@@ -104,7 +104,7 @@ describe("ToggleSwitch", () => {
 
     it("sets value to false on ArrowLeft in single mode", () => {
       const onChange = vi.fn()
-      render(<ToggleSwitch value={true} onChange={onChange} title="Test" />)
+      render(() => <ToggleSwitch value={true} onChange={onChange} title="Test" />)
       const switchEl = screen.getByRole("switch")
 
       fireEvent.keyDown(switchEl, { key: "ArrowLeft" })
@@ -113,7 +113,7 @@ describe("ToggleSwitch", () => {
 
     it("sets value to true on ArrowDown", () => {
       const onChange = vi.fn()
-      render(<ToggleSwitch value={false} onChange={onChange} title="Test" />)
+      render(() => <ToggleSwitch value={false} onChange={onChange} title="Test" />)
       const switchEl = screen.getByRole("switch")
 
       fireEvent.keyDown(switchEl, { key: "ArrowDown" })
@@ -122,7 +122,7 @@ describe("ToggleSwitch", () => {
 
     it("sets value to false on ArrowUp", () => {
       const onChange = vi.fn()
-      render(<ToggleSwitch value={true} onChange={onChange} title="Test" />)
+      render(() => <ToggleSwitch value={true} onChange={onChange} title="Test" />)
       const switchEl = screen.getByRole("switch")
 
       fireEvent.keyDown(switchEl, { key: "ArrowUp" })
@@ -131,7 +131,7 @@ describe("ToggleSwitch", () => {
 
     it("does not call onChange when already in target state", () => {
       const onChange = vi.fn()
-      render(<ToggleSwitch value={true} onChange={onChange} title="Test" />)
+      render(() => <ToggleSwitch value={true} onChange={onChange} title="Test" />)
       const switchEl = screen.getByRole("switch")
 
       fireEvent.keyDown(switchEl, { key: "ArrowRight" })
@@ -158,14 +158,14 @@ describe("ToggleSwitch", () => {
     })
 
     it("uses default 'md' size when not specified", () => {
-      render(<ToggleSwitch value={false} onChange={() => {}} title="Test" />)
+      render(() => <ToggleSwitch value={false} onChange={() => {}} title="Test" />)
       expect(screen.getByRole("switch")).toHaveClass("toggle-md")
     })
   })
 
   describe("description popover", () => {
     it("shows description on label hover in single mode", () => {
-      render(<ToggleSwitch value={false} onChange={() => {}} title="Test" description="Test description" />)
+      render(() => <ToggleSwitch value={false} onChange={() => {}} title="Test" description="Test description" />)
       const label = screen.getByText("Test")
 
       fireEvent.mouseEnter(label)
@@ -178,12 +178,12 @@ describe("ToggleSwitch", () => {
 
   describe("accessibility", () => {
     it("has correct aria-label on title element", () => {
-      render(<ToggleSwitch value={false} onChange={() => {}} title="Feature Toggle" />)
+      render(() => <ToggleSwitch value={false} onChange={() => {}} title="Feature Toggle" />)
       expect(screen.getByLabelText("Feature Toggle toggle")).toBeInTheDocument()
     })
 
     it("is focusable", () => {
-      render(<ToggleSwitch value={false} onChange={() => {}} title="Test" />)
+      render(() => <ToggleSwitch value={false} onChange={() => {}} title="Test" />)
       expect(screen.getByRole("switch")).toHaveAttribute("tabIndex", "0")
     })
   })

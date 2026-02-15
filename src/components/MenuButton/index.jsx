@@ -12,7 +12,9 @@ import "./style.css"
 export function MenuButton(props) {
   const [isOpen, setIsOpen] = createSignal(false)
   const [focusedIndex, setFocusedIndex] = createSignal(-1)
+  /** @type {HTMLDivElement | undefined} */
   let containerRef
+  /** @type {HTMLButtonElement | undefined} */
   let buttonRef
 
   // Get array of children, handling both single child and array
@@ -186,10 +188,12 @@ export function MenuButton(props) {
  * @param {() => void} props.closeMenu - Function to close the menu
  */
 function MenuItemWrapper(props) {
+  /** @type {HTMLButtonElement | undefined} */
   let itemRef
 
   createEffect(() => {
     if (props.isFocused() && itemRef) {
+      /** @type {HTMLButtonElement} */
       itemRef.focus()
     }
   })
@@ -223,6 +227,7 @@ function MenuItemWrapper(props) {
  * @param {boolean} [props.disabled]
  * @param {boolean} [props.separator]
  */
+/** @type {(props: {label?: string, onClick?: () => void, disabled?: boolean, separator?: boolean}) => any} */
 export function MenuItem(props) {
   // Return a function that carries the props - this is detectable in SolidJS
   // and allows the parent to access the props

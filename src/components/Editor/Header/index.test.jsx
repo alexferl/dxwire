@@ -104,7 +104,7 @@ describe("Header", () => {
 
   it("renders header with logo", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(document.querySelector(".header")).toBeInTheDocument()
@@ -114,7 +114,7 @@ describe("Header", () => {
 
   it("renders bank selector", async () => {
     mockUseVoice.mockReturnValue(createMockVoice({ bankNames: ["Bank 1", "Bank 2"] }))
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(document.querySelector(".bank-select-header")).toBeInTheDocument()
@@ -123,7 +123,7 @@ describe("Header", () => {
 
   it("renders voice selector", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(document.querySelector(".voice-select-header")).toBeInTheDocument()
@@ -132,7 +132,7 @@ describe("Header", () => {
 
   it("renders MIDI device selector", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(screen.getByTestId("midi-selector")).toBeInTheDocument()
@@ -141,7 +141,7 @@ describe("Header", () => {
 
   it("renders import and export menus", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(screen.getByTestId("import-menu")).toBeInTheDocument()
@@ -151,7 +151,7 @@ describe("Header", () => {
 
   it("renders help button", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(document.querySelector(".help-button")).toBeInTheDocument()
@@ -160,7 +160,7 @@ describe("Header", () => {
 
   it("opens help modal when help button clicked", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(document.querySelector(".help-button")).toBeInTheDocument()
@@ -174,7 +174,7 @@ describe("Header", () => {
 
   it("closes help modal when onClose is called", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(document.querySelector(".help-button")).toBeInTheDocument()
@@ -196,7 +196,7 @@ describe("Header", () => {
 
   it("renders send buttons", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       const buttons = document.querySelectorAll(".header-send-btn")
@@ -206,7 +206,7 @@ describe("Header", () => {
 
   it("renders bank management menu button", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       const menuButtons = document.querySelectorAll(".menu-button")
@@ -217,7 +217,7 @@ describe("Header", () => {
   it("switches bank when bank selector changed", async () => {
     const mockVoice = createMockVoice({ bankNames: ["Bank 1", "Bank 2"] })
     mockUseVoice.mockReturnValue(mockVoice)
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(document.querySelector(".bank-select-header")).toBeInTheDocument()
@@ -232,7 +232,7 @@ describe("Header", () => {
   it("switches voice when voice selector changed", async () => {
     const mockVoice = createMockVoice()
     mockUseVoice.mockReturnValue(mockVoice)
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(document.querySelector(".voice-select-header")).toBeInTheDocument()
@@ -246,7 +246,7 @@ describe("Header", () => {
 
   it("has correct CSS classes for layout", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(document.querySelector(".header")).toBeInTheDocument()
@@ -259,7 +259,7 @@ describe("Header", () => {
 
   it("has aria-label for help icon", async () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Header />)
+    render(() => <Header />)
 
     await waitFor(() => {
       expect(screen.getByLabelText("Help icon")).toBeInTheDocument()
@@ -269,7 +269,7 @@ describe("Header", () => {
   describe("Bank Management Menu", () => {
     it("opens bank management menu when clicked", async () => {
       mockUseVoice.mockReturnValue(createMockVoice())
-      render(<Header />)
+      render(() => <Header />)
 
       // Find bank manage menu button (second menu button)
       await waitFor(() => {
@@ -287,7 +287,7 @@ describe("Header", () => {
 
     it("opens rename bank dialog when menu item clicked", async () => {
       mockUseVoice.mockReturnValue(createMockVoice({ bankNames: ["Test Bank"] }))
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -305,7 +305,7 @@ describe("Header", () => {
     it("calls renameBank when rename dialog confirmed", async () => {
       const mockVoice = createMockVoice({ bankNames: ["Test Bank"] })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -335,7 +335,7 @@ describe("Header", () => {
           ],
         }),
       )
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -351,7 +351,7 @@ describe("Header", () => {
 
     it("disables delete bank when only one bank exists", async () => {
       mockUseVoice.mockReturnValue(createMockVoice({ bankNames: ["Only Bank"] }))
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -368,7 +368,7 @@ describe("Header", () => {
     it("calls resetBanks when reset menu item clicked and confirmed", async () => {
       const mockVoice = createMockVoice()
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -386,7 +386,7 @@ describe("Header", () => {
     it("displays reset banks confirmation prompt", async () => {
       const mockVoice = createMockVoice()
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -403,7 +403,7 @@ describe("Header", () => {
   describe("Voice Management Menu", () => {
     it("opens voice management menu when clicked", async () => {
       mockUseVoice.mockReturnValue(createMockVoice())
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -420,7 +420,7 @@ describe("Header", () => {
 
     it("displays initialize voice menu item", async () => {
       mockUseVoice.mockReturnValue(createMockVoice({ voiceName: "Test Voice" }))
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -435,7 +435,7 @@ describe("Header", () => {
 
     it("opens rename voice dialog when menu item clicked", async () => {
       mockUseVoice.mockReturnValue(createMockVoice({ voiceName: "Test Voice" }))
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -452,7 +452,7 @@ describe("Header", () => {
     it("calls renameVoice when rename dialog confirmed", async () => {
       const mockVoice = createMockVoice({ voiceName: "Old Voice Name" })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -474,7 +474,7 @@ describe("Header", () => {
 
     it("opens copy voice dialog when menu item clicked", async () => {
       mockUseVoice.mockReturnValue(createMockVoice())
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -491,7 +491,7 @@ describe("Header", () => {
     it("calls copyVoice when copy dialog confirmed", async () => {
       const mockVoice = createMockVoice()
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")
@@ -513,7 +513,7 @@ describe("Header", () => {
 
     it("has initialize voice option available", async () => {
       mockUseVoice.mockReturnValue(createMockVoice({ voiceName: "Test Voice" }))
-      render(<Header />)
+      render(() => <Header />)
 
       await waitFor(() => {
         const menuButtons = document.querySelectorAll(".menu-button")

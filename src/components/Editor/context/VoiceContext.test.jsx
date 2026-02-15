@@ -81,11 +81,11 @@ describe("VoiceContext", () => {
       return <div data-testid="voice-name">{voice.global.name[0]()}</div>
     }
 
-    render(
+    render(() => (
       <VoiceContext.Provider value={voiceInstance}>
         <TestComponent />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByTestId("voice-name")).toHaveTextContent("Test Voice")
   })

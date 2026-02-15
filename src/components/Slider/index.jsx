@@ -64,8 +64,10 @@ export function Slider(props) {
   const [dragStartX, setDragStartX] = createSignal(0)
   const [startValue, setStartValue] = createSignal(0)
   const [inputValue, setInputValue] = createSignal(null)
+  /** @type {HTMLDivElement | undefined} */
   let sliderRef
-  let keyRepeatRef
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let keyRepeatRef = null
   let keyDirectionRef = 0
 
   createEffect(() => {

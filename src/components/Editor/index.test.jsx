@@ -36,31 +36,31 @@ import { Editor } from "./index"
 
 describe("Editor", () => {
   it("renders the editor container", () => {
-    render(<Editor />)
+    render(() => <Editor />)
 
     expect(document.querySelector(".editor")).toBeInTheDocument()
   })
 
   it("renders Header component", () => {
-    render(<Editor />)
+    render(() => <Editor />)
 
     expect(screen.getByTestId("header")).toBeInTheDocument()
   })
 
   it("renders Sidebar component", () => {
-    render(<Editor />)
+    render(() => <Editor />)
 
     expect(screen.getByTestId("sidebar")).toBeInTheDocument()
   })
 
   it("renders Operators container", () => {
-    render(<Editor />)
+    render(() => <Editor />)
 
     expect(screen.getByTestId("operators")).toBeInTheDocument()
   })
 
   it("renders all 6 operators", () => {
-    render(<Editor />)
+    render(() => <Editor />)
 
     expect(screen.getByTestId("operator-1")).toBeInTheDocument()
     expect(screen.getByTestId("operator-2")).toBeInTheDocument()
@@ -71,14 +71,14 @@ describe("Editor", () => {
   })
 
   it("passes correct numbers to operators", () => {
-    render(<Editor />)
+    render(() => <Editor />)
 
     expect(screen.getByText("Operator 1")).toBeInTheDocument()
     expect(screen.getByText("Operator 6")).toBeInTheDocument()
   })
 
   it("wraps content in VoiceContext.Provider", () => {
-    render(<Editor />)
+    render(() => <Editor />)
 
     // If the provider wasn't working, the component would fail
     expect(screen.getByTestId("header")).toBeInTheDocument()

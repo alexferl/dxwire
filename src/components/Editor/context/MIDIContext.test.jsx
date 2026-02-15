@@ -61,15 +61,15 @@ describe("MIDIContext", () => {
     }
 
     expect(thrownError).not.toBeNull()
-    expect(thrownError.message).toBe("useMIDI must be used within MIDIContextProvider")
+    expect(thrownError?.message).toBe("useMIDI must be used within MIDIContextProvider")
   })
 
   it("provides initial MIDI state to children", async () => {
-    render(
+    render(() => (
       <MIDIContextProvider>
         <TestComponent />
-      </MIDIContextProvider>,
-    )
+      </MIDIContextProvider>
+    ))
 
     await waitFor(() => {
       expect(screen.getByTestId("midi-exists")).toHaveTextContent("yes")
@@ -87,11 +87,11 @@ describe("MIDIContext", () => {
     mockGetCurrentOutput.mockReturnValue({ name: "Output 1" })
     mockGetCurrentInput.mockReturnValue({ name: "Input 1" })
 
-    render(
+    render(() => (
       <MIDIContextProvider>
         <TestComponent />
-      </MIDIContextProvider>,
-    )
+      </MIDIContextProvider>
+    ))
 
     await waitFor(() => {
       expect(screen.getByTestId("output-status")).toHaveTextContent("connected")
@@ -108,11 +108,11 @@ describe("MIDIContext", () => {
     mockGetCurrentOutput.mockReturnValue(null)
     mockGetCurrentInput.mockReturnValue(null)
 
-    render(
+    render(() => (
       <MIDIContextProvider>
         <TestComponent />
-      </MIDIContextProvider>,
-    )
+      </MIDIContextProvider>
+    ))
 
     await waitFor(() => {
       expect(screen.getByTestId("output-status")).toHaveTextContent("")
@@ -124,11 +124,11 @@ describe("MIDIContext", () => {
   })
 
   it("calls setupSelectors with correct selectors", async () => {
-    render(
+    render(() => (
       <MIDIContextProvider>
         <TestComponent />
-      </MIDIContextProvider>,
-    )
+      </MIDIContextProvider>
+    ))
 
     await waitFor(() => {
       expect(mockSetupSelectors).toHaveBeenCalledWith(
@@ -153,11 +153,11 @@ describe("MIDIContext", () => {
     mockGetOutputs.mockReturnValue([])
     mockGetInputs.mockReturnValue([])
 
-    render(
+    render(() => (
       <MIDIContextProvider>
         <TestComponent />
-      </MIDIContextProvider>,
-    )
+      </MIDIContextProvider>
+    ))
 
     await waitFor(() => {
       expect(mockSetupSelectors).toHaveBeenCalled()
@@ -186,20 +186,19 @@ describe("MIDIContext", () => {
     const { createMIDIDeviceManager } = await import("midiwire")
     let connectionUpdateCallback
 
-    /** @type {any} */
-    createMIDIDeviceManager.mockImplementation(({ onConnectionUpdate }) => {
+    vi.mocked(createMIDIDeviceManager).mockImplementation(({ onConnectionUpdate }) => {
       connectionUpdateCallback = onConnectionUpdate
-      return Promise.resolve(mockDeviceManager)
+      return Promise.resolve(/** @type {any} */ (mockDeviceManager))
     })
 
     mockGetOutputs.mockReturnValue([])
     mockGetInputs.mockReturnValue([])
 
-    render(
+    render(() => (
       <MIDIContextProvider>
         <TestComponent />
-      </MIDIContextProvider>,
-    )
+      </MIDIContextProvider>
+    ))
 
     await waitFor(() => {
       expect(createMIDIDeviceManager).toHaveBeenCalled()

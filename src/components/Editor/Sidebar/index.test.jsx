@@ -31,43 +31,43 @@ import { Sidebar } from "./index"
 
 describe("Sidebar", () => {
   it("renders the sidebar container", () => {
-    render(<Sidebar />)
+    render(() => <Sidebar />)
 
     expect(document.querySelector(".left-column")).toBeInTheDocument()
   })
 
   it("renders Algorithm component", () => {
-    render(<Sidebar />)
+    render(() => <Sidebar />)
 
     expect(screen.getByTestId("algorithm")).toBeInTheDocument()
   })
 
   it("renders General component", () => {
-    render(<Sidebar />)
+    render(() => <Sidebar />)
 
     expect(screen.getByTestId("general")).toBeInTheDocument()
   })
 
   it("renders WaveformDisplay component", () => {
-    render(<Sidebar />)
+    render(() => <Sidebar />)
 
     expect(screen.getByTestId("waveform-display")).toBeInTheDocument()
   })
 
   it("renders PitchEG component", () => {
-    render(<Sidebar />)
+    render(() => <Sidebar />)
 
     expect(screen.getByTestId("pitch-eg")).toBeInTheDocument()
   })
 
   it("renders LFO component", () => {
-    render(<Sidebar />)
+    render(() => <Sidebar />)
 
     expect(screen.getByTestId("lfo")).toBeInTheDocument()
   })
 
   it("renders all components in correct order", () => {
-    render(<Sidebar />)
+    render(() => <Sidebar />)
 
     const container = document.querySelector(".left-column")
     const children = container.children

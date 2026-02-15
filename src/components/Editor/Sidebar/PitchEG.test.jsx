@@ -32,11 +32,11 @@ function createMockVoice() {
 describe("PitchEG", () => {
   it("renders all level knobs", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByLabelText("L1 knob")).toBeInTheDocument()
     expect(screen.getByLabelText("L2 knob")).toBeInTheDocument()
@@ -46,11 +46,11 @@ describe("PitchEG", () => {
 
   it("renders all rate knobs", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByLabelText("R1 knob")).toBeInTheDocument()
     expect(screen.getByLabelText("R2 knob")).toBeInTheDocument()
@@ -60,11 +60,11 @@ describe("PitchEG", () => {
 
   it("displays correct initial values", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByLabelText("L1 knob")).toBeInTheDocument()
     expect(screen.getByLabelText("R1 knob")).toBeInTheDocument()
@@ -72,11 +72,11 @@ describe("PitchEG", () => {
 
   it("has correct CSS classes for sections", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(document.querySelector(".pitch-eg-section")).toBeInTheDocument()
     expect(document.querySelector(".pitch-eg-knobs-level")).toBeInTheDocument()
@@ -85,11 +85,11 @@ describe("PitchEG", () => {
 
   it("updates level1 value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[0], { target: { value: "75" } })
@@ -101,11 +101,11 @@ describe("PitchEG", () => {
 
   it("updates level2 value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[1], { target: { value: "60" } })
@@ -117,11 +117,11 @@ describe("PitchEG", () => {
 
   it("updates level3 value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[2], { target: { value: "45" } })
@@ -133,11 +133,11 @@ describe("PitchEG", () => {
 
   it("updates level4 value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[3], { target: { value: "30" } })
@@ -149,11 +149,11 @@ describe("PitchEG", () => {
 
   it("updates rate1 value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[4], { target: { value: "80" } })
@@ -165,11 +165,11 @@ describe("PitchEG", () => {
 
   it("updates rate2 value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[5], { target: { value: "70" } })
@@ -181,11 +181,11 @@ describe("PitchEG", () => {
 
   it("updates rate3 value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[6], { target: { value: "60" } })
@@ -197,11 +197,11 @@ describe("PitchEG", () => {
 
   it("updates rate4 value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <PitchEG />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[7], { target: { value: "50" } })

@@ -61,14 +61,14 @@ describe("ExportMenu", () => {
 
   it("renders export menu button", () => {
     mockUseVoice.mockReturnValue(createMockVoiceWithBank())
-    render(<ExportMenu />)
+    render(() => <ExportMenu />)
 
     expect(document.querySelector(".menu-button")).toBeInTheDocument()
   })
 
   it("opens dropdown when clicked", () => {
     mockUseVoice.mockReturnValue(createMockVoiceWithBank())
-    render(<ExportMenu />)
+    render(() => <ExportMenu />)
 
     const button = document.querySelector(".menu-button")
     fireEvent.click(button)
@@ -79,7 +79,7 @@ describe("ExportMenu", () => {
 
   it("has disabled menu items when no bank is loaded", () => {
     mockUseVoice.mockReturnValue(createMockVoiceWithoutBank())
-    render(<ExportMenu />)
+    render(() => <ExportMenu />)
 
     const button = document.querySelector(".menu-button")
     fireEvent.click(button)
@@ -93,7 +93,7 @@ describe("ExportMenu", () => {
 
   it("has enabled menu items when bank is loaded", () => {
     mockUseVoice.mockReturnValue(createMockVoiceWithBank())
-    render(<ExportMenu />)
+    render(() => <ExportMenu />)
 
     const button = document.querySelector(".menu-button")
     fireEvent.click(button)
@@ -107,7 +107,7 @@ describe("ExportMenu", () => {
 
   it("triggers SysEx export when menu item clicked", () => {
     mockUseVoice.mockReturnValue(createMockVoiceWithBank())
-    render(<ExportMenu />)
+    render(() => <ExportMenu />)
 
     const button = document.querySelector(".menu-button")
     fireEvent.click(button)
@@ -120,7 +120,7 @@ describe("ExportMenu", () => {
 
   it("triggers JSON export when menu item clicked", () => {
     mockUseVoice.mockReturnValue(createMockVoiceWithBank())
-    render(<ExportMenu />)
+    render(() => <ExportMenu />)
 
     const button = document.querySelector(".menu-button")
     fireEvent.click(button)
@@ -133,7 +133,7 @@ describe("ExportMenu", () => {
 
   it("has aria-label for export icon", () => {
     mockUseVoice.mockReturnValue(createMockVoiceWithBank())
-    render(<ExportMenu />)
+    render(() => <ExportMenu />)
 
     expect(screen.getByLabelText("Export icon")).toBeInTheDocument()
   })

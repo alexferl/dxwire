@@ -93,7 +93,7 @@ describe("Operator", () => {
 
   it("renders operator with correct number", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(document.querySelector(".operator")).toBeInTheDocument()
     expect(document.querySelector(".op1")).toBeInTheDocument()
@@ -101,7 +101,7 @@ describe("Operator", () => {
 
   it("renders operator label with number", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={3} />)
+    render(() => <Operator number={3} />)
 
     const label = document.querySelector(".op-label")
     expect(label).toHaveTextContent("3")
@@ -109,7 +109,7 @@ describe("Operator", () => {
 
   it("shows 'on' class when operator is enabled", () => {
     mockUseVoice.mockReturnValue(createMockVoice({ op1: { enabled: true } }))
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     const label = document.querySelector(".op-label")
     expect(label).toHaveClass("on")
@@ -117,7 +117,7 @@ describe("Operator", () => {
 
   it("shows 'off' class when operator is disabled", () => {
     mockUseVoice.mockReturnValue(createMockVoice({ op1: { enabled: false } }))
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     const label = document.querySelector(".op-label")
     expect(label).toHaveClass("off")
@@ -125,14 +125,14 @@ describe("Operator", () => {
 
   it("renders frequency display", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(document.querySelector(".freq-display")).toBeInTheDocument()
   })
 
   it("renders all frequency knobs", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(screen.getByLabelText("Detune knob")).toBeInTheDocument()
     expect(screen.getByLabelText("Coarse knob")).toBeInTheDocument()
@@ -141,14 +141,14 @@ describe("Operator", () => {
 
   it("renders envelope graph", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(document.querySelector(".envelope-display")).toBeInTheDocument()
   })
 
   it("renders all EG level knobs", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(screen.getByLabelText("L1 knob")).toBeInTheDocument()
     expect(screen.getByLabelText("L2 knob")).toBeInTheDocument()
@@ -158,7 +158,7 @@ describe("Operator", () => {
 
   it("renders all EG rate knobs", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(screen.getByLabelText("R1 knob")).toBeInTheDocument()
     expect(screen.getByLabelText("R2 knob")).toBeInTheDocument()
@@ -168,7 +168,7 @@ describe("Operator", () => {
 
   it("renders level scaling section", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(screen.getByLabelText("L Depth knob")).toBeInTheDocument()
     expect(screen.getByLabelText("R Depth knob")).toBeInTheDocument()
@@ -177,7 +177,7 @@ describe("Operator", () => {
 
   it("renders curve selects", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(screen.getByLabelText("L Curve")).toBeInTheDocument()
     expect(screen.getByLabelText("R Curve")).toBeInTheDocument()
@@ -185,14 +185,14 @@ describe("Operator", () => {
 
   it("renders rate scaling knob", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(screen.getByLabelText("Rate Scaling knob")).toBeInTheDocument()
   })
 
   it("renders modulation section knobs", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(screen.getByLabelText("Mod knob")).toBeInTheDocument()
     expect(screen.getByLabelText("Level knob")).toBeInTheDocument()
@@ -201,21 +201,21 @@ describe("Operator", () => {
 
   it("renders mode toggle switch", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(document.querySelector(".toggle-switch")).toBeInTheDocument()
   })
 
   it("renders enable ridged switch", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(document.querySelector(".ridged-switch")).toBeInTheDocument()
   })
 
   it("has correct CSS classes for sections", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     expect(document.querySelector(".freq-controls")).toBeInTheDocument()
     expect(document.querySelector(".eg-section")).toBeInTheDocument()
@@ -226,17 +226,17 @@ describe("Operator", () => {
   it("renders different operator numbers correctly", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
     // SolidJS uses signals instead of rerender - test each operator separately
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
     expect(document.querySelector(".op1")).toBeInTheDocument()
 
     // Test operator 6 separately
-    render(<Operator number={6} />)
+    render(() => <Operator number={6} />)
     expect(document.querySelector(".op6")).toBeInTheDocument()
   })
 
   it("calculates frequency display correctly for ratio mode", () => {
     mockUseVoice.mockReturnValue(createMockVoice({ op1: { mode: 0, coarse: 2, fine: 50, detune: 7 } }))
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     const freqDisplay = document.querySelector(".freq-display")
     expect(freqDisplay).toBeInTheDocument()
@@ -244,7 +244,7 @@ describe("Operator", () => {
 
   it("calculates frequency display correctly for fixed mode", () => {
     mockUseVoice.mockReturnValue(createMockVoice({ op1: { mode: 1, coarse: 1, fine: 0, detune: 7 } }))
-    render(<Operator number={1} />)
+    render(() => <Operator number={1} />)
 
     const freqDisplay = document.querySelector(".freq-display")
     expect(freqDisplay).toBeInTheDocument()
@@ -254,7 +254,7 @@ describe("Operator", () => {
     it("updates enabled value when ridged switch toggled", async () => {
       const mockVoice = createMockVoice({ op1: { enabled: true } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const ridgedSwitch = document.querySelector(".ridged-switch")
       fireEvent.click(ridgedSwitch)
@@ -267,7 +267,7 @@ describe("Operator", () => {
     it("updates mode value when toggle switch clicked", async () => {
       const mockVoice = createMockVoice({ op1: { mode: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       // Find the toggle switch by its container
       const toggleSwitch = document.querySelector(".toggle-switch")
@@ -283,7 +283,7 @@ describe("Operator", () => {
     it("updates coarse value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { coarse: 1 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       // Coarse is the 2nd frequency knob (index 1 after detune)
@@ -297,7 +297,7 @@ describe("Operator", () => {
     it("updates fine value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { fine: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       // Fine is the 3rd frequency knob
@@ -311,7 +311,7 @@ describe("Operator", () => {
     it("updates detune value with offset when changed", async () => {
       const mockVoice = createMockVoice({ op1: { detune: 7 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       // Detune is the 1st frequency knob, display shows value - 7
@@ -326,7 +326,7 @@ describe("Operator", () => {
     it("updates egLevel1 value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { egLevel1: 99 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       // After 3 freq knobs, L1-L4 are next
@@ -340,7 +340,7 @@ describe("Operator", () => {
     it("updates egRate1 value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { egRate1: 99 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       // After 3 freq + 4 level knobs, R1-R4 are next
@@ -354,7 +354,7 @@ describe("Operator", () => {
     it("updates leftDepth value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { leftDepth: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       // Find L Depth knob by looking for it specifically
@@ -373,7 +373,7 @@ describe("Operator", () => {
     it("updates leftCurve value when changed", () => {
       const mockVoice = createMockVoice({ op1: { leftCurve: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       // Click on curve select display to open dropdown
       const curveSelects = document.querySelectorAll(".curve-select-display")
@@ -389,7 +389,7 @@ describe("Operator", () => {
     it("updates rightDepth value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { rightDepth: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       const rDepthIndex = Array.from(inputs).findIndex((input) => {
@@ -407,7 +407,7 @@ describe("Operator", () => {
     it("updates rightCurve value when changed", () => {
       const mockVoice = createMockVoice({ op1: { rightCurve: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const curveSelects = document.querySelectorAll(".curve-select-display")
       fireEvent.click(curveSelects[1])
@@ -421,7 +421,7 @@ describe("Operator", () => {
     it("updates rateScaling value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { rateScaling: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       const rateScalingIndex = Array.from(inputs).findIndex((input) => {
@@ -439,7 +439,7 @@ describe("Operator", () => {
     it("updates ampModSens value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { ampModSens: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       const modIndex = Array.from(inputs).findIndex((input) => {
@@ -457,7 +457,7 @@ describe("Operator", () => {
     it("updates outputLevel value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { outputLevel: 99 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       const levelIndex = Array.from(inputs).findIndex((input) => {
@@ -475,7 +475,7 @@ describe("Operator", () => {
     it("updates keyVelocity value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { keyVelocity: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       const keyIndex = Array.from(inputs).findIndex((input) => {
@@ -493,7 +493,7 @@ describe("Operator", () => {
     it("updates egLevel2 value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { egLevel2: 99 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       fireEvent.change(inputs[4], { target: { value: "60" } })
@@ -506,7 +506,7 @@ describe("Operator", () => {
     it("updates egLevel3 value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { egLevel3: 99 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       fireEvent.change(inputs[5], { target: { value: "45" } })
@@ -519,7 +519,7 @@ describe("Operator", () => {
     it("updates egLevel4 value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { egLevel4: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       fireEvent.change(inputs[6], { target: { value: "25" } })
@@ -532,7 +532,7 @@ describe("Operator", () => {
     it("updates egRate2 value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { egRate2: 99 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       fireEvent.change(inputs[8], { target: { value: "70" } })
@@ -545,7 +545,7 @@ describe("Operator", () => {
     it("updates egRate3 value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { egRate3: 99 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       fireEvent.change(inputs[9], { target: { value: "60" } })
@@ -558,7 +558,7 @@ describe("Operator", () => {
     it("updates egRate4 value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { egRate4: 99 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const inputs = document.querySelectorAll(".knob-input")
       fireEvent.change(inputs[10], { target: { value: "50" } })
@@ -571,7 +571,7 @@ describe("Operator", () => {
     it("updates breakPoint value when changed", async () => {
       const mockVoice = createMockVoice({ op1: { breakPoint: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const sliderInput = document.querySelector(".slider-input")
       expect(sliderInput).toBeInTheDocument()
@@ -587,7 +587,7 @@ describe("Operator", () => {
     it("updates breakPoint using note name input and parseValue", async () => {
       const mockVoice = createMockVoice({ op1: { breakPoint: 0 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const sliderInput = document.querySelector(".slider-input")
       expect(sliderInput).toBeInTheDocument()
@@ -603,7 +603,7 @@ describe("Operator", () => {
     it("handles invalid note name in parseValue gracefully", async () => {
       const mockVoice = createMockVoice({ op1: { breakPoint: 50 } })
       mockUseVoice.mockReturnValue(mockVoice)
-      render(<Operator number={1} />)
+      render(() => <Operator number={1} />)
 
       const sliderInput = document.querySelector(".slider-input")
       expect(sliderInput).toBeInTheDocument()

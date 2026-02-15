@@ -9,14 +9,14 @@ describe("HelpModal", () => {
   })
   it("renders help modal with title", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     expect(screen.getByText("Help")).toBeInTheDocument()
   })
 
   it("renders all section headings", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     expect(screen.getByRole("heading", { name: "Bank & Voice Management" })).toBeInTheDocument()
     expect(screen.getByRole("heading", { name: "MIDI" })).toBeInTheDocument()
@@ -27,7 +27,7 @@ describe("HelpModal", () => {
 
   it("has modal overlay with correct role", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     expect(document.querySelector(".modal-overlay")).toHaveAttribute("role", "dialog")
     expect(document.querySelector(".modal-overlay")).toHaveAttribute("aria-modal", "true")
@@ -35,14 +35,14 @@ describe("HelpModal", () => {
 
   it("has close button", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     expect(document.querySelector(".modal-close")).toBeInTheDocument()
   })
 
   it("calls onClose when close button clicked", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     const closeButton = document.querySelector(".modal-close")
     fireEvent.click(closeButton)
@@ -52,7 +52,7 @@ describe("HelpModal", () => {
 
   it("calls onClose when overlay is clicked", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     const overlay = document.querySelector(".modal-overlay")
     fireEvent.click(overlay)
@@ -62,7 +62,7 @@ describe("HelpModal", () => {
 
   it("does not call onClose when modal content is clicked", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     const content = document.querySelector(".modal-content")
     fireEvent.click(content)
@@ -72,7 +72,7 @@ describe("HelpModal", () => {
 
   it("calls onClose when Escape key is pressed on overlay", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     const overlay = document.querySelector(".modal-overlay")
     fireEvent.keyDown(overlay, { key: "Escape" })
@@ -82,7 +82,7 @@ describe("HelpModal", () => {
 
   it("calls onClose when Escape key is pressed on content", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     const content = document.querySelector(".modal-content")
     fireEvent.keyDown(content, { key: "Escape" })
@@ -92,7 +92,7 @@ describe("HelpModal", () => {
 
   it("has correct CSS classes", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     expect(document.querySelector(".modal-overlay")).toBeInTheDocument()
     expect(document.querySelector(".modal-content")).toBeInTheDocument()
@@ -102,7 +102,7 @@ describe("HelpModal", () => {
 
   it("displays keyboard shortcuts info", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     expect(screen.getByText(/Navigate menu items/)).toBeInTheDocument()
     expect(screen.getByText(/Close menus and dialogs/)).toBeInTheDocument()
@@ -110,14 +110,14 @@ describe("HelpModal", () => {
 
   it("displays voice name limit info", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     expect(screen.getByText(/10 characters/)).toBeInTheDocument()
   })
 
   it("sets body overflow to hidden when mounted", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     expect(document.body.style.overflow).toBe("hidden")
   })
@@ -126,7 +126,7 @@ describe("HelpModal", () => {
     // Set a known initial value to verify reset behavior
     document.body.style.overflow = "scroll"
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     // Verify that the modal sets overflow to hidden when mounted
     expect(document.body.style.overflow).toBe("hidden")
@@ -134,7 +134,7 @@ describe("HelpModal", () => {
 
   it("renders MIDI section with device info", () => {
     const onClose = vi.fn()
-    render(<HelpModal onClose={onClose} />)
+    render(() => <HelpModal onClose={onClose} />)
 
     expect(screen.getByText(/MIDI output device/)).toBeInTheDocument()
     expect(screen.getByText(/Receive Bank/)).toBeInTheDocument()

@@ -1,5 +1,4 @@
-/** @type {import("solid-js").JSX.Element} */
-
+/** @type {Record<string, number>} */
 const ICON_SIZES = {
   sm: 16,
   md: 18,

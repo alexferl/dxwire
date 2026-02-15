@@ -308,14 +308,10 @@ describe("createVoice", () => {
       }
       // @ts-expect-error - mock type
       const createElementSpy = vi.spyOn(document, "createElement").mockReturnValue(mockAnchor)
-      // @ts-expect-error - mock type
       const appendChildSpy = vi.spyOn(document.body, "appendChild").mockImplementation(() => null)
-      // @ts-expect-error - mock type
       const removeChildSpy = vi.spyOn(document.body, "removeChild").mockImplementation(() => null)
 
-      // @ts-expect-error - global URL
       global.URL.createObjectURL = vi.fn(() => "blob:url")
-      // @ts-expect-error - global URL
       global.URL.revokeObjectURL = vi.fn()
 
       voice.downloadSyx()
@@ -336,14 +332,10 @@ describe("createVoice", () => {
       }
       // @ts-expect-error - mock type
       const createElementSpy = vi.spyOn(document, "createElement").mockReturnValue(mockAnchor)
-      // @ts-expect-error - mock type
       const appendChildSpy = vi.spyOn(document.body, "appendChild").mockImplementation(() => null)
-      // @ts-expect-error - mock type
       const removeChildSpy = vi.spyOn(document.body, "removeChild").mockImplementation(() => null)
 
-      // @ts-expect-error - global URL
       global.URL.createObjectURL = vi.fn(() => "blob:url")
-      // @ts-expect-error - global URL
       global.URL.revokeObjectURL = vi.fn()
 
       voice.downloadSyx("Custom_Name")

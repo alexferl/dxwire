@@ -4,40 +4,40 @@ import { MenuButton, MenuItem } from "./index"
 
 describe("MenuButton", () => {
   it("renders with label", () => {
-    render(
+    render(() => (
       <MenuButton label="File">
         <MenuItem label="Open" onClick={() => {}} />
-      </MenuButton>,
-    )
+      </MenuButton>
+    ))
     expect(screen.getByText("File")).toBeInTheDocument()
   })
 
   it("renders with icon", () => {
-    render(
+    render(() => (
       <MenuButton label="File" icon={<span data-testid="icon">★</span>}>
         <MenuItem label="Open" onClick={() => {}} />
-      </MenuButton>,
-    )
+      </MenuButton>
+    ))
     expect(screen.getByTestId("icon")).toBeInTheDocument()
   })
 
   it("is disabled when disabled prop is true", () => {
-    render(
+    render(() => (
       <MenuButton label="File" disabled={true}>
         <MenuItem label="Open" onClick={() => {}} />
-      </MenuButton>,
-    )
+      </MenuButton>
+    ))
     expect(screen.getByText("File")).toBeDisabled()
   })
 
   describe("dropdown menu", () => {
     it("opens dropdown when button is clicked", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
           <MenuItem label="Save" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.click(button)
@@ -47,11 +47,11 @@ describe("MenuButton", () => {
     })
 
     it("closes dropdown when clicked again", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.click(button)
@@ -62,11 +62,11 @@ describe("MenuButton", () => {
     })
 
     it("closes dropdown when clicking outside", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.click(button)
@@ -80,11 +80,11 @@ describe("MenuButton", () => {
   describe("menu item interaction", () => {
     it("calls onClick when menu item is clicked", () => {
       const onClick = vi.fn()
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={onClick} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.click(button)
@@ -97,11 +97,11 @@ describe("MenuButton", () => {
 
     it("closes dropdown after menu item click", () => {
       const onClick = vi.fn()
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={onClick} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       fireEvent.click(screen.getByText("File"))
       fireEvent.click(screen.getByText("Open"))
@@ -111,11 +111,11 @@ describe("MenuButton", () => {
 
     it("does not call onClick for disabled menu items", () => {
       const onClick = vi.fn()
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={onClick} disabled={true} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       fireEvent.click(screen.getByText("File"))
 
@@ -125,12 +125,12 @@ describe("MenuButton", () => {
 
     it("calls onClick when pressing Enter on focused item", () => {
       const onClick = vi.fn()
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={onClick} />
           <MenuItem label="Save" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       // Open menu with keyboard
       const button = screen.getByText("File")
@@ -145,11 +145,11 @@ describe("MenuButton", () => {
 
   describe("keyboard navigation", () => {
     it("opens dropdown on ArrowDown", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.keyDown(button, { key: "ArrowDown" })
@@ -158,11 +158,11 @@ describe("MenuButton", () => {
     })
 
     it("opens dropdown on Enter", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.keyDown(button, { key: "Enter" })
@@ -171,11 +171,11 @@ describe("MenuButton", () => {
     })
 
     it("opens dropdown on Space", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.keyDown(button, { key: " " })
@@ -184,11 +184,11 @@ describe("MenuButton", () => {
     })
 
     it("closes dropdown on Escape", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       fireEvent.click(screen.getByText("File"))
       expect(screen.getByText("Open")).toBeInTheDocument()
@@ -198,12 +198,12 @@ describe("MenuButton", () => {
     })
 
     it("focuses first item on ArrowDown", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
           <MenuItem label="Save" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.keyDown(button, { key: "ArrowDown" })
@@ -213,13 +213,13 @@ describe("MenuButton", () => {
     })
 
     it("navigates with ArrowDown through items", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
           <MenuItem label="Save" onClick={() => {}} />
           <MenuItem label="Exit" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.keyDown(button, { key: "ArrowDown" })
@@ -236,13 +236,13 @@ describe("MenuButton", () => {
     })
 
     it("navigates with ArrowUp through items", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
           <MenuItem label="Save" onClick={() => {}} />
           <MenuItem label="Exit" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.keyDown(button, { key: "ArrowDown" })
@@ -258,12 +258,12 @@ describe("MenuButton", () => {
     })
 
     it("wraps navigation at end of list", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
           <MenuItem label="Save" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.keyDown(button, { key: "ArrowDown" })
@@ -277,11 +277,11 @@ describe("MenuButton", () => {
     })
 
     it("returns focus to button on Escape", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.keyDown(button, { key: "ArrowDown" })
@@ -294,13 +294,13 @@ describe("MenuButton", () => {
 
   describe("separators", () => {
     it("renders separator between items", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
           <MenuItem separator={true} />
           <MenuItem label="Save" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       fireEvent.click(screen.getByText("File"))
 
@@ -309,13 +309,13 @@ describe("MenuButton", () => {
     })
 
     it("skips separators during keyboard navigation", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
           <MenuItem separator={true} />
           <MenuItem label="Save" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       const button = screen.getByText("File")
       fireEvent.keyDown(button, { key: "ArrowDown" })
@@ -331,23 +331,23 @@ describe("MenuButton", () => {
 
   describe("title attribute", () => {
     it("sets title on button", () => {
-      render(
+      render(() => (
         <MenuButton label="File" title="File menu">
           <MenuItem label="Open" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
       expect(screen.getByText("File")).toHaveAttribute("title", "File menu")
     })
   })
 
   describe("mouse navigation", () => {
     it("focuses item on mouse enter", () => {
-      render(
+      render(() => (
         <MenuButton label="File">
           <MenuItem label="Open" onClick={() => {}} />
           <MenuItem label="Save" onClick={() => {}} />
-        </MenuButton>,
-      )
+        </MenuButton>
+      ))
 
       fireEvent.click(screen.getByText("File"))
 

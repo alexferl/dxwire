@@ -83,6 +83,7 @@ export function CurveSelect(props) {
 
   const [isOpen, setIsOpen] = createSignal(false)
   const [isHovered, setIsHovered] = createSignal(false)
+  /** @type {HTMLElement | undefined} */
   let containerRef
 
   const sizeClass = () => {

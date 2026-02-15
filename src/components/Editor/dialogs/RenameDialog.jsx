@@ -13,6 +13,7 @@ import "./style.css"
 export function RenameDialog(props) {
   const { currentName, title, onConfirm, onCancel } = props
   const [name, setName] = createSignal(currentName)
+  /** @type {HTMLInputElement | undefined} */
   let inputRef
 
   onMount(() => {

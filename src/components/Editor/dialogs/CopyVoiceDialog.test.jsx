@@ -8,25 +8,33 @@ describe("CopyVoiceDialog", () => {
     .map((_, i) => `Voice ${i + 1}`)
 
   it("renders with title", () => {
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />
+    ))
     expect(screen.getByText("Copy Voice to Slot")).toBeInTheDocument()
   })
 
   it("renders 32 slot buttons", () => {
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />
+    ))
     const buttons = document.querySelectorAll(".slot-button")
     expect(buttons.length).toBe(32)
   })
 
   it("renders slot numbers 1-32", () => {
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />
+    ))
     expect(screen.getByText("1")).toBeInTheDocument()
     expect(screen.getByText("32")).toBeInTheDocument()
   })
 
   it("calls onCancel when overlay is clicked", () => {
     const onCancel = vi.fn()
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={onCancel} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={onCancel} />
+    ))
 
     const overlay = document.querySelector(".slot-dialog-overlay")
     fireEvent.click(overlay)
@@ -36,7 +44,9 @@ describe("CopyVoiceDialog", () => {
 
   it("calls onCancel when Cancel button is clicked", () => {
     const onCancel = vi.fn()
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={onCancel} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={onCancel} />
+    ))
 
     fireEvent.click(screen.getByText("Cancel"))
 
@@ -44,7 +54,9 @@ describe("CopyVoiceDialog", () => {
   })
 
   it("selects a slot when clicked", () => {
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />
+    ))
 
     const buttons = document.querySelectorAll(".slot-button")
     fireEvent.click(buttons[5]) // Click slot 6
@@ -54,7 +66,9 @@ describe("CopyVoiceDialog", () => {
 
   it("calls onConfirm with selected slot index", () => {
     const onConfirm = vi.fn()
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={onConfirm} onCancel={() => {}} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={onConfirm} onCancel={() => {}} />
+    ))
 
     const buttons = document.querySelectorAll(".slot-button")
     fireEvent.click(buttons[10]) // Select slot 11
@@ -64,7 +78,9 @@ describe("CopyVoiceDialog", () => {
   })
 
   it("disables Copy button when same slot is selected", () => {
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={5} onConfirm={() => {}} onCancel={() => {}} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={5} onConfirm={() => {}} onCancel={() => {}} />
+    ))
 
     const buttons = document.querySelectorAll(".slot-button")
     fireEvent.click(buttons[5]) // Click same as currentIndex
@@ -74,7 +90,9 @@ describe("CopyVoiceDialog", () => {
   })
 
   it("marks current slot as source", () => {
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={7} onConfirm={() => {}} onCancel={() => {}} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={7} onConfirm={() => {}} onCancel={() => {}} />
+    ))
 
     const buttons = document.querySelectorAll(".slot-button")
     expect(buttons[7]).toHaveClass("source")
@@ -82,7 +100,9 @@ describe("CopyVoiceDialog", () => {
 
   it("calls onCancel on Escape key", () => {
     const onCancel = vi.fn()
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={onCancel} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={onCancel} />
+    ))
 
     const overlay = document.querySelector(".slot-dialog-overlay")
     fireEvent.keyDown(overlay, { key: "Escape" })
@@ -91,7 +111,9 @@ describe("CopyVoiceDialog", () => {
   })
 
   it("is an accessible dialog", () => {
-    render(<CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />)
+    render(() => (
+      <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />
+    ))
 
     const overlay = document.querySelector(".slot-dialog-overlay")
     expect(overlay).toHaveAttribute("role", "dialog")
@@ -102,7 +124,7 @@ describe("CopyVoiceDialog", () => {
     const names = Array(32)
       .fill("")
       .map((_, i) => `Voice Name ${i + 1}`)
-    render(<CopyVoiceDialog voiceNames={names} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />)
+    render(() => <CopyVoiceDialog voiceNames={names} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />)
 
     const buttons = document.querySelectorAll(".slot-button")
     expect(buttons[0]).toHaveAttribute("title", "Voice Name 1")

@@ -32,22 +32,22 @@ function createMockVoice() {
 describe("WaveformDisplay", () => {
   it("renders envelope graph", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <WaveformDisplay />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByRole("img")).toBeInTheDocument()
   })
 
   it("has correct CSS class", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <WaveformDisplay />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(document.querySelector(".waveform-display")).toBeInTheDocument()
   })

@@ -42,7 +42,9 @@ export function ToggleSwitch(props) {
   const { onChange } = props
 
   const [isLabelHovered, setIsLabelHovered] = createSignal(false)
+  /** @type {HTMLDivElement | undefined} */
   let dualToggleRef
+  /** @type {HTMLDivElement | undefined} */
   let singleToggleRef
 
   const handleToggle = () => {

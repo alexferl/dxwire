@@ -29,11 +29,11 @@ describe("SettingsModal", () => {
   it("renders settings modal with title", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByText("Settings")).toBeInTheDocument()
   })
@@ -41,11 +41,11 @@ describe("SettingsModal", () => {
   it("renders envelope display section", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByText("Envelope Display")).toBeInTheDocument()
   })
@@ -53,11 +53,11 @@ describe("SettingsModal", () => {
   it("renders input controls section", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByText("Input Controls")).toBeInTheDocument()
   })
@@ -65,11 +65,11 @@ describe("SettingsModal", () => {
   it("renders ADSR checkbox label", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByText(/Show ADSR visualization/)).toBeInTheDocument()
   })
@@ -77,11 +77,11 @@ describe("SettingsModal", () => {
   it("renders description text", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByText(/When enabled, envelope graphs display/)).toBeInTheDocument()
   })
@@ -89,11 +89,11 @@ describe("SettingsModal", () => {
   it("renders value inputs checkbox label", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByText(/Show value input fields on knobs and sliders/)).toBeInTheDocument()
   })
@@ -101,11 +101,11 @@ describe("SettingsModal", () => {
   it("renders value inputs description text", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByText(/When enabled, knobs and sliders display numeric input fields/)).toBeInTheDocument()
   })
@@ -113,11 +113,11 @@ describe("SettingsModal", () => {
   it("has ADSR checkbox checked when showADSR is true", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice({ showADSR: true, showValueInputs: true })
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]')
     expect(checkboxes[0]).toBeChecked()
@@ -126,11 +126,11 @@ describe("SettingsModal", () => {
   it("has ADSR checkbox unchecked when showADSR is false", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice({ showADSR: false, showValueInputs: true })
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]')
     expect(checkboxes[0]).not.toBeChecked()
@@ -139,11 +139,11 @@ describe("SettingsModal", () => {
   it("calls updateSetting when ADSR checkbox is clicked", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice({ showADSR: true, showValueInputs: true })
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]')
     fireEvent.click(checkboxes[0])
@@ -154,11 +154,11 @@ describe("SettingsModal", () => {
   it("has value inputs checkbox checked when showValueInputs is true", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice({ showADSR: true, showValueInputs: true })
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]')
     expect(checkboxes[1]).toBeChecked()
@@ -167,11 +167,11 @@ describe("SettingsModal", () => {
   it("has value inputs checkbox unchecked when showValueInputs is false", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice({ showADSR: true, showValueInputs: false })
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]')
     expect(checkboxes[1]).not.toBeChecked()
@@ -180,11 +180,11 @@ describe("SettingsModal", () => {
   it("calls updateSetting when value inputs checkbox is clicked", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice({ showADSR: true, showValueInputs: true })
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]')
     fireEvent.click(checkboxes[1])
@@ -195,11 +195,11 @@ describe("SettingsModal", () => {
   it("has modal overlay with correct role", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(document.querySelector(".modal-overlay")).toHaveAttribute("role", "dialog")
     expect(document.querySelector(".modal-overlay")).toHaveAttribute("aria-modal", "true")
@@ -208,11 +208,11 @@ describe("SettingsModal", () => {
   it("has close button", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(document.querySelector(".modal-close")).toBeInTheDocument()
   })
@@ -220,11 +220,11 @@ describe("SettingsModal", () => {
   it("calls onClose when close button clicked", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const closeButton = document.querySelector(".modal-close")
     fireEvent.click(closeButton)
@@ -235,11 +235,11 @@ describe("SettingsModal", () => {
   it("calls onClose when overlay is clicked", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const overlay = document.querySelector(".modal-overlay")
     fireEvent.click(overlay)
@@ -250,11 +250,11 @@ describe("SettingsModal", () => {
   it("does not call onClose when modal content is clicked", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const content = document.querySelector(".modal-content")
     fireEvent.click(content)
@@ -265,11 +265,11 @@ describe("SettingsModal", () => {
   it("calls onClose when Escape key is pressed on overlay", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const overlay = document.querySelector(".modal-overlay")
     fireEvent.keyDown(overlay, { key: "Escape" })
@@ -280,11 +280,11 @@ describe("SettingsModal", () => {
   it("calls onClose when Escape key is pressed on content", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const content = document.querySelector(".modal-content")
     fireEvent.keyDown(content, { key: "Escape" })
@@ -295,11 +295,11 @@ describe("SettingsModal", () => {
   it("has correct CSS classes", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(document.querySelector(".modal-overlay")).toBeInTheDocument()
     expect(document.querySelector(".modal-content")).toBeInTheDocument()
@@ -312,11 +312,11 @@ describe("SettingsModal", () => {
   it("sets body overflow to hidden when mounted", () => {
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(document.body.style.overflow).toBe("hidden")
   })
@@ -326,11 +326,11 @@ describe("SettingsModal", () => {
     document.body.style.overflow = "scroll"
     const onClose = vi.fn()
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <SettingsModal onClose={onClose} />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     // Verify that the modal sets overflow to hidden when mounted
     expect(document.body.style.overflow).toBe("hidden")

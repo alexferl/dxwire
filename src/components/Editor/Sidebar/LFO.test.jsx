@@ -34,22 +34,22 @@ function createMockVoice() {
 describe("LFO", () => {
   it("renders WaveSelect", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByLabelText("Wave")).toBeInTheDocument()
   })
 
   it("renders all knobs", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByLabelText("Speed knob")).toBeInTheDocument()
     expect(screen.getByLabelText("Delay knob")).toBeInTheDocument()
@@ -60,11 +60,11 @@ describe("LFO", () => {
 
   it("renders all toggle switches", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByLabelText("LFO Key Sync toggle")).toBeInTheDocument()
     expect(screen.getByLabelText("OSC Key Sync toggle")).toBeInTheDocument()
@@ -72,11 +72,11 @@ describe("LFO", () => {
 
   it("displays correct initial values", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(screen.getByLabelText("Speed knob")).toBeInTheDocument()
     expect(screen.getByLabelText("Delay knob")).toBeInTheDocument()
@@ -84,11 +84,11 @@ describe("LFO", () => {
 
   it("has correct CSS classes for sections", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     expect(document.querySelector(".lfo-section")).toBeInTheDocument()
     expect(document.querySelector(".lfo-row-wave")).toBeInTheDocument()
@@ -99,11 +99,11 @@ describe("LFO", () => {
 
   it("updates wave value when changed", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const waveSelectDisplay = document.querySelector(".wave-select-display")
     fireEvent.click(waveSelectDisplay)
@@ -116,11 +116,11 @@ describe("LFO", () => {
 
   it("updates keySync value when toggle is clicked", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const keySyncSection = screen.getByText("LFO Key Sync").closest(".toggle-container")
     const keySyncToggle = keySyncSection.querySelector("[role='switch']")
@@ -131,11 +131,11 @@ describe("LFO", () => {
 
   it("updates oscSync value when toggle is clicked", () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const oscSyncSection = screen.getByText("OSC Key Sync").closest(".toggle-container")
     const oscSyncToggle = oscSyncSection.querySelector("[role='switch']")
@@ -146,11 +146,11 @@ describe("LFO", () => {
 
   it("updates speed value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[0], { target: { value: "60" } })
@@ -162,11 +162,11 @@ describe("LFO", () => {
 
   it("updates delay value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[1], { target: { value: "25" } })
@@ -178,11 +178,11 @@ describe("LFO", () => {
 
   it("updates pmDepth value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[2], { target: { value: "50" } })
@@ -194,11 +194,11 @@ describe("LFO", () => {
 
   it("updates amDepth value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[3], { target: { value: "40" } })
@@ -210,11 +210,11 @@ describe("LFO", () => {
 
   it("updates pmSens value when changed", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     fireEvent.change(inputs[4], { target: { value: "5" } })
@@ -226,11 +226,11 @@ describe("LFO", () => {
 
   it("respects pmSens max range", async () => {
     const mockVoice = createMockVoice()
-    render(
+    render(() => (
       <VoiceContext.Provider value={mockVoice}>
         <LFO />
-      </VoiceContext.Provider>,
-    )
+      </VoiceContext.Provider>
+    ))
 
     const inputs = document.querySelectorAll(".knob-input")
     // PMS max is 7

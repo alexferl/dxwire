@@ -5,29 +5,29 @@ import { WaveSelect } from "./index"
 
 describe("WaveSelect", () => {
   it("renders with required props", () => {
-    render(<WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
+    render(() => <WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
     expect(screen.getByLabelText("LFO Wave")).toBeInTheDocument()
   })
 
   it("renders the title", () => {
-    render(<WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
+    render(() => <WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
     expect(screen.getByText("LFO Wave")).toBeInTheDocument()
   })
 
   it("renders without title when not provided", () => {
-    render(<WaveSelect value={0} onChange={() => {}} />)
+    render(() => <WaveSelect value={0} onChange={() => {}} />)
     expect(screen.getByLabelText("Wave")).toBeInTheDocument()
   })
 
   it("displays the selected wave icon", () => {
-    render(<WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
+    render(() => <WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
     const display = document.querySelector(".wave-select-display")
     expect(display).toBeInTheDocument()
   })
 
   describe("dropdown interaction", () => {
     it("opens dropdown when clicked", () => {
-      render(<WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
+      render(() => <WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
       const button = document.querySelector(".wave-select-display")
 
       fireEvent.click(button)
@@ -35,7 +35,7 @@ describe("WaveSelect", () => {
     })
 
     it("renders all 6 wave options", () => {
-      render(<WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
+      render(() => <WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
       const button = document.querySelector(".wave-select-display")
 
       fireEvent.click(button)
@@ -45,7 +45,7 @@ describe("WaveSelect", () => {
 
     it("calls onChange when an option is selected", () => {
       const onChange = vi.fn()
-      render(<WaveSelect title="LFO Wave" value={0} onChange={onChange} />)
+      render(() => <WaveSelect title="LFO Wave" value={0} onChange={onChange} />)
 
       const button = document.querySelector(".wave-select-display")
       fireEvent.click(button)
@@ -58,7 +58,7 @@ describe("WaveSelect", () => {
 
     it("closes dropdown after selection", () => {
       const onChange = vi.fn()
-      render(<WaveSelect title="LFO Wave" value={0} onChange={onChange} />)
+      render(() => <WaveSelect title="LFO Wave" value={0} onChange={onChange} />)
 
       const button = document.querySelector(".wave-select-display")
       fireEvent.click(button)
@@ -72,7 +72,7 @@ describe("WaveSelect", () => {
 
   describe("keyboard navigation", () => {
     it("opens dropdown on Enter key", () => {
-      render(<WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
+      render(() => <WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
       const button = document.querySelector(".wave-select-display")
 
       fireEvent.keyDown(button, { key: "Enter" })
@@ -80,7 +80,7 @@ describe("WaveSelect", () => {
     })
 
     it("opens dropdown on Space key", () => {
-      render(<WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
+      render(() => <WaveSelect title="LFO Wave" value={0} onChange={() => {}} />)
       const button = document.querySelector(".wave-select-display")
 
       fireEvent.keyDown(button, { key: " " })
@@ -89,7 +89,7 @@ describe("WaveSelect", () => {
 
     it("decrements value on ArrowUp", () => {
       const onChange = vi.fn()
-      render(<WaveSelect title="LFO Wave" value={2} onChange={onChange} />)
+      render(() => <WaveSelect title="LFO Wave" value={2} onChange={onChange} />)
       const button = document.querySelector(".wave-select-display")
 
       fireEvent.keyDown(button, { key: "ArrowUp" })
@@ -98,7 +98,7 @@ describe("WaveSelect", () => {
 
     it("increments value on ArrowDown", () => {
       const onChange = vi.fn()
-      render(<WaveSelect title="LFO Wave" value={2} onChange={onChange} />)
+      render(() => <WaveSelect title="LFO Wave" value={2} onChange={onChange} />)
       const button = document.querySelector(".wave-select-display")
 
       fireEvent.keyDown(button, { key: "ArrowDown" })
@@ -107,7 +107,7 @@ describe("WaveSelect", () => {
 
     it("wraps to last option when ArrowUp at first option", () => {
       const onChange = vi.fn()
-      render(<WaveSelect title="LFO Wave" value={0} onChange={onChange} />)
+      render(() => <WaveSelect title="LFO Wave" value={0} onChange={onChange} />)
       const button = document.querySelector(".wave-select-display")
 
       fireEvent.keyDown(button, { key: "ArrowUp" })
@@ -116,7 +116,7 @@ describe("WaveSelect", () => {
 
     it("wraps to first option when ArrowDown at last option", () => {
       const onChange = vi.fn()
-      render(<WaveSelect title="LFO Wave" value={5} onChange={onChange} />)
+      render(() => <WaveSelect title="LFO Wave" value={5} onChange={onChange} />)
       const button = document.querySelector(".wave-select-display")
 
       fireEvent.keyDown(button, { key: "ArrowDown" })
@@ -142,14 +142,14 @@ describe("WaveSelect", () => {
     })
 
     it("uses default 'md' size when not specified", () => {
-      render(<WaveSelect title="LFO" value={0} onChange={() => {}} />)
+      render(() => <WaveSelect title="LFO" value={0} onChange={() => {}} />)
       expect(document.querySelector(".wave-select-container")).toHaveClass("wave-select-md")
     })
   })
 
   describe("description tooltip", () => {
     it("shows description on hover", () => {
-      render(<WaveSelect title="LFO" value={0} onChange={() => {}} description="Select waveform" />)
+      render(() => <WaveSelect title="LFO" value={0} onChange={() => {}} description="Select waveform" />)
       const container = document.querySelector(".wave-select-container")
 
       fireEvent.mouseEnter(container)
@@ -160,7 +160,7 @@ describe("WaveSelect", () => {
     })
 
     it("does not show description when dropdown is open", () => {
-      render(<WaveSelect title="LFO" value={0} onChange={() => {}} description="Select waveform" />)
+      render(() => <WaveSelect title="LFO" value={0} onChange={() => {}} description="Select waveform" />)
       const container = document.querySelector(".wave-select-container")
       const button = document.querySelector(".wave-select-display")
 

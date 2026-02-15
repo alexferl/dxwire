@@ -33,7 +33,7 @@ describe("ImportMenu", () => {
 
   it("renders import menu button", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<ImportMenu />)
+    render(() => <ImportMenu />)
 
     // Menu button should be rendered
     expect(document.querySelector(".menu-button")).toBeInTheDocument()
@@ -41,7 +41,7 @@ describe("ImportMenu", () => {
 
   it("opens dropdown when clicked", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<ImportMenu />)
+    render(() => <ImportMenu />)
 
     const button = document.querySelector(".menu-button")
     fireEvent.click(button)
@@ -62,7 +62,7 @@ describe("ImportMenu", () => {
       return originalCreateElement.call(document, tag)
     })
 
-    render(<ImportMenu />)
+    render(() => <ImportMenu />)
 
     const button = document.querySelector(".menu-button")
     fireEvent.click(button)
@@ -97,7 +97,7 @@ describe("ImportMenu", () => {
       return originalCreateElement.call(document, tag)
     })
 
-    render(<ImportMenu />)
+    render(() => <ImportMenu />)
 
     const button = document.querySelector(".menu-button")
     fireEvent.click(button)
@@ -136,7 +136,7 @@ describe("ImportMenu", () => {
       return originalCreateElement.call(document, tag)
     })
 
-    render(<ImportMenu />)
+    render(() => <ImportMenu />)
 
     const button = document.querySelector(".menu-button")
     fireEvent.click(button)
@@ -173,7 +173,7 @@ describe("ImportMenu", () => {
       return originalCreateElement.call(document, tag)
     })
 
-    render(<ImportMenu />)
+    render(() => <ImportMenu />)
 
     const button = document.querySelector(".menu-button")
     fireEvent.click(button)
@@ -189,7 +189,7 @@ describe("ImportMenu", () => {
 
   it("has aria-label for import icon", () => {
     mockUseVoice.mockReturnValue(createMockVoice())
-    render(<ImportMenu />)
+    render(() => <ImportMenu />)
 
     expect(screen.getByLabelText("Import icon")).toBeInTheDocument()
   })
