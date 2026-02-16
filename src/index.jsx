@@ -12,7 +12,7 @@ import "./style.css"
 function App() {
   return (
     <main>
-      <Router>
+      <Router base={import.meta.env.PROD ? "/dxwire" : "/"}>
         <Route path="/" component={Home} />
         <Route path="*" component={NotFound} />
       </Router>
