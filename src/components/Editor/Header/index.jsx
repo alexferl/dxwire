@@ -223,7 +223,7 @@ function HeaderContent() {
     setSendingVoice(true)
     try {
       const sysex = voice.toSysEx()
-      midi().system.sendEx(sysex, false)
+      midi().system.sendEx(sysex, true)
       await new Promise((resolve) => setTimeout(resolve, 500))
     } catch (err) {
       console.error("Failed to send voice:", err)
@@ -249,7 +249,7 @@ function HeaderContent() {
         return
       }
       const sysex = bankEntry.bank.toSysEx()
-      midi().system.sendEx(sysex, false)
+      midi().system.sendEx(sysex, true)
       await new Promise((resolve) => setTimeout(resolve, 500))
     } catch (err) {
       console.error("Failed to send bank:", err)
