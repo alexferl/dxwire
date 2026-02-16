@@ -172,3 +172,4 @@ Requires browsers with [Web MIDI API](https://caniuse.com/midi) support:
 ## Acknowledgments
 
 - Yamaha for creating the legendary DX7 synthesizer
+- Inspired by [Dexed](https://github.com/asb2m10/dexed)
