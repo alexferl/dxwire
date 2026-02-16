@@ -2,8 +2,10 @@ import { resolve } from "node:path"
 import solid from "vite-plugin-solid"
 import { defineConfig } from "vitest/config"
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [solid()],
+
+  base: mode === "production" ? "/dxwire/" : "/",
 
   resolve: {
     alias: {
@@ -30,4 +32,4 @@ export default defineConfig({
       exclude: ["tests/**", "examples/**", "docs/**", "*.config.js", "**/*.test.js", "coverage/**"],
     },
   },
-})
+}))
