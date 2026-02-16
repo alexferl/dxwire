@@ -138,6 +138,8 @@
 .level-section,
 .mod-section {
   background: #3a3a3a;
+  border-bottom: 2px solid #1a1a1a;
+  border-left: 2px solid #1a1a1a;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -148,6 +150,14 @@
   gap: 10px;
 }
 
+.op6 .freq-controls,
+.op6 .envelope-display,
+.op6 .eg-section,
+.op6 .level-section,
+.op6 .mod-section {
+  border-bottom: none;
+}
+
 .freq-controls {
   justify-content: flex-start;
   padding-top: 6px;
@@ -155,11 +165,16 @@
 }
 
 .envelope-display {
-  background: #1a1a1a;
+  background: #3a3a3a;
   justify-content: center;
   padding: 0;
   overflow: hidden;
-  border: 2px solid #3a3a3a;
+}
+
+.eg-section,
+.level-section,
+.mod-section {
+  border-left: 2px solid #1a1a1a;
 }
 
 .eg-section {

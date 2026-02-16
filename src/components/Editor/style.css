@@ -1,8 +1,41 @@
 .editor {
   display: grid;
   grid-template-columns: 280px repeat(5, 1fr);
-  grid-template-rows: 60px repeat(6, 1fr);
+  grid-template-rows: 60px repeat(6, 1fr) auto;
   height: 100vh;
   background: #1a1a1a;
-  gap: 2px;
+}
+
+.editor-footer {
+  grid-column: 1 / -1;
+  grid-row: -1;
+  background: #252525;
+  border-top: 2px solid #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  padding: 10px;
+}
+
+.footer-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #aaa;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.footer-link:hover {
+  color: #fff;
+  background: #333;
+}
+
+.footer-link svg {
+  width: 18px;
+  height: 18px;
 }
