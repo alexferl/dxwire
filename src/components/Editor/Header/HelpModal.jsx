@@ -106,6 +106,20 @@ export function HelpModal(props) {
             </li>
           </ul>
 
+          <h3>Algorithm Visualization</h3>
+          <ul>
+            <li>
+              <span style={{ color: "#4caf50" }}>■</span> <strong>Green</strong> = Carrier (outputs sound)
+            </li>
+            <li>
+              <span style={{ color: "#2196f3" }}>■</span> <strong>Blue</strong> = Modulator (modulates other operators)
+            </li>
+            <li>
+              <span style={{ color: "#666" }}>■</span> <strong>Gray</strong> = Disabled operator
+            </li>
+            <li>Lines show connections between operators</li>
+          </ul>
+
           <h3>Keyboard Shortcuts</h3>
           <ul>
             <li>

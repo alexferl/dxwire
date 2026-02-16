@@ -293,33 +293,33 @@ function drawLink(op, gridCellSize = 100 / 6) {
   const paths = []
 
   switch (link) {
-    case 0:
+    case 0: // Line Down
       paths.push(`M ${cx} ${cy - 1} L ${cx} ${bottom}`)
       break
-    case 1:
+    case 1: // Arrow to Right
       paths.push(`M ${cx} ${cy - 6} L ${cx} ${cy + 9}`)
       paths.push(`M ${cx} ${cy + 9} L ${right + cellW * 0.5} ${cy + 9}`)
       break
-    case 2:
+    case 2: // Arrow to Right join
       paths.push(`M ${cx} ${cy - 6} L ${cx} ${cy + 9.5}`)
       break
-    case 3:
+    case 3: // Arrow to Right and Down
       paths.push(`M ${cx} ${cy - 6} L ${cx} ${bottom}`)
       paths.push(`M ${cx} ${cy + 9} L ${right + cellW * 0.5} ${cy + 9}`)
       paths.push(`M ${right + cellW * 0.5} ${cy + 8.5} L ${right + cellW * 0.5} ${bottom}`)
       break
-    case 4:
+    case 4: // Arrow to Right+Left and Down
       paths.push(`M ${cx} ${cy - 6} L ${cx} ${bottom}`)
       paths.push(`M ${cx} ${cy + 9} L ${right + cellW * 0.5} ${cy + 9}`)
       paths.push(`M ${right + cellW * 0.5} ${cy + 8.5} L ${right + cellW * 0.5} ${bottom}`)
       paths.push(`M ${cx - cellW} ${cy + 9} L ${cx} ${cy + 9}`)
       paths.push(`M ${cx - cellW} ${cy + 8.5} L ${cx - cellW} ${bottom}`)
       break
-    case 6:
+    case 6: // Long Arrow to Right (2 cells)
       paths.push(`M ${cx} ${cy - 6} L ${cx} ${cy + 9}`)
       paths.push(`M ${cx} ${cy + 9} L ${right + cellW * 1.5} ${cy + 9}`)
       break
-    case 7:
+    case 7: // Arrow to Left
       paths.push(`M ${cx} ${cy - 6} L ${cx} ${cy + 9.5}`)
       paths.push(`M ${cx - cellW} ${cy + 9} L ${cx + 0.5} ${cy + 9}`)
       break
@@ -349,7 +349,7 @@ function drawFeedback(op, gridCellSize = 100 / 6) {
   const paths = []
 
   switch (fb) {
-    case 1:
+    case 1: // Short loop
       paths.push(`
         M ${cx} ${top + 7.0}
         L ${cx} ${loopTop}
@@ -358,7 +358,7 @@ function drawFeedback(op, gridCellSize = 100 / 6) {
         L ${cx} ${cy - 2.0}
       `)
       break
-    case 2:
+    case 2: // Long loop (3 cells down)
       paths.push(`
         M ${cx} ${top + 6.0}
         L ${cx} ${top - 3.5}
@@ -367,7 +367,7 @@ function drawFeedback(op, gridCellSize = 100 / 6) {
         L ${cx} ${top + cellH * 2.5}
       `)
       break
-    case 3:
+    case 3: // Medium loop (2 cells down)
       paths.push(`
         M ${cx} ${top + 3.0}
         L ${cx} ${top - 5.5}
@@ -376,7 +376,7 @@ function drawFeedback(op, gridCellSize = 100 / 6) {
         L ${cx} ${top + cellH * 1.5}
       `)
       break
-    case 4:
+    case 4: // Left loop
       paths.push(`
         M ${cx} ${top + 3.0}
         L ${cx} ${top - 5.0}
