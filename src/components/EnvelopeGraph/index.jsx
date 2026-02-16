@@ -382,14 +382,14 @@ export function EnvelopeGraph(props) {
           TIME
         </text>
 
-        {/* Y-axis tick labels - moved left to avoid overlap */}
-        <text x={paddingLeft - 16} y={levelToY(0) + 3} text-anchor="end" class="tick-label">
+        {/* Y-axis tick labels */}
+        <text x={paddingLeft - 6} y={levelToY(0) + 3} text-anchor="end" class="tick-label">
           0
         </text>
-        <text x={paddingLeft - 16} y={levelToY(50) + 3} text-anchor="end" class="tick-label">
+        <text x={paddingLeft - 6} y={levelToY(50) + 3} text-anchor="end" class="tick-label">
           50
         </text>
-        <text x={paddingLeft - 16} y={levelToY(99) + 3} text-anchor="end" class="tick-label">
+        <text x={paddingLeft - 6} y={levelToY(99) + 3} text-anchor="end" class="tick-label">
           99
         </text>
       </svg>

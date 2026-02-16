@@ -1,5 +1,5 @@
 import { DX7Bank } from "midiwire"
-import { createEffect, createSignal, For } from "solid-js"
+import { createEffect, createMemo, createSignal, Index } from "solid-js"
 import {
   GearIcon,
   HelpIcon,
@@ -192,6 +192,21 @@ function HeaderContent() {
     voice.switchBank(index)
   }
 
+  /** @type {HTMLSelectElement | undefined} */
+  let bankSelectRef
+  /** @type {HTMLSelectElement | undefined} */
+  let voiceSelectRef
+
+  // Ensure select values stay synchronized
+  createEffect(() => {
+    if (bankSelectRef) {
+      bankSelectRef.value = String(currentBankIndex())
+    }
+    if (voiceSelectRef) {
+      voiceSelectRef.value = String(currentVoiceIdx())
+    }
+  })
+
   const handleVoiceChange = (e) => {
     const index = Number(e.target.value)
     voice.loadFromVoiceIndex(index)
@@ -267,30 +282,35 @@ function HeaderContent() {
   const currentBankIndex = () => voice.currentBank[0]()
   const currentVoiceIdx = () => voice.currentVoiceIndex[0]()
 
-  const bankNames = () => voice.getBankNames()
-  const voiceNames = () => {
+  const bankNames = createMemo(() => voice.getBankNames())
+  const voiceNames = createMemo(() => {
     const idx = currentBankIndex()
     return voice.banks[0]()[idx]?.bank ? voice.getBankVoiceNames() : []
-  }
+  })
   const bankLoaded = () => !!voice.banks[0]()[currentBankIndex()]?.bank
 
   return (
     <>
       <div class="header">
         <div class="header-left">
-          <div class="header-logo">DX7</div>
-          <select class="bank-select-header" value={currentBankIndex()} onChange={handleBankChange}>
-            <For each={bankNames()}>{(name, i) => <option value={i()}>{name || `Bank ${i() + 1}`}</option>}</For>
+          <div class="header-logo">DXWire</div>
+          <select ref={bankSelectRef} class="bank-select-header" value={currentBankIndex()} onChange={handleBankChange}>
+            <Index each={bankNames()}>{(name, i) => <option value={i}>{name() || `Bank ${i + 1}`}</option>}</Index>
           </select>
           <BankManageMenu />
-          <select class="voice-select-header" value={currentVoiceIdx()} onChange={handleVoiceChange}>
-            <For each={voiceNames()}>
+          <select
+            ref={voiceSelectRef}
+            class="voice-select-header"
+            value={currentVoiceIdx()}
+            onChange={handleVoiceChange}
+          >
+            <Index each={voiceNames()}>
               {(name, i) => (
-                <option value={i()}>
-                  {i() + 1}. {name || "(Empty)"}
+                <option value={i}>
+                  {i + 1}. {name() || "(Empty)"}
                 </option>
               )}
-            </For>
+            </Index>
           </select>
           <VoiceManageMenu />
           <div class="header-separator" />

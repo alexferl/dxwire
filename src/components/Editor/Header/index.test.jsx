@@ -109,7 +109,7 @@ describe("Header", () => {
     await waitFor(() => {
       expect(document.querySelector(".header")).toBeInTheDocument()
     })
-    expect(document.querySelector(".header-logo")).toHaveTextContent("DX7")
+    expect(document.querySelector(".header-logo")).toHaveTextContent("DXWire")
   })
 
   it("renders bank selector", async () => {

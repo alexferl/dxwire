@@ -2,6 +2,7 @@
   grid-column: 1 / -1;
   grid-row: 1;
   background: #2a2a2a;
+  border-bottom: 2px solid #1a1a1a;
   padding: 0 20px;
   display: grid;
   grid-template-columns: 280px repeat(5, 1fr);

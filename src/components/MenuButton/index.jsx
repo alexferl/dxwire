@@ -27,9 +27,10 @@ export function MenuButton(props) {
   // Unwrap a SolidJS-wrapped child to get the actual component
   const unwrapChild = (child) => {
     if (typeof child !== "function") return null
-    // Call once to unwrap Solid's wrapper
+    // Check if child itself is a MenuItem marker
+    if (child.__menuItem) return child
+    // Otherwise try to unwrap Solid's reactive wrapper
     const result = child()
-    // Check if result is our MenuItem marker
     return result?.__menuItem ? result : null
   }
 
@@ -47,7 +48,7 @@ export function MenuButton(props) {
   }
 
   const handleClickOutside = (e) => {
-    if (containerRef && !containerRef.contains(e.target)) {
+    if (containerRef && !containerRef.contains(e.target) && !buttonRef?.contains(e.target)) {
       setIsOpen(false)
       setFocusedIndex(-1)
     }
