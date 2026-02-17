@@ -84,4 +84,10 @@ describe("Editor", () => {
     expect(screen.getByTestId("header")).toBeInTheDocument()
     expect(screen.getByTestId("sidebar")).toBeInTheDocument()
   })
+
+  it("renders Footer component", () => {
+    render(() => <Editor />)
+
+    expect(document.querySelector(".editor-footer")).toBeInTheDocument()
+  })
 })

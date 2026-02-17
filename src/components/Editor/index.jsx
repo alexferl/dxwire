@@ -11,7 +11,7 @@ export { useVoice } from "./context/VoiceContext.jsx"
  * Footer component with GitHub link.
  * @returns {import("solid-js").JSX.Element}
  */
-function Footer() {
+export function Footer() {
   return (
     <footer class="editor-footer">
       <a href="https://github.com/alexferl/dxwire" target="_blank" rel="noopener noreferrer" class="footer-link">

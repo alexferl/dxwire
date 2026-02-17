@@ -20,12 +20,14 @@ vi.mock("../context/MIDIContext.jsx", () => ({
 import { Header } from "./index"
 
 // Mock midiwire
+const mockIsMIDISupported = vi.fn()
 vi.mock("midiwire", () => ({
   DX7Bank: {
     fromSysEx: (_data) => ({
       getVoice: (i) => ({ name: `Voice ${i + 1}` }),
     }),
   },
+  isMIDISupported: () => mockIsMIDISupported(),
 }))
 
 // Mock sub-components
@@ -98,6 +100,7 @@ describe("Header", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockUseMIDI.mockReturnValue(createMockMIDI())
+    mockIsMIDISupported.mockReturnValue(true)
     global.confirm = vi.fn(() => true)
     global.alert = vi.fn()
   })
@@ -525,6 +528,41 @@ describe("Header", () => {
 
       const initItem = screen.getByText("Initialize Voice").closest("button")
       expect(initItem).not.toBeDisabled()
+    })
+  })
+
+  describe("MIDI Support Check", () => {
+    it("renders MIDI device selector when MIDI is supported", async () => {
+      mockIsMIDISupported.mockReturnValue(true)
+      mockUseVoice.mockReturnValue(createMockVoice())
+      render(() => <Header />)
+
+      await waitFor(() => {
+        expect(screen.getByTestId("midi-selector")).toBeInTheDocument()
+      })
+    })
+
+    it("renders 'MIDI not supported' message when MIDI is not supported", async () => {
+      mockIsMIDISupported.mockReturnValue(false)
+      mockUseVoice.mockReturnValue(createMockVoice())
+      render(() => <Header />)
+
+      await waitFor(() => {
+        expect(screen.getByText("MIDI not supported")).toBeInTheDocument()
+      })
+      expect(screen.queryByTestId("midi-selector")).not.toBeInTheDocument()
+    })
+
+    it("has correct CSS class for not supported message", async () => {
+      mockIsMIDISupported.mockReturnValue(false)
+      mockUseVoice.mockReturnValue(createMockVoice())
+      render(() => <Header />)
+
+      await waitFor(() => {
+        const notSupportedElement = document.querySelector(".midi-not-supported")
+        expect(notSupportedElement).toBeInTheDocument()
+        expect(notSupportedElement).toHaveTextContent("MIDI not supported")
+      })
     })
   })
 })
