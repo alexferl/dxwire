@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@solidjs/router": "0.15.4",
-    "midiwire": "0.12.0",
+    "midiwire": "0.13.0",
     "solid-js": "1.9.11"
   },
   "devDependencies": {

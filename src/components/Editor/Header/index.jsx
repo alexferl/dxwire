@@ -1,4 +1,4 @@
-import { DX7Bank } from "midiwire"
+import { DX7Bank, isMIDISupported } from "midiwire"
 import { createEffect, createMemo, createSignal, Index } from "solid-js"
 import {
   GearIcon,
@@ -348,7 +348,7 @@ function HeaderContent() {
         </div>
         <div class="header-right">
           <div class="header-midi">
-            <MIDIDeviceSelector />
+            {isMIDISupported() ? <MIDIDeviceSelector /> : <span class="midi-not-supported">MIDI not supported</span>}
           </div>
           <div class="header-buttons">
             <ImportMenu />

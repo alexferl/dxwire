@@ -35,6 +35,11 @@
   align-items: center;
 }
 
+.midi-not-supported {
+  font-size: 12px;
+  color: #ff4444;
+}
+
 .header-buttons {
   display: flex;
   align-items: center;
