@@ -223,7 +223,7 @@ function HeaderContent() {
     setSendingVoice(true)
     try {
       const sysex = voice.toSysEx()
-      midi().system.sendEx(sysex, true)
+      midi().system.sendEx(sysex, false)
       await new Promise((resolve) => setTimeout(resolve, 500))
     } catch (err) {
       console.error("Failed to send voice:", err)
@@ -249,7 +249,7 @@ function HeaderContent() {
         return
       }
       const sysex = bankEntry.bank.toSysEx()
-      midi().system.sendEx(sysex, true)
+      midi().system.sendEx(sysex, false)
       await new Promise((resolve) => setTimeout(resolve, 500))
     } catch (err) {
       console.error("Failed to send bank:", err)
@@ -270,7 +270,7 @@ function HeaderContent() {
     try {
       // DX7 bank dump request: F0 43 2n 09 F7 (n = channel - 1, using channel 1 = 0x20)
       const request = [0xf0, 0x43, 0x20, 0x09, 0xf7]
-      midi().system.sendEx(request, true)
+      midi().system.sendEx(request, false)
       await new Promise((resolve) => setTimeout(resolve, 5000))
     } catch (err) {
       console.error("Failed to request bank:", err)
