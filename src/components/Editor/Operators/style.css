@@ -296,4 +296,5 @@
 
 .envelope-display {
   background: #2a2a2a;
+  min-width: 280px;
 }
