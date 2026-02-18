@@ -126,13 +126,46 @@ export function Knob(props) {
     setIsDragging(false)
   }
 
+  const handleTouchStart = (e) => {
+    e.preventDefault()
+    knobRef?.focus()
+    setIsDragging(true)
+    setDragStartY(e.touches[0].clientY)
+    setStartValue(props.value)
+  }
+
+  const handleTouchMove = (e) => {
+    if (!isDragging()) return
+
+    let deltaY = e.touches[0].clientY - dragStartY()
+    if (!invert()) deltaY = dragStartY() - e.touches[0].clientY
+
+    const baseSensitivity = (max() - min()) / 200
+    const adjustedSensitivity = baseSensitivity * sensitivity()
+    const newValue = Math.round(startValue() + deltaY * adjustedSensitivity)
+
+    const clampedValue = Math.max(min(), Math.min(max(), newValue))
+
+    if (clampedValue !== props.value && onChange()) {
+      onChange()(clampedValue)
+    }
+  }
+
+  const handleTouchEnd = () => {
+    setIsDragging(false)
+  }
+
   createEffect(() => {
     if (isDragging()) {
       window.addEventListener("mousemove", handleMouseMove)
       window.addEventListener("mouseup", handleMouseUp)
+      window.addEventListener("touchmove", handleTouchMove, { passive: false })
+      window.addEventListener("touchend", handleTouchEnd)
       onCleanup(() => {
         window.removeEventListener("mousemove", handleMouseMove)
         window.removeEventListener("mouseup", handleMouseUp)
+        window.removeEventListener("touchmove", handleTouchMove)
+        window.removeEventListener("touchend", handleTouchEnd)
       })
     }
   })
@@ -220,6 +253,7 @@ export function Knob(props) {
         ref={knobRef}
         class={`knob ${sizeClass()} ${isDragging() ? "dragging" : ""}`}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onKeyDown={handleKeyDown}

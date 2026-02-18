@@ -268,4 +268,50 @@ describe("Knob", () => {
       expect(knob).not.toHaveClass("dragging")
     })
   })
+
+  describe("touch drag interaction", () => {
+    it("calls onChange when dragging up with touch", () => {
+      const onChange = vi.fn()
+      render(() => <Knob title="Volume" value={50} onChange={onChange} min={0} max={100} />)
+      const knob = screen.getByRole("slider")
+
+      fireEvent.touchStart(knob, { touches: [{ clientY: 100 }] })
+      fireEvent.touchMove(window, { touches: [{ clientY: 50 }] })
+
+      expect(onChange).toHaveBeenCalled()
+    })
+
+    it("calls onChange when dragging down with touch", () => {
+      const onChange = vi.fn()
+      render(() => <Knob title="Volume" value={50} onChange={onChange} min={0} max={100} />)
+      const knob = screen.getByRole("slider")
+
+      fireEvent.touchStart(knob, { touches: [{ clientY: 100 }] })
+      fireEvent.touchMove(window, { touches: [{ clientY: 150 }] })
+
+      expect(onChange).toHaveBeenCalled()
+    })
+
+    it("applies dragging class during touch drag", () => {
+      render(() => <Knob title="Volume" value={50} onChange={() => {}} />)
+      const knob = screen.getByRole("slider")
+
+      fireEvent.touchStart(knob, { touches: [{ clientY: 100 }] })
+      expect(knob).toHaveClass("dragging")
+
+      fireEvent.touchEnd(window)
+      expect(knob).not.toHaveClass("dragging")
+    })
+
+    it("respects invert prop with touch", () => {
+      const onChange = vi.fn()
+      render(() => <Knob title="Volume" value={50} onChange={onChange} min={0} max={100} invert={true} />)
+      const knob = screen.getByRole("slider")
+
+      fireEvent.touchStart(knob, { touches: [{ clientY: 100 }] })
+      fireEvent.touchMove(window, { touches: [{ clientY: 150 }] })
+
+      expect(onChange).toHaveBeenCalled()
+    })
+  })
 })

@@ -23,6 +23,7 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  touch-action: none;
   background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
   border: 1px solid #3a3a3a;
   border-radius: 2px;
