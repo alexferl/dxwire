@@ -20,7 +20,7 @@ describe("RenameDialog", () => {
     const onCancel = vi.fn()
     render(() => <RenameDialog title="Rename" currentName="Test" onConfirm={() => {}} onCancel={onCancel} />)
 
-    const overlay = document.querySelector(".slot-dialog-overlay")
+    const overlay = document.querySelector(".modal-overlay")
     fireEvent.click(overlay)
 
     expect(onCancel).toHaveBeenCalled()
@@ -61,7 +61,7 @@ describe("RenameDialog", () => {
     const onCancel = vi.fn()
     render(() => <RenameDialog title="Rename" currentName="Test" onConfirm={() => {}} onCancel={onCancel} />)
 
-    const overlay = document.querySelector(".slot-dialog-overlay")
+    const overlay = document.querySelector(".modal-overlay")
     fireEvent.keyDown(overlay, { key: "Escape" })
 
     expect(onCancel).toHaveBeenCalled()
@@ -77,7 +77,7 @@ describe("RenameDialog", () => {
   it("is an accessible dialog", () => {
     render(() => <RenameDialog title="Rename" currentName="Test" onConfirm={() => {}} onCancel={() => {}} />)
 
-    const overlay = document.querySelector(".slot-dialog-overlay")
+    const overlay = document.querySelector(".modal-overlay")
     expect(overlay).toHaveAttribute("role", "dialog")
     expect(overlay).toHaveAttribute("aria-modal", "true")
   })
@@ -86,8 +86,8 @@ describe("RenameDialog", () => {
     const onCancel = vi.fn()
     render(() => <RenameDialog title="Rename" currentName="Test" onConfirm={() => {}} onCancel={onCancel} />)
 
-    const dialog = document.querySelector(".slot-dialog")
-    fireEvent.click(dialog)
+    const content = document.querySelector(".modal-content")
+    fireEvent.click(content)
 
     expect(onCancel).not.toHaveBeenCalled()
   })

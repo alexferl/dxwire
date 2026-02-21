@@ -1,10 +1,11 @@
 import { DX7Bank, isMIDISupported } from "midiwire"
-import { createEffect, createMemo, createSignal, Index } from "solid-js"
+import { createEffect, createMemo, createSignal, Index, onCleanup, onMount } from "solid-js"
 import {
   GearIcon,
   HelpIcon,
   LoadingSpinner,
   ReceiveBankIcon,
+  SaveIcon,
   SendBankIcon,
   SendVoiceIcon,
   SettingsIcon,
@@ -14,6 +15,7 @@ import { MIDIDeviceSelector } from "../../MIDIDeviceSelector/index.jsx"
 import { MIDIContextProvider, useMIDI } from "../context/MIDIContext.jsx"
 import { CopyVoiceDialog } from "../dialogs/CopyVoiceDialog.jsx"
 import { RenameDialog } from "../dialogs/RenameDialog.jsx"
+import { UnsavedChangesDialog } from "../dialogs/UnsavedChangesDialog.jsx"
 import { useVoice } from "../index.jsx"
 import { ExportMenu } from "./ExportMenu.jsx"
 import { HelpModal } from "./HelpModal.jsx"
@@ -86,6 +88,7 @@ function VoiceManageMenu() {
   const currentVoiceIdx = () => voice.currentVoiceIndex[0]()
   const voiceNames = () => voice.getBankVoiceNames()
   const currentVoiceName = () => voice.global.name[0]()
+  const hasChanges = () => voice.hasUnsavedChanges[0]()
 
   const handleInit = () => {
     if (confirm(`Initialize "${currentVoiceName()}" to default? This will overwrite the current voice.`)) {
@@ -97,9 +100,21 @@ function VoiceManageMenu() {
     }
   }
 
+  const handleSaveToSlot = () => {
+    if (confirm(`Save changes to "${currentVoiceName()}" (slot ${currentVoiceIdx() + 1})?`)) {
+      try {
+        voice.replaceVoiceInBank(currentVoiceIdx())
+      } catch (err) {
+        alert(err.message)
+      }
+    }
+  }
+
   return (
     <>
       <MenuButton icon={<SettingsIcon size="lg" ariaLabel="Settings icon" />} title="Manage Voice">
+        <MenuItem label="Save to Current Slot" onClick={handleSaveToSlot} disabled={!hasChanges()} />
+        <MenuItem label="Separator" separator />
         <MenuItem label="Initialize Voice" onClick={handleInit} />
         <MenuItem label="Rename Voice..." onClick={() => setShowRename(true)} />
         <MenuItem label="Separator" separator />
@@ -187,9 +202,43 @@ function HeaderContent() {
     }
   })
 
+  const pendingBankChange = createSignal(null)
+  const pendingVoiceChange = createSignal(null)
+  const [showUnsavedDialog, setShowUnsavedDialog] = createSignal(false)
+
+  const hasChanges = () => voice.hasUnsavedChanges[0]()
+
+  const confirmDiscardChanges = () => {
+    setShowUnsavedDialog(false)
+    voice.markSaved() // Discard changes by marking current as "saved"
+    // Execute pending change
+    const bankIndex = pendingBankChange[0]()
+    const voiceIndex = pendingVoiceChange[0]()
+    if (bankIndex !== null) {
+      voice.switchBank(bankIndex)
+      pendingBankChange[1](null)
+    }
+    if (voiceIndex !== null) {
+      voice.loadFromVoiceIndex(voiceIndex)
+      pendingVoiceChange[1](null)
+    }
+  }
+
+  const cancelDiscardChanges = () => {
+    setShowUnsavedDialog(false)
+    pendingBankChange[1](null)
+    pendingVoiceChange[1](null)
+  }
+
   const handleBankChange = (e) => {
     const index = Number(e.target.value)
-    voice.switchBank(index)
+    if (hasChanges()) {
+      pendingBankChange[1](index)
+      pendingVoiceChange[1](null)
+      setShowUnsavedDialog(true)
+    } else {
+      voice.switchBank(index)
+    }
   }
 
   /** @type {HTMLSelectElement | undefined} */
@@ -209,8 +258,62 @@ function HeaderContent() {
 
   const handleVoiceChange = (e) => {
     const index = Number(e.target.value)
-    voice.loadFromVoiceIndex(index)
+    if (hasChanges()) {
+      pendingBankChange[1](null)
+      pendingVoiceChange[1](index)
+      setShowUnsavedDialog(true)
+    } else {
+      voice.loadFromVoiceIndex(index)
+    }
   }
+
+  const handleSaveToSlot = () => {
+    const currentVoiceName = () => voice.global.name[0]()
+    const currentVoiceIdx = () => voice.currentVoiceIndex[0]()
+    if (!hasChanges()) return
+    if (confirm(`Save changes to "${currentVoiceName()}" (slot ${currentVoiceIdx() + 1})?`)) {
+      try {
+        voice.replaceVoiceInBank(currentVoiceIdx())
+      } catch (err) {
+        alert(err.message)
+      }
+    }
+  }
+
+  // Helper functions for save indicator state (avoid nested ternaries)
+  const getSaveIndicatorClass = () => {
+    if (hasChanges()) return "save-indicator--unsaved"
+    if (voice.justSaved[0]()) return "save-indicator--saved"
+    return "save-indicator--default"
+  }
+
+  const getSaveIndicatorTitle = () => {
+    if (hasChanges()) return "You have unsaved changes"
+    if (voice.justSaved[0]()) return "Changes saved"
+    return "No changes"
+  }
+
+  const getSaveIndicatorText = () => {
+    if (hasChanges()) return "Unsaved changes"
+    if (voice.justSaved[0]()) return "Saved"
+    return "No changes"
+  }
+
+  // Keyboard shortcut for save (Ctrl/Cmd+S)
+  onMount(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault()
+        if (hasChanges()) {
+          handleSaveToSlot()
+        }
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    onCleanup(() => {
+      window.removeEventListener("keydown", handleKeyDown)
+    })
+  })
 
   /**
    * Sends the current voice via MIDI SysEx.
@@ -293,7 +396,10 @@ function HeaderContent() {
     <>
       <div class="header">
         <div class="header-left">
-          <div class="header-logo">DXWire</div>
+          <div class="header-logo">
+            <span class="header-logo-title">DXWire</span>
+            <span class="header-logo-subtitle">DX7 Patch Editor and Manager</span>
+          </div>
           <select ref={bankSelectRef} class="bank-select-header" value={currentBankIndex()} onChange={handleBankChange}>
             <Index each={bankNames()}>{(name, i) => <option value={i}>{name() || `Bank ${i + 1}`}</option>}</Index>
           </select>
@@ -345,6 +451,19 @@ function HeaderContent() {
           >
             {sendingVoice() ? <LoadingSpinner size="md" /> : <SendVoiceIcon size="md" ariaLabel="Send voice icon" />}
           </button>
+          <button
+            type="button"
+            class="header-send-btn"
+            onClick={handleSaveToSlot}
+            disabled={!hasChanges()}
+            title="Save to Current Slot"
+          >
+            <SaveIcon size="md" ariaLabel="Save icon" />
+          </button>
+          <div class={`save-indicator ${getSaveIndicatorClass()}`} title={getSaveIndicatorTitle()}>
+            <span class="save-indicator-dot" />
+            <span>{getSaveIndicatorText()}</span>
+          </div>
         </div>
         <div class="header-right">
           <div class="header-midi">
@@ -364,6 +483,26 @@ function HeaderContent() {
       </div>
       {showHelp() && <HelpModal onClose={() => setShowHelp(false)} />}
       {showSettings() && <SettingsModal onClose={() => setShowSettings(false)} />}
+      {showUnsavedDialog() && (
+        <UnsavedChangesDialog
+          onSave={() => {
+            setShowUnsavedDialog(false)
+            voice.replaceVoiceInBank(currentVoiceIdx())
+            const bankIndex = pendingBankChange[0]()
+            const voiceIndex = pendingVoiceChange[0]()
+            if (bankIndex !== null) {
+              voice.switchBank(bankIndex)
+              pendingBankChange[1](null)
+            }
+            if (voiceIndex !== null) {
+              voice.loadFromVoiceIndex(voiceIndex)
+              pendingVoiceChange[1](null)
+            }
+          }}
+          onDiscard={confirmDiscardChanges}
+          onCancel={cancelDiscardChanges}
+        />
+      )}
     </>
   )
 }
