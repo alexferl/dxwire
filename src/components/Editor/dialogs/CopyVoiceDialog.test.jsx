@@ -36,7 +36,7 @@ describe("CopyVoiceDialog", () => {
       <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={onCancel} />
     ))
 
-    const overlay = document.querySelector(".slot-dialog-overlay")
+    const overlay = document.querySelector(".modal-overlay")
     fireEvent.click(overlay)
 
     expect(onCancel).toHaveBeenCalled()
@@ -104,7 +104,7 @@ describe("CopyVoiceDialog", () => {
       <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={onCancel} />
     ))
 
-    const overlay = document.querySelector(".slot-dialog-overlay")
+    const overlay = document.querySelector(".modal-overlay")
     fireEvent.keyDown(overlay, { key: "Escape" })
 
     expect(onCancel).toHaveBeenCalled()
@@ -115,7 +115,7 @@ describe("CopyVoiceDialog", () => {
       <CopyVoiceDialog voiceNames={mockVoiceNames} currentIndex={0} onConfirm={() => {}} onCancel={() => {}} />
     ))
 
-    const overlay = document.querySelector(".slot-dialog-overlay")
+    const overlay = document.querySelector(".modal-overlay")
     expect(overlay).toHaveAttribute("role", "dialog")
     expect(overlay).toHaveAttribute("aria-modal", "true")
   })

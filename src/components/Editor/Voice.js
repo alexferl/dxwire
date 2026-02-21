@@ -15,6 +15,20 @@ const CURVE_MAP = { "-LN": 0, "-EX": 1, "+EX": 2, "+LN": 3 }
 const WAVE_MAP = { TRIANGLE: 0, "SAW DOWN": 1, "SAW UP": 2, SQUARE: 3, SINE: 4, "SAMPLE & HOLD": 5 }
 
 /**
+ * Wraps a setter function to call a callback after setting.
+ * @template T
+ * @param {(v: T) => void} setter - Original setter
+ * @param {() => void} callback - Callback to call after set
+ * @returns {(v: T) => void} Wrapped setter
+ */
+function wrapSetter(setter, callback) {
+  return (value) => {
+    setter(value)
+    callback()
+  }
+}
+
+/**
  * Creates a voice state manager for the DX7 editor.
  * Manages operators, pitch EG, LFO, global settings, and bank data using Solid signals.
  * @returns {Object} Voice state manager with signals and methods
@@ -89,8 +103,261 @@ export function createVoice() {
   const [currentBank, setCurrentBank] = createSignal(0)
   const [currentVoiceIndex, setCurrentVoiceIndex] = createSignal(0)
   const [settings, setSettings] = createSignal(loadSettings())
+  const [hasUnsavedChanges, setHasUnsavedChanges] = createSignal(false)
+  const [justSaved, setJustSaved] = createSignal(false)
+  let justSavedTimeout = null
+
+  // Store the original voice snapshot for comparison
+  let originalVoiceSnapshot = null
+
+  /**
+   * Creates a snapshot of the current voice state for comparison.
+   * @returns {Object} Snapshot of current voice parameters
+   */
+  function createSnapshot() {
+    return {
+      global: {
+        name: global.name[0](),
+        algorithm: global.algorithm[0](),
+        feedback: global.feedback[0](),
+        oscSync: global.oscSync[0](),
+        transpose: global.transpose[0](),
+        ampModSens: global.ampModSens[0](),
+        egBiasSens: global.egBiasSens[0](),
+      },
+      lfo: {
+        speed: lfo.speed[0](),
+        delay: lfo.delay[0](),
+        pmDepth: lfo.pmDepth[0](),
+        amDepth: lfo.amDepth[0](),
+        keySync: lfo.keySync[0](),
+        wave: lfo.wave[0](),
+        pmSens: lfo.pmSens[0](),
+      },
+      pitchEG: {
+        rate1: pitchEG.rate1[0](),
+        rate2: pitchEG.rate2[0](),
+        rate3: pitchEG.rate3[0](),
+        rate4: pitchEG.rate4[0](),
+        level1: pitchEG.level1[0](),
+        level2: pitchEG.level2[0](),
+        level3: pitchEG.level3[0](),
+        level4: pitchEG.level4[0](),
+      },
+      operators: operators.map((op) => ({
+        egRate1: op.egRate1[0](),
+        egRate2: op.egRate2[0](),
+        egRate3: op.egRate3[0](),
+        egRate4: op.egRate4[0](),
+        egLevel1: op.egLevel1[0](),
+        egLevel2: op.egLevel2[0](),
+        egLevel3: op.egLevel3[0](),
+        egLevel4: op.egLevel4[0](),
+        breakPoint: op.breakPoint[0](),
+        leftDepth: op.leftDepth[0](),
+        rightDepth: op.rightDepth[0](),
+        leftCurve: op.leftCurve[0](),
+        rightCurve: op.rightCurve[0](),
+        rateScaling: op.rateScaling[0](),
+        ampModSens: op.ampModSens[0](),
+        keyVelocity: op.keyVelocity[0](),
+        outputLevel: op.outputLevel[0](),
+        mode: op.mode[0](),
+        coarse: op.coarse[0](),
+        fine: op.fine[0](),
+        detune: op.detune[0](),
+        oscDetune: op.oscDetune[0](),
+      })),
+    }
+  }
+
+  /**
+   * Compares two voice snapshots for equality.
+   * @param {Object} a - First snapshot
+   * @param {Object} b - Second snapshot
+   * @returns {boolean} True if snapshots are equal
+   */
+  function snapshotsEqual(a, b) {
+    if (!a || !b) return false
+
+    // Compare global params
+    for (const key of Object.keys(a.global)) {
+      if (a.global[key] !== b.global[key]) return false
+    }
+
+    // Compare LFO params
+    for (const key of Object.keys(a.lfo)) {
+      if (a.lfo[key] !== b.lfo[key]) return false
+    }
+
+    // Compare pitch EG params
+    for (const key of Object.keys(a.pitchEG)) {
+      if (a.pitchEG[key] !== b.pitchEG[key]) return false
+    }
+
+    // Compare operators
+    for (let i = 0; i < a.operators.length; i++) {
+      const opA = a.operators[i]
+      const opB = b.operators[i]
+      for (const key of Object.keys(opA)) {
+        if (opA[key] !== opB[key]) return false
+      }
+    }
+
+    return true
+  }
+
+  /**
+   * Marks the current voice as having unsaved changes.
+   * Called automatically when any parameter changes.
+   */
+  function markUnsaved() {
+    if (!originalVoiceSnapshot) {
+      originalVoiceSnapshot = createSnapshot()
+    }
+    const current = createSnapshot()
+    const isEqual = snapshotsEqual(originalVoiceSnapshot, current)
+    setHasUnsavedChanges(!isEqual)
+  }
+
+  /**
+   * Marks the current voice as saved.
+   * Called when voice is saved to bank, exported, or sent to device.
+   * @param {boolean} [showIndicator=true] - Whether to show the "Saved" indicator
+   */
+  function markSaved(showIndicator = true) {
+    originalVoiceSnapshot = createSnapshot()
+    setHasUnsavedChanges(false)
+    if (showIndicator) {
+      setJustSaved(true)
+      if (justSavedTimeout) {
+        clearTimeout(justSavedTimeout)
+      }
+      justSavedTimeout = setTimeout(() => {
+        setJustSaved(false)
+      }, 2000)
+    }
+  }
+
+  /**
+   * Discards unsaved changes and resets to the original loaded state.
+   */
+  function discardChanges() {
+    if (originalVoiceSnapshot) {
+      // Reload from the original snapshot
+      const snapshot = originalVoiceSnapshot
+      global.name[1](snapshot.global.name)
+      global.algorithm[1](snapshot.global.algorithm)
+      global.feedback[1](snapshot.global.feedback)
+      global.oscSync[1](snapshot.global.oscSync)
+      global.transpose[1](snapshot.global.transpose)
+      global.ampModSens[1](snapshot.global.ampModSens)
+      global.egBiasSens[1](snapshot.global.egBiasSens)
+
+      lfo.speed[1](snapshot.lfo.speed)
+      lfo.delay[1](snapshot.lfo.delay)
+      lfo.pmDepth[1](snapshot.lfo.pmDepth)
+      lfo.amDepth[1](snapshot.lfo.amDepth)
+      lfo.keySync[1](snapshot.lfo.keySync)
+      lfo.wave[1](snapshot.lfo.wave)
+      lfo.pmSens[1](snapshot.lfo.pmSens)
+
+      pitchEG.rate1[1](snapshot.pitchEG.rate1)
+      pitchEG.rate2[1](snapshot.pitchEG.rate2)
+      pitchEG.rate3[1](snapshot.pitchEG.rate3)
+      pitchEG.rate4[1](snapshot.pitchEG.rate4)
+      pitchEG.level1[1](snapshot.pitchEG.level1)
+      pitchEG.level2[1](snapshot.pitchEG.level2)
+      pitchEG.level3[1](snapshot.pitchEG.level3)
+      pitchEG.level4[1](snapshot.pitchEG.level4)
+
+      snapshot.operators.forEach((opSnapshot, i) => {
+        const op = operators[i]
+        op.egRate1[1](opSnapshot.egRate1)
+        op.egRate2[1](opSnapshot.egRate2)
+        op.egRate3[1](opSnapshot.egRate3)
+        op.egRate4[1](opSnapshot.egRate4)
+        op.egLevel1[1](opSnapshot.egLevel1)
+        op.egLevel2[1](opSnapshot.egLevel2)
+        op.egLevel3[1](opSnapshot.egLevel3)
+        op.egLevel4[1](opSnapshot.egLevel4)
+        op.breakPoint[1](opSnapshot.breakPoint)
+        op.leftDepth[1](opSnapshot.leftDepth)
+        op.rightDepth[1](opSnapshot.rightDepth)
+        op.leftCurve[1](opSnapshot.leftCurve)
+        op.rightCurve[1](opSnapshot.rightCurve)
+        op.rateScaling[1](opSnapshot.rateScaling)
+        op.ampModSens[1](opSnapshot.ampModSens)
+        op.keyVelocity[1](opSnapshot.keyVelocity)
+        op.outputLevel[1](opSnapshot.outputLevel)
+        op.mode[1](opSnapshot.mode)
+        op.coarse[1](opSnapshot.coarse)
+        op.fine[1](opSnapshot.fine)
+        op.detune[1](opSnapshot.detune)
+        op.oscDetune[1](opSnapshot.oscDetune)
+      })
+    }
+    setHasUnsavedChanges(false)
+  }
 
   loadFromVoice(banks()[0].bank.getVoice(0))
+  markSaved(false) // Mark initial state as saved, don't show indicator
+
+  // Wrap all setters to call markUnsaved when parameters change
+  // Operators
+  operators.forEach((op) => {
+    op.egRate1[1] = wrapSetter(op.egRate1[1], markUnsaved)
+    op.egRate2[1] = wrapSetter(op.egRate2[1], markUnsaved)
+    op.egRate3[1] = wrapSetter(op.egRate3[1], markUnsaved)
+    op.egRate4[1] = wrapSetter(op.egRate4[1], markUnsaved)
+    op.egLevel1[1] = wrapSetter(op.egLevel1[1], markUnsaved)
+    op.egLevel2[1] = wrapSetter(op.egLevel2[1], markUnsaved)
+    op.egLevel3[1] = wrapSetter(op.egLevel3[1], markUnsaved)
+    op.egLevel4[1] = wrapSetter(op.egLevel4[1], markUnsaved)
+    op.breakPoint[1] = wrapSetter(op.breakPoint[1], markUnsaved)
+    op.leftDepth[1] = wrapSetter(op.leftDepth[1], markUnsaved)
+    op.rightDepth[1] = wrapSetter(op.rightDepth[1], markUnsaved)
+    op.leftCurve[1] = wrapSetter(op.leftCurve[1], markUnsaved)
+    op.rightCurve[1] = wrapSetter(op.rightCurve[1], markUnsaved)
+    op.rateScaling[1] = wrapSetter(op.rateScaling[1], markUnsaved)
+    op.ampModSens[1] = wrapSetter(op.ampModSens[1], markUnsaved)
+    op.keyVelocity[1] = wrapSetter(op.keyVelocity[1], markUnsaved)
+    op.outputLevel[1] = wrapSetter(op.outputLevel[1], markUnsaved)
+    op.mode[1] = wrapSetter(op.mode[1], markUnsaved)
+    op.coarse[1] = wrapSetter(op.coarse[1], markUnsaved)
+    op.fine[1] = wrapSetter(op.fine[1], markUnsaved)
+    op.detune[1] = wrapSetter(op.detune[1], markUnsaved)
+    op.oscDetune[1] = wrapSetter(op.oscDetune[1], markUnsaved)
+    op.enabled[1] = wrapSetter(op.enabled[1], markUnsaved)
+  })
+
+  // Pitch EG
+  pitchEG.rate1[1] = wrapSetter(pitchEG.rate1[1], markUnsaved)
+  pitchEG.rate2[1] = wrapSetter(pitchEG.rate2[1], markUnsaved)
+  pitchEG.rate3[1] = wrapSetter(pitchEG.rate3[1], markUnsaved)
+  pitchEG.rate4[1] = wrapSetter(pitchEG.rate4[1], markUnsaved)
+  pitchEG.level1[1] = wrapSetter(pitchEG.level1[1], markUnsaved)
+  pitchEG.level2[1] = wrapSetter(pitchEG.level2[1], markUnsaved)
+  pitchEG.level3[1] = wrapSetter(pitchEG.level3[1], markUnsaved)
+  pitchEG.level4[1] = wrapSetter(pitchEG.level4[1], markUnsaved)
+
+  // LFO
+  lfo.speed[1] = wrapSetter(lfo.speed[1], markUnsaved)
+  lfo.delay[1] = wrapSetter(lfo.delay[1], markUnsaved)
+  lfo.pmDepth[1] = wrapSetter(lfo.pmDepth[1], markUnsaved)
+  lfo.amDepth[1] = wrapSetter(lfo.amDepth[1], markUnsaved)
+  lfo.keySync[1] = wrapSetter(lfo.keySync[1], markUnsaved)
+  lfo.wave[1] = wrapSetter(lfo.wave[1], markUnsaved)
+  lfo.pmSens[1] = wrapSetter(lfo.pmSens[1], markUnsaved)
+
+  // Global
+  global.algorithm[1] = wrapSetter(global.algorithm[1], markUnsaved)
+  global.feedback[1] = wrapSetter(global.feedback[1], markUnsaved)
+  global.oscSync[1] = wrapSetter(global.oscSync[1], markUnsaved)
+  global.transpose[1] = wrapSetter(global.transpose[1], markUnsaved)
+  global.ampModSens[1] = wrapSetter(global.ampModSens[1], markUnsaved)
+  global.egBiasSens[1] = wrapSetter(global.egBiasSens[1], markUnsaved)
+  global.name[1] = wrapSetter(global.name[1], markUnsaved)
 
   /**
    * Converts the current voice state to JSON format.
@@ -272,6 +539,7 @@ export function createVoice() {
   function loadFromVoice(voice) {
     const json = typeof voice.toJSON === "function" ? voice.toJSON() : voice
     loadFromJSON(json)
+    markSaved(false) // Reset unsaved changes when loading a new voice, don't show indicator
   }
 
   /**
@@ -343,6 +611,7 @@ export function createVoice() {
     const voice = DX7Voice.fromJSON(json)
     bankEntry.bank.replaceVoice(index, voice)
     saveBanks(banks())
+    markSaved() // Voice is now saved to the bank
   }
 
   /**
@@ -529,10 +798,15 @@ export function createVoice() {
     currentVoiceIndex: [currentVoiceIndex, setCurrentVoiceIndex],
     /** @type {[() => Object, (v: Object) => void]} Settings signal getter/setter tuple */
     settings: [settings, setSettings],
+    /** @type {[() => boolean, (v: boolean) => void]} Unsaved changes signal getter/setter tuple */
+    hasUnsavedChanges: [hasUnsavedChanges, setHasUnsavedChanges],
+    /** @type {[() => boolean, (v: boolean) => void]} Just saved signal getter/setter tuple */
+    justSaved: [justSaved, setJustSaved],
     toJSON,
     toSysEx,
     downloadSyx,
     loadFromFile,
+    loadFromVoice,
     loadFromVoiceIndex,
     getBankVoiceNames,
     getBankNames,
@@ -545,5 +819,8 @@ export function createVoice() {
     copyVoice,
     renameVoice,
     updateSetting,
+    markUnsaved,
+    markSaved,
+    discardChanges,
   }
 }

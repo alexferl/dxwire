@@ -1,4 +1,4 @@
-import { For } from "solid-js"
+import { For, onCleanup, onMount } from "solid-js"
 import { VoiceContext, voiceInstance } from "./context/VoiceContext.jsx"
 import { Header } from "./Header/index.jsx"
 import { Operator, Operators } from "./Operators/index.jsx"
@@ -31,6 +31,22 @@ export function Footer() {
  * @returns {import("solid-js").JSX.Element}
  */
 export function Editor() {
+  onMount(() => {
+    const handleBeforeUnload = (e) => {
+      if (voiceInstance.hasUnsavedChanges[0]()) {
+        e.preventDefault()
+        e.returnValue = ""
+        return ""
+      }
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    onCleanup(() => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    })
+  })
+
   return (
     <VoiceContext.Provider value={voiceInstance}>
       <div class="editor">

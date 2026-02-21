@@ -495,5 +495,147 @@ describe("createVoice", () => {
 
       expect(() => voice.replaceVoiceInBank(0)).toThrow("No bank loaded")
     })
+
+    it("should mark as saved after replacing voice in bank", () => {
+      const voice = createVoice()
+      voice.operators[0].outputLevel[1](50)
+      expect(voice.hasUnsavedChanges[0]()).toBe(true)
+
+      voice.replaceVoiceInBank(0)
+      expect(voice.hasUnsavedChanges[0]()).toBe(false)
+    })
+  })
+
+  describe("unsaved changes tracking", () => {
+    it("should start with no unsaved changes", () => {
+      const voice = createVoice()
+      expect(voice.hasUnsavedChanges[0]()).toBe(false)
+    })
+
+    it("should start with justSaved as false", () => {
+      const voice = createVoice()
+      expect(voice.justSaved[0]()).toBe(false)
+    })
+
+    it("should mark unsaved when an operator parameter changes", () => {
+      const voice = createVoice()
+      voice.operators[0].outputLevel[1](50)
+      expect(voice.hasUnsavedChanges[0]()).toBe(true)
+    })
+
+    it("should mark unsaved when global parameter changes", () => {
+      const voice = createVoice()
+      voice.global.algorithm[1](5)
+      expect(voice.hasUnsavedChanges[0]()).toBe(true)
+    })
+
+    it("should mark unsaved when LFO parameter changes", () => {
+      const voice = createVoice()
+      voice.lfo.speed[1](50)
+      expect(voice.hasUnsavedChanges[0]()).toBe(true)
+    })
+
+    it("should mark unsaved when pitch EG parameter changes", () => {
+      const voice = createVoice()
+      voice.pitchEG.rate1[1](50)
+      expect(voice.hasUnsavedChanges[0]()).toBe(true)
+    })
+
+    it("should not mark unsaved when value is set to same value", () => {
+      const voice = createVoice()
+      const initialValue = voice.operators[0].outputLevel[0]()
+      voice.operators[0].outputLevel[1](initialValue)
+      expect(voice.hasUnsavedChanges[0]()).toBe(false)
+    })
+  })
+
+  describe("markSaved", () => {
+    it("should reset unsaved changes to false", () => {
+      const voice = createVoice()
+      voice.operators[0].outputLevel[1](50)
+      expect(voice.hasUnsavedChanges[0]()).toBe(true)
+
+      voice.markSaved()
+      expect(voice.hasUnsavedChanges[0]()).toBe(false)
+    })
+
+    it("should set justSaved to true when called with showIndicator", () => {
+      const voice = createVoice()
+      voice.markSaved(true)
+      expect(voice.justSaved[0]()).toBe(true)
+    })
+
+    it("should not set justSaved when called with showIndicator=false", () => {
+      const voice = createVoice()
+      voice.markSaved(false)
+      expect(voice.justSaved[0]()).toBe(false)
+    })
+
+    it("should reset justSaved after 2 seconds", async () => {
+      const voice = createVoice()
+      vi.useFakeTimers()
+      voice.markSaved(true)
+      expect(voice.justSaved[0]()).toBe(true)
+
+      vi.advanceTimersByTime(2000)
+      expect(voice.justSaved[0]()).toBe(false)
+      vi.useRealTimers()
+    })
+  })
+
+  describe("discardChanges", () => {
+    it("should reset unsaved changes to false", () => {
+      const voice = createVoice()
+      voice.operators[0].outputLevel[1](50)
+      expect(voice.hasUnsavedChanges[0]()).toBe(true)
+
+      voice.discardChanges()
+      expect(voice.hasUnsavedChanges[0]()).toBe(false)
+    })
+
+    it("should restore original values when discarding", () => {
+      const voice = createVoice()
+      const originalValue = voice.operators[0].outputLevel[0]()
+      voice.operators[0].outputLevel[1](50)
+      expect(voice.operators[0].outputLevel[0]()).toBe(50)
+
+      voice.discardChanges()
+      expect(voice.operators[0].outputLevel[0]()).toBe(originalValue)
+    })
+  })
+
+  describe("loadFromVoice", () => {
+    it("should reset unsaved changes when loading a new voice", () => {
+      const voice = createVoice()
+      voice.operators[0].outputLevel[1](50)
+      expect(voice.hasUnsavedChanges[0]()).toBe(true)
+
+      const mockVoice = {
+        toJSON: () => ({
+          name: "Test Voice",
+          global: {
+            algorithm: 1,
+            feedback: 0,
+            oscKeySync: true,
+            transpose: 0,
+            ampModSens: 0,
+            egBiasSens: 0,
+            pitchModSens: 3,
+          },
+          lfo: { speed: 35, delay: 0, pmDepth: 0, amDepth: 0, keySync: true, wave: "TRIANGLE" },
+          pitchEG: { rates: [99, 99, 99, 99], levels: [50, 50, 50, 50] },
+          operators: Array(6).fill({
+            osc: { detune: 0, freq: { coarse: 1, fine: 0, mode: "RATIO" } },
+            eg: { rates: [99, 99, 99, 99], levels: [99, 99, 99, 0] },
+            key: { velocity: 0, scaling: 0, breakPoint: "A-1" },
+            output: { level: 99, ampModSens: 0 },
+            scale: { left: { depth: 0, curve: "-LN" }, right: { depth: 0, curve: "-LN" } },
+          }),
+        }),
+      }
+
+      voice.loadFromVoice(mockVoice)
+      expect(voice.hasUnsavedChanges[0]()).toBe(false)
+    })
   })
 })

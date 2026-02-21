@@ -1,4 +1,5 @@
 import { createSignal, onMount } from "solid-js"
+import { Modal } from "../../Modal/index.jsx"
 import "./style.css"
 
 /**
@@ -32,53 +33,26 @@ export function RenameDialog(props) {
   }
 
   return (
-    <section
-      class="slot-dialog-overlay"
-      onClick={onCancel}
-      onKeyDown={(e) => {
-        if (e.key === "Escape") {
-          e.preventDefault()
-          onCancel()
-        }
-      }}
-      role="dialog"
-      aria-modal="true"
-      tabIndex={-1}
-    >
-      <div
-        class="slot-dialog"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            e.preventDefault()
-            onCancel()
-          }
-        }}
-        role="dialog"
-        aria-modal="true"
-        tabIndex={-1}
-      >
-        <h3>{title}</h3>
-        <form onSubmit={handleSubmit}>
-          <input
-            ref={inputRef}
-            type="text"
-            value={name()}
-            onInput={(e) => setName(e.currentTarget.value)}
-            placeholder="Name"
-            class="rename-input"
-            maxLength={10}
-          />
-          <div class="rename-buttons">
-            <button type="submit" class="rename-confirm">
-              Rename
-            </button>
-            <button type="button" class="rename-cancel" onClick={onCancel}>
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </section>
+    <Modal title={title} onClose={onCancel} size="small">
+      <form onSubmit={handleSubmit}>
+        <input
+          ref={inputRef}
+          type="text"
+          value={name()}
+          onInput={(e) => setName(e.currentTarget.value)}
+          placeholder="Name"
+          class="rename-input"
+          maxLength={10}
+        />
+        <div class="rename-buttons">
+          <button type="submit" class="rename-confirm">
+            Rename
+          </button>
+          <button type="button" class="rename-cancel" onClick={onCancel}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </Modal>
   )
 }

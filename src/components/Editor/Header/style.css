@@ -18,8 +18,22 @@
 }
 
 .header-logo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.header-logo-title {
   font-size: 24px;
   font-weight: bold;
+  line-height: 1;
+}
+
+.header-logo-subtitle {
+  font-size: 11px;
+  color: #888;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .header-right {
@@ -184,6 +198,49 @@
 .voice-select-header:focus {
   outline: none;
   border-color: #00ffff;
+}
+
+/* Save status indicator */
+.save-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #3a3a3a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #888;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.save-indicator--unsaved {
+  background: #4a3a2a;
+  border-color: #ff8800;
+  color: #ffaa44;
+}
+
+.save-indicator--saved {
+  background: #2a4a2a;
+  border-color: #44aa44;
+  color: #66cc66;
+}
+
+.save-indicator-dot {
+  width: 8px;
+  height: 8px;
+  background: #666;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.save-indicator--unsaved .save-indicator-dot {
+  background: #ff8800;
+}
+
+.save-indicator--saved .save-indicator-dot {
+  background: #44aa44;
 }
 
 .modal-overlay {

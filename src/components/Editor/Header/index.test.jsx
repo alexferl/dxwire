@@ -59,6 +59,8 @@ function createMockVoice(overrides = {}) {
     currentBank: createSignalMock(overrides.currentBank ?? 0),
     currentVoiceIndex: createSignalMock(overrides.currentVoiceIndex ?? 0),
     global: { name: createSignalMock(overrides.voiceName ?? "Init Voice") },
+    hasUnsavedChanges: createSignalMock(overrides.hasUnsavedChanges ?? false),
+    justSaved: createSignalMock(overrides.justSaved ?? false),
     getBankNames: vi.fn().mockReturnValue(overrides.bankNames ?? ["Init Bank"]),
     getBankVoiceNames: vi.fn().mockReturnValue(
       overrides.voiceNames ??
@@ -74,6 +76,7 @@ function createMockVoice(overrides = {}) {
     initVoice: vi.fn(),
     renameVoice: vi.fn(),
     copyVoice: vi.fn(),
+    replaceVoiceInBank: vi.fn(),
     toSysEx: vi.fn().mockReturnValue(new Uint8Array([0xf0, 0x43, 0x00, 0x00, 0x01, 0x1b, 0xf7])),
   }
 }
@@ -203,8 +206,68 @@ describe("Header", () => {
 
     await waitFor(() => {
       const buttons = document.querySelectorAll(".header-send-btn")
-      expect(buttons.length).toBe(3)
+      expect(buttons.length).toBe(4)
     })
+  })
+
+  it("renders save indicator", async () => {
+    mockUseVoice.mockReturnValue(createMockVoice())
+    render(() => <Header />)
+
+    await waitFor(() => {
+      expect(document.querySelector(".save-indicator")).toBeInTheDocument()
+    })
+  })
+
+  it("renders save button to the right of send voice", async () => {
+    mockUseVoice.mockReturnValue(createMockVoice())
+    render(() => <Header />)
+
+    await waitFor(() => {
+      const buttons = document.querySelectorAll(".header-send-btn")
+      expect(buttons.length).toBe(4)
+    })
+
+    // Save button should have save title
+    const saveButton = screen.getByTitle("Save to Current Slot")
+    expect(saveButton).toBeInTheDocument()
+  })
+
+  it("disables save button when no changes", async () => {
+    mockUseVoice.mockReturnValue(createMockVoice({ hasUnsavedChanges: false }))
+    render(() => <Header />)
+
+    await waitFor(() => {
+      const saveButton = screen.getByTitle("Save to Current Slot")
+      expect(saveButton).toBeDisabled()
+    })
+  })
+
+  it("enables save button when there are changes", async () => {
+    mockUseVoice.mockReturnValue(createMockVoice({ hasUnsavedChanges: true }))
+    render(() => <Header />)
+
+    await waitFor(() => {
+      const saveButton = screen.getByTitle("Save to Current Slot")
+      expect(saveButton).not.toBeDisabled()
+    })
+  })
+
+  it("calls replaceVoiceInBank when save button clicked with changes", async () => {
+    const mockVoice = createMockVoice({ hasUnsavedChanges: true })
+    mockUseVoice.mockReturnValue(mockVoice)
+    render(() => <Header />)
+
+    await waitFor(() => {
+      const saveButton = screen.getByTitle("Save to Current Slot")
+      expect(saveButton).not.toBeDisabled()
+    })
+
+    const saveButton = screen.getByTitle("Save to Current Slot")
+    fireEvent.click(saveButton)
+
+    expect(global.confirm).toHaveBeenCalled()
+    expect(mockVoice.replaceVoiceInBank).toHaveBeenCalledWith(0)
   })
 
   it("renders bank management menu button", async () => {
