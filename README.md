@@ -1,10 +1,10 @@
 # DXWire
 
-A web-based patch editor and manager for the Yamaha DX7 synthesizer. Built with SolidJS and modern web technologies.
+A web-based patch editor and manager for the Yamaha DX7 and compatible synthesizers. Built with SolidJS and modern web technologies.
 
 ## Overview
 
-DXWire is a browser-based editor for Yamaha DX7 synthesizer patches (voices). It provides a modern, intuitive interface for editing the complex FM synthesis parameters of the DX7, including:
+DXWire is a browser-based editor for Yamaha DX7 and compatible synthesizer patches (voices). Works with the original DX7, TX7, DX1/DX5, KORG Volca FM/2, and other DX7-compatible synths. It provides a modern, intuitive interface for editing the complex FM synthesis parameters of the DX7, including:
 
 - 6 operators with envelope generators, frequency settings, and modulation
 - 32 FM algorithms with visual feedback
@@ -25,7 +25,6 @@ DXWire is a browser-based editor for Yamaha DX7 synthesizer patches (voices). It
 ### Bank Management
 - Load and save DX7 voice banks (32 voices per bank)
 - Import/Export SysEx files (.syx) compatible with hardware DX7
-- Export single patches to KORG Volca FM/2 format
 - Import/Export JSON format for easy sharing and version control
 - Copy, rename, and initialize individual voices
 - Manage multiple banks simultaneously
@@ -91,7 +90,7 @@ The built files will be in the `dist/` directory.
 ### Saving and Exporting
 
 1. **To SysEx**: Click Export → Download SyX to save the current voice as a `.syx` file
-2. **To KORG Volca FM/2**: Export single patches in Volca FM/2 format
+2. **To other synths**: Export voices or entire banks in formats compatible with other DX7-compatible synths (KORG Volca FM/2, etc.)
 3. **To JSON**: Export as JSON for sharing or version control
 4. **To hardware**: Send voices directly to your DX7 via MIDI (if connected)
 

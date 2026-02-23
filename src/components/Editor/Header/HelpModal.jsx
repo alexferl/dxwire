@@ -43,8 +43,7 @@ export function HelpModal(props) {
           <SendBankIcon size="sm" /> <strong>Send Bank</strong>: Sends the full bank (32 voices) to the DX7
         </li>
         <li>
-          <SendVoiceIcon size="sm" /> <strong>Send Voice</strong>: Sends a single voice - useful for devices like the
-          KORG Volca FM that don't support bank transfers
+          <SendVoiceIcon size="sm" /> <strong>Send Voice</strong>: Sends a single voice to the DX7
         </li>
       </ul>
 
