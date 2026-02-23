@@ -17,7 +17,7 @@ DXWire is a browser-based editor for Yamaha DX7 and compatible synthesizer patch
 ## Features
 
 ### Voice Editing
-- **Operator Editing**: Full control over all 6 opeators including EG rates/levels, frequency (ratio/fixed), detune, key scaling, and output levels
+- **Operator Editing**: Full control over all 6 operators including EG rates/levels, frequency (ratio/fixed), detune, key scaling, and output levels
 - **Algorithm Visualization**: Interactive display showing the 32 DX7 FM algorithms and how operators modulate each other
 - **Envelope Graphs**: Visual representation of amplitude and pitch envelope generators
 - **Real-time Parameter Control**: Knobs, sliders, and switches for all voice parameters
