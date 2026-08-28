@@ -16,6 +16,7 @@ import { ImportMenu } from "./ImportMenu"
 function createMockVoice() {
   return {
     loadFromFile: vi.fn().mockResolvedValue(undefined),
+    loadDumpFromFile: vi.fn().mockResolvedValue(undefined),
   }
 }
 
@@ -47,6 +48,7 @@ describe("ImportMenu", () => {
     fireEvent.click(button)
 
     expect(screen.getByText("Import Bank...")).toBeInTheDocument()
+    expect(screen.getByText("Import .syx Dump...")).toBeInTheDocument()
   })
 
   it("triggers file input when import menu item clicked", () => {
@@ -74,7 +76,7 @@ describe("ImportMenu", () => {
     expect(clickSpy).toHaveBeenCalled()
   })
 
-  it("loads file when file is selected", async () => {
+  it("loads bank file when file is selected", async () => {
     const mockVoice = createMockVoice()
     mockUseVoice.mockReturnValue(mockVoice)
     const mockFile = new File(["test"], "test.syx", { type: "application/octet-stream" })
@@ -109,6 +111,43 @@ describe("ImportMenu", () => {
     await new Promise((resolve) => setTimeout(resolve, 10))
 
     expect(mockVoice.loadFromFile).toHaveBeenCalled()
+    expect(mockVoice.loadDumpFromFile).not.toHaveBeenCalled()
+  })
+
+  it("loads dump file when import dump menu item clicked", async () => {
+    const mockVoice = createMockVoice()
+    mockUseVoice.mockReturnValue(mockVoice)
+    const mockFile = new File(["test"], "test.syx", { type: "application/octet-stream" })
+
+    document.createElement = vi.fn((tag) => {
+      if (tag === "input") {
+        const input = originalCreateElement.call(document, tag)
+        setTimeout(() => {
+          if (input.onchange) {
+            Object.defineProperty(input, "files", {
+              value: [mockFile],
+              writable: false,
+            })
+            input.onchange({ target: input })
+          }
+        }, 0)
+        return input
+      }
+      return originalCreateElement.call(document, tag)
+    })
+
+    render(() => <ImportMenu />)
+
+    const button = document.querySelector(".menu-button")
+    fireEvent.click(button)
+
+    const menuItem = screen.getByText("Import .syx Dump...")
+    fireEvent.click(menuItem)
+
+    await new Promise((resolve) => setTimeout(resolve, 10))
+
+    expect(mockVoice.loadDumpFromFile).toHaveBeenCalled()
+    expect(mockVoice.loadFromFile).not.toHaveBeenCalled()
   })
 
   it("shows alert when file import fails", async () => {
@@ -185,6 +224,7 @@ describe("ImportMenu", () => {
     await new Promise((resolve) => setTimeout(resolve, 10))
 
     expect(mockVoice.loadFromFile).not.toHaveBeenCalled()
+    expect(mockVoice.loadDumpFromFile).not.toHaveBeenCalled()
   })
 
   it("has aria-label for import icon", () => {
