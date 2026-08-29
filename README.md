@@ -1,6 +1,7 @@
 # DXWire
 
 A web-based patch editor and manager for the Yamaha DX7 and compatible synthesizers. Built with SolidJS and modern web technologies.
+Added sysex dump import.
 
 ## Overview
 

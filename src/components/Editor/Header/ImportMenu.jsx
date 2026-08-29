@@ -10,23 +10,40 @@ export function ImportMenu() {
   const voice = useVoice()
 
   /**
-   * Handles importing a bank from a file.
-   * Opens a file picker for .syx or .json files.
+   * Opens a file picker and passes the selected file to the supplied loader.
+   * @param {string} accept - File extensions accepted by the picker
+   * @param {(file: File) => Promise<unknown>} loadFile - Loader function
    */
-  const handleImportBank = async () => {
+  const importFile = (accept, loadFile) => {
     const input = document.createElement("input")
     input.type = "file"
-    input.accept = ".syx,.json"
+    input.accept = accept
     input.onchange = async (e) => {
       const file = /** @type {HTMLInputElement} */ (e.target).files?.[0]
       if (!file) return
       try {
-        await voice.loadFromFile(file)
+        await loadFile(file)
       } catch (err) {
         alert(`Failed to import: ${err.message}`)
       }
     }
     input.click()
+  }
+
+  /**
+   * Handles importing a bank from a file.
+   * Opens a file picker for .syx or .json files.
+   */
+  const handleImportBank = () => {
+    importFile(".syx,.json", voice.loadFromFile)
+  }
+
+  /**
+   * Handles importing a DX7 single-voice SysEx dump.
+   * Opens a file picker for .syx files.
+   */
+  const handleImportDump = () => {
+    importFile(".syx", voice.loadDumpFromFile)
   }
 
   const importIcon = (
@@ -48,6 +65,7 @@ export function ImportMenu() {
   return (
     <MenuButton icon={importIcon}>
       <MenuItem label="Import Bank..." onClick={handleImportBank} />
+      <MenuItem label="Import .syx Dump..." onClick={handleImportDump} />
     </MenuButton>
   )
 }

@@ -15,6 +15,101 @@ const CURVE_MAP = { "-LN": 0, "-EX": 1, "+EX": 2, "+LN": 3 }
 const WAVE_MAP = { TRIANGLE: 0, "SAW DOWN": 1, "SAW UP": 2, SQUARE: 3, SINE: 4, "SAMPLE & HOLD": 5 }
 
 /**
+ * Converts raw DX7 one-voice SysEx bytes to the app's voice JSON shape.
+ * @param {Uint8Array} bytes - Complete 163-byte DX7 one-voice SysEx dump
+ * @returns {Object} Voice JSON
+ * @throws {Error} If bytes are not a valid DX7 one-voice dump
+ */
+export function parseDX7VoiceDump(bytes) {
+  if (!(bytes instanceof Uint8Array)) {
+    throw new Error("Invalid SysEx dump: expected bytes")
+  }
+  if (bytes.length !== 163) {
+    throw new Error("Invalid SysEx dump: expected 163 bytes")
+  }
+  if (bytes[0] !== 0xf0 || bytes[1] !== 0x43 || bytes[3] !== 0x00 || bytes[162] !== 0xf7) {
+    throw new Error("Invalid SysEx dump: expected Yamaha DX7 single voice")
+  }
+  if (((bytes[4] << 7) | bytes[5]) !== 0x9b) {
+    throw new Error("Invalid SysEx dump: expected 155 voice data bytes")
+  }
+
+  const data = bytes.slice(6, 161)
+  const checksum = data.reduce((sum, value) => sum - value, 0) & 0x7f
+  if (checksum !== bytes[161]) {
+    throw new Error("Invalid SysEx dump: checksum mismatch")
+  }
+
+  const operatorFromData = (id) => {
+    const offset = (6 - id) * 21
+    const detune = (data[offset + 20] ?? 7) - 7
+
+    return {
+      id,
+      osc: {
+        detune,
+        freq: {
+          coarse: data[offset + 18],
+          fine: data[offset + 19],
+          mode: data[offset + 17] === 1 ? "FIXED" : "RATIO",
+        },
+      },
+      eg: {
+        rates: [data[offset], data[offset + 1], data[offset + 2], data[offset + 3]],
+        levels: [data[offset + 4], data[offset + 5], data[offset + 6], data[offset + 7]],
+      },
+      key: {
+        velocity: data[offset + 15],
+        scaling: data[offset + 13],
+        breakPoint: noteNumberToName(data[offset + 8] + 9),
+      },
+      output: {
+        level: data[offset + 16],
+        ampModSens: data[offset + 14],
+      },
+      scale: {
+        left: {
+          depth: data[offset + 9],
+          curve: CURVES[data[offset + 11]] || "-LN",
+        },
+        right: {
+          depth: data[offset + 10],
+          curve: CURVES[data[offset + 12]] || "-LN",
+        },
+      },
+    }
+  }
+
+  const name = String.fromCharCode(...data.slice(145, 155)).trimEnd() || "Loaded Voice"
+
+  return {
+    name,
+    operators: Array.from({ length: 6 }, (_, index) => operatorFromData(index + 1)),
+    pitchEG: {
+      rates: [data[126], data[127], data[128], data[129]],
+      levels: [data[130], data[131], data[132], data[133]],
+    },
+    lfo: {
+      speed: data[137],
+      delay: data[138],
+      pmDepth: data[139],
+      amDepth: data[140],
+      keySync: data[141] === 1,
+      wave: WAVES[data[142]] || "TRIANGLE",
+    },
+    global: {
+      algorithm: data[134] + 1,
+      feedback: data[135],
+      oscKeySync: data[136] === 1,
+      pitchModSens: data[143],
+      transpose: data[144] - 24,
+      ampModSens: 0,
+      egBiasSens: 0,
+    },
+  }
+}
+
+/**
  * Wraps a setter function to call a callback after setting.
  * @template T
  * @param {(v: T) => void} setter - Original setter
@@ -658,6 +753,35 @@ export function createVoice() {
   }
 
   /**
+   * Loads a DX7 one-voice SysEx dump into the editor.
+   * @param {File} file - .syx dump file to load
+   * @returns {Promise<{isBank: boolean, voiceCount: number, fileType: string}>} Result info
+   * @throws {Error} If file type is unsupported or parsing fails
+   */
+  async function loadDumpFromFile(file) {
+    const ext = file.name.toLowerCase().split(".").pop()
+    if (ext !== "syx") {
+      throw new Error(`Unsupported file type: .${ext}. Use a .syx dump`)
+    }
+
+    const bytes = new Uint8Array(await file.arrayBuffer())
+    const json = parseDX7VoiceDump(bytes)
+    json.name = file.name.replace(/\.[^/.]+$/, "").slice(0, 10) || json.name
+
+    const bankEntry = banks()[currentBank()]
+    if (!bankEntry || !bankEntry.bank) {
+      throw new Error("No bank loaded")
+    }
+
+    const importedVoice = DX7Voice.fromJSON(json)
+    bankEntry.bank.replaceVoice(currentVoiceIndex(), importedVoice)
+    setBanks([...banks()])
+    saveBanks(banks())
+    loadFromVoice(importedVoice)
+    return { isBank: false, voiceCount: 1, fileType: "syx" }
+  }
+
+  /**
    * Deletes a bank by index.
    * @param {number} bankIndex - Index of bank to delete
    * @throws {Error} If trying to delete the last bank
@@ -806,6 +930,7 @@ export function createVoice() {
     toSysEx,
     downloadSyx,
     loadFromFile,
+    loadDumpFromFile,
     loadFromVoice,
     loadFromVoiceIndex,
     getBankVoiceNames,

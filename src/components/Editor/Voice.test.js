@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { createVoice } from "./Voice"
+import { createVoice, parseDX7VoiceDump } from "./Voice"
 
 // Mock midiwire
 vi.mock("midiwire", () => {
@@ -412,6 +412,27 @@ describe("createVoice", () => {
     })
   })
 
+  describe("loadDumpFromFile", () => {
+    it("loads a DX7 single-voice SysEx dump into the editor using the 10-character file name", async () => {
+      const voice = createVoice()
+      const dump = createSingleVoiceDump({ name: "BEEP" })
+      const file = new File([dump], "custom-beep-extra.syx", { type: "application/octet-stream" })
+
+      const result = await voice.loadDumpFromFile(file)
+
+      expect(result).toEqual({ isBank: false, voiceCount: 1, fileType: "syx" })
+      expect(voice.global.name[0]()).toBe("custom-bee")
+      expect(voice.getBankVoiceNames()[0]).toBe("custom-bee")
+    })
+
+    it("throws error for unsupported dump file type", async () => {
+      const voice = createVoice()
+      const invalidFile = new File(["content"], "test.txt", { type: "text/plain" })
+
+      await expect(voice.loadDumpFromFile(invalidFile)).rejects.toThrow("Unsupported file type")
+    })
+  })
+
   describe("deleteBank", () => {
     it("throws error when deleting last bank", () => {
       const voice = createVoice()
@@ -637,5 +658,57 @@ describe("createVoice", () => {
       voice.loadFromVoice(mockVoice)
       expect(voice.hasUnsavedChanges[0]()).toBe(false)
     })
+  })
+})
+
+function createSingleVoiceDump({ name = "TEST" } = {}) {
+  const bytes = new Uint8Array(163)
+  bytes[0] = 0xf0
+  bytes[1] = 0x43
+  bytes[2] = 0x00
+  bytes[3] = 0x00
+  bytes[4] = 0x01
+  bytes[5] = 0x1b
+  bytes[162] = 0xf7
+
+  const data = bytes.subarray(6, 161)
+  for (let op = 0; op < 6; op++) {
+    const offset = op * 21
+    data.set([99, 99, 99, 99, 99, 99, 99, 0], offset)
+    data[offset + 17] = 0
+    data[offset + 18] = 1
+    data[offset + 20] = 7
+  }
+  data.set([99, 99, 99, 99, 50, 50, 50, 50], 126)
+  data[134] = 0
+  data[137] = 35
+  data[141] = 1
+  data[143] = 3
+  data[144] = 24
+
+  const paddedName = name.padEnd(10, " ").slice(0, 10)
+  for (let i = 0; i < paddedName.length; i++) {
+    data[145 + i] = paddedName.charCodeAt(i)
+  }
+
+  bytes[161] = data.reduce((sum, value) => sum - value, 0) & 0x7f
+  return bytes
+}
+
+describe("parseDX7VoiceDump", () => {
+  it("parses a valid DX7 single-voice SysEx dump", () => {
+    const json = parseDX7VoiceDump(createSingleVoiceDump({ name: "BEEP" }))
+
+    expect(json.name).toBe("BEEP")
+    expect(json.operators).toHaveLength(6)
+    expect(json.global.algorithm).toBe(1)
+    expect(json.lfo.speed).toBe(35)
+  })
+
+  it("rejects a dump with an invalid checksum", () => {
+    const dump = createSingleVoiceDump()
+    dump[161] = (dump[161] + 1) & 0x7f
+
+    expect(() => parseDX7VoiceDump(dump)).toThrow("checksum mismatch")
   })
 })
