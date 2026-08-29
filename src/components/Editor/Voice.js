@@ -767,7 +767,17 @@ export function createVoice() {
     const bytes = new Uint8Array(await file.arrayBuffer())
     const json = parseDX7VoiceDump(bytes)
     json.name = file.name.replace(/\.[^/.]+$/, "").slice(0, 10) || json.name
-    loadFromJSON(json)
+
+    const bankEntry = banks()[currentBank()]
+    if (!bankEntry || !bankEntry.bank) {
+      throw new Error("No bank loaded")
+    }
+
+    const importedVoice = DX7Voice.fromJSON(json)
+    bankEntry.bank.replaceVoice(currentVoiceIndex(), importedVoice)
+    setBanks([...banks()])
+    saveBanks(banks())
+    loadFromVoice(importedVoice)
     return { isBank: false, voiceCount: 1, fileType: "syx" }
   }
 

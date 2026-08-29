@@ -422,6 +422,7 @@ describe("createVoice", () => {
 
       expect(result).toEqual({ isBank: false, voiceCount: 1, fileType: "syx" })
       expect(voice.global.name[0]()).toBe("custom-bee")
+      expect(voice.getBankVoiceNames()[0]).toBe("custom-bee")
     })
 
     it("throws error for unsupported dump file type", async () => {
