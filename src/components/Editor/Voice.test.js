@@ -413,15 +413,15 @@ describe("createVoice", () => {
   })
 
   describe("loadDumpFromFile", () => {
-    it("loads a DX7 single-voice SysEx dump into the editor", async () => {
+    it("loads a DX7 single-voice SysEx dump into the editor using the 10-character file name", async () => {
       const voice = createVoice()
       const dump = createSingleVoiceDump({ name: "BEEP" })
-      const file = new File([dump], "beep.syx", { type: "application/octet-stream" })
+      const file = new File([dump], "custom-beep-extra.syx", { type: "application/octet-stream" })
 
       const result = await voice.loadDumpFromFile(file)
 
       expect(result).toEqual({ isBank: false, voiceCount: 1, fileType: "syx" })
-      expect(voice.global.name[0]()).toBe("BEEP")
+      expect(voice.global.name[0]()).toBe("custom-bee")
     })
 
     it("throws error for unsupported dump file type", async () => {

@@ -766,6 +766,7 @@ export function createVoice() {
 
     const bytes = new Uint8Array(await file.arrayBuffer())
     const json = parseDX7VoiceDump(bytes)
+    json.name = file.name.replace(/\.[^/.]+$/, "").slice(0, 10) || json.name
     loadFromJSON(json)
     return { isBank: false, voiceCount: 1, fileType: "syx" }
   }
